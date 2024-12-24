@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.7/.schema/devbox.schema.json",
+  "packages": [
+    "docker@27.3.1",
+    "k3d@5.7.4",
+    "kubectl@latest",
+    "kubernetes-helm@3.16.3",
+    "glooctl@1.17.16"
+  ],
+  "shell": {
+    "init_hook": [
+      "source ./devbox-scripts/init-hook.sh"
+    ],
+    "scripts": {
+      "test": [
+        "echo \"Error: no test specified\" && exit 1"
+      ]
+    }
+  }
+}
