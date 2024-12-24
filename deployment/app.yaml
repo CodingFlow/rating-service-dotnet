@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: rating-service-container
-          image: mycluster-registry:5000/rating-service
+          image: localdevcluster-registry:5000/rating-service
           imagePullPolicy: IfNotPresent
           ports:
             - name: service-port

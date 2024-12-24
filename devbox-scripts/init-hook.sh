@@ -11,6 +11,7 @@ alias delete-cluster='k3d cluster delete $cluster_name'
 alias start-cluster='k3d cluster start $cluster_name'
 alias stop-cluster='k3d cluster stop $cluster_name'
 
+alias deploy-gateway='kubectl apply -f ./deployment/gateway.yaml'
 alias deploy-service='deploy_service'
 
 create_cluster() {
@@ -20,7 +21,7 @@ create_cluster() {
     helm repo update &&
     helm install -n gloo-system gloo-gateway gloo/gloo \
 --create-namespace \
---version 1.18.0-beta34 \
+--version 1.17.16 \
 -f -<<EOF
 discovery:
   enabled: false

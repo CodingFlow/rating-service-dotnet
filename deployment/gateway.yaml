@@ -1,0 +1,31 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: http
+  namespace: gloo-system
+spec:
+  gatewayClassName: gloo-gateway
+  listeners:
+  - protocol: HTTP
+    port: 8080
+    name: http
+    allowedRoutes:
+      namespaces:
+        from: All
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: rating-service-route
+  namespace: default
+spec:
+  parentRefs:
+    - name: http
+      namespace: gloo-system
+  hostnames:
+    - "www.example.com"
+  rules:
+    - backendRefs:
+        - name: rating-service
+          port: 8080
