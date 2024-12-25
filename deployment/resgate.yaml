@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: resgate-service
+spec:
+  selector:
+    app.kubernetes.io/name: resgate
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: service-port
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resgate-deployment
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: resgate
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: resgate
+    spec:
+      containers:
+        - name: resgate-container
+          image: resgateio/resgate
+          imagePullPolicy: IfNotPresent
+          args:
+            - "--nats"
+            - "$(NATS_SERVICE_HOST):$(NATS_SERVICE_PORT)"
+          ports:
+            - name: service-port
+              containerPort: 8080
+          resources:
+            requests:
+              cpu: 2m
+              memory: 400Mi
+            limits:
+              cpu: 3m
+              memory: 600Mi

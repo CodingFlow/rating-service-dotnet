@@ -12,6 +12,7 @@ alias start-cluster='k3d cluster start $cluster_name'
 alias stop-cluster='k3d cluster stop $cluster_name'
 
 alias deploy-gateway='kubectl apply -f ./deployment/gateway.yaml'
+alias deploy-resgate='kubectl apply -f ./deployment/resgate.yaml'
 alias deploy-service='deploy_service'
 
 create_cluster() {
