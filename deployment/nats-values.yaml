@@ -1,0 +1,8 @@
+config:
+  merge:
+    host: 0.0.0.0
+    port: 4222
+    jetstream:
+      store_dir: /data/jetstream
+      max_mem: 1G
+      max_file: 1G

@@ -18,21 +18,10 @@ create_cluster() {
     k3d cluster create $cluster_name --image rancher/k3s:v1.31.4-k3s1 --registry-create $cluster_name-registry:localhost:5000 &&
     kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/standard-install.yaml &&
     helm repo add gloo https://storage.googleapis.com/solo-public-helm &&
+    helm repo add nats https://nats-io.github.io/k8s/helm/charts/ &&
     helm repo update &&
-    helm install -n gloo-system gloo-gateway gloo/gloo \
---create-namespace \
---version 1.17.16 \
--f -<<EOF
-discovery:
-  enabled: false
-gatewayProxies:
-  gatewayProxy:
-    disabled: true
-gloo:
-  disableLeaderElection: true
-kubeGateway:
-  enabled: true
-EOF
+    helm install -n gloo-system gloo-gateway gloo/gloo --create-namespace --version 1.17.16 -f ./deployment/gloo-values.yaml &&
+    helm install nats nats/nats -f ./deployment/nats-values.yaml
 }
 
 deploy_service() {
