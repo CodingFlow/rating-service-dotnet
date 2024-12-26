@@ -15,6 +15,8 @@ alias deploy-gateway='kubectl apply -f ./deployment/gateway.yaml'
 alias deploy-resgate='kubectl apply -f ./deployment/resgate.yaml'
 alias deploy-service='deploy_service'
 
+alias port-forward-gateway='kubectl port-forward deployment/gloo-proxy-http -n gloo-system 8080:8080'
+
 create_cluster() {
     k3d cluster create $cluster_name --image rancher/k3s:v1.31.4-k3s1 --registry-create $cluster_name-registry:localhost:5000 &&
     kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/standard-install.yaml &&
