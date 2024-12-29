@@ -27,5 +27,5 @@ spec:
     - "www.example.com"
   rules:
     - backendRefs:
-        - name: resgate-service
+        - name: http-to-nats-proxy-service
           port: 8080

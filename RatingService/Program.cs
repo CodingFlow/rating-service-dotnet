@@ -1,25 +1,31 @@
-var builder = WebApplication.CreateBuilder(args);
+﻿using NATS.Net;
+using RatingService;
+using System.Text.Json;
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+Console.WriteLine($"cats ~~~~ ~~ @@");
 
-var app = builder.Build();
+var host = Environment.GetEnvironmentVariable("NATS_SERVICE_HOST");
+var port = Environment.GetEnvironmentVariable("NATS_SERVICE_PORT");
+var url = $"nats://{host}:{port}";
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+var client = new NatsClient(url);
+
+var jetStream = client.CreateJetStreamContext();
+var consumer = await jetStream.GetConsumerAsync("mystream", "my-pull-consumer");
+
+await foreach (var message in consumer.ConsumeAsync<RatingRequest>())
 {
-    app.MapOpenApi();
-    app.UseSwaggerUI(options =>
+    Console.WriteLine($"Processed: {message.Data}");
+
+    Console.WriteLine($"ReplyTo field: {message.ReplyTo}");
+
+    Console.WriteLine($"Data: {JsonSerializer.Serialize(message.Data)}");
+
+
+    _ = client.PublishAsync(message.Data.OriginReplyTo, new RatingResponse
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "v1");
+        UserName = message.Data.Headers["host"]
     });
+
+    await message.AckAsync();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();

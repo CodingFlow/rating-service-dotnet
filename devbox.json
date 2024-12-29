@@ -5,7 +5,8 @@
     "k3d@5.7.4",
     "kubectl@latest",
     "kubernetes-helm@3.16.3",
-    "glooctl@1.17.16"
+    "glooctl@1.17.16",
+    "helmfile@0.169.2"
   ],
   "shell": {
     "init_hook": [

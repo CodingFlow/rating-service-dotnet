@@ -1,0 +1,3 @@
+jetstream:
+  nats:
+    url: "$(NATS_SERVICE_HOST):$(NATS_SERVICE_PORT)"

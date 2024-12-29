@@ -1,16 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113
+VisualStudioVersion = 17.12.35527.113 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RatingService", "RatingService\RatingService.csproj", "{C06ED4CA-8F99-4BCD-B313-C1F266E6BBC1}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{04C65B9E-0164-49C8-880A-7E1700F9341C}"
-	ProjectSection(SolutionItems) = preProject
-		.dockerignore = .dockerignore
-		.editorconfig = .editorconfig
-		Dockerfile = Dockerfile
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RatingService", "RatingService\RatingService.csproj", "{1CC703F2-22E0-4865-BF06-4036008CDA9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C06ED4CA-8F99-4BCD-B313-C1F266E6BBC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C06ED4CA-8F99-4BCD-B313-C1F266E6BBC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C06ED4CA-8F99-4BCD-B313-C1F266E6BBC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C06ED4CA-8F99-4BCD-B313-C1F266E6BBC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CC703F2-22E0-4865-BF06-4036008CDA9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CC703F2-22E0-4865-BF06-4036008CDA9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CC703F2-22E0-4865-BF06-4036008CDA9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CC703F2-22E0-4865-BF06-4036008CDA9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
