@@ -2,7 +2,7 @@
 
 namespace RatingService;
 
-public class Rating
+public struct Rating
 {
     [JsonPropertyName("userName")]
     public string UserName { get; set; }

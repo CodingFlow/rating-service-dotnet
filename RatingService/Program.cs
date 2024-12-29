@@ -13,7 +13,7 @@ var client = new NatsClient(url);
 var jetStream = client.CreateJetStreamContext();
 var consumer = await jetStream.GetConsumerAsync("mystream", "my-pull-consumer");
 
-await foreach (var message in consumer.ConsumeAsync<RatingRequest>())
+await foreach (var message in consumer.ConsumeAsync<RatingRequest<RequestBody>>())
 {
     Console.WriteLine($"Processed: {message.Data}");
 
@@ -25,7 +25,7 @@ await foreach (var message in consumer.ConsumeAsync<RatingRequest>())
     _ = client.PublishAsync(message.Data.OriginReplyTo, new RatingResponse
     {
         StatusCode = 200,
-        Body = new Rating { UserName = message.Data.Headers["host"] },
+        Body = new Rating { UserName = message.Data.Body.Animal },
         Headers = new Dictionary<string, string>()
     });
 
