@@ -4,6 +4,13 @@ namespace RatingService;
 
 public class RatingResponse
 {
-    [JsonPropertyName("userName")]
-    public string UserName { get; set; }
+    [JsonPropertyName("headers")]
+    public required Dictionary<string, string> Headers { get; init; } = new Dictionary<string, string>();
+
+    [JsonPropertyName("body")]
+    public Rating Body { get; set; }
+
+    [JsonPropertyName("statusCode")]
+    public int StatusCode { get; set; }
+
 }

@@ -24,7 +24,9 @@ await foreach (var message in consumer.ConsumeAsync<RatingRequest>())
 
     _ = client.PublishAsync(message.Data.OriginReplyTo, new RatingResponse
     {
-        UserName = message.Data.Headers["host"]
+        StatusCode = 200,
+        Body = new Rating { UserName = message.Data.Headers["host"] },
+        Headers = new Dictionary<string, string>()
     });
 
     await message.AckAsync();

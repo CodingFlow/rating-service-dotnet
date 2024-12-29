@@ -33,11 +33,13 @@ create_cluster() {
 deploy_http_to_nats_proxy() {
     docker build -t localhost:5000/http-to-nats-proxy /mnt/c/Users/Blue/source/repos/Git/personal/http-to-nats-proxy &&
     docker push localhost:5000/http-to-nats-proxy &&
-    kubectl apply -f ./deployment/http-to-nats-proxy.yaml
+    kubectl apply -f ./deployment/http-to-nats-proxy.yaml &&
+    kubectl rollout restart deployment http-to-nats-proxy-deployment
 }
 
 deploy_service() {
     docker build -t localhost:5000/rating-service . &&
     docker push localhost:5000/rating-service &&
     kubectl apply -f ./deployment/app.yaml
+    kubectl rollout restart deployment rating-service-deployment
 }
