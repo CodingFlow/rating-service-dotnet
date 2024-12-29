@@ -4,7 +4,7 @@ metadata:
   name: mystream
 spec:
   name: mystream
-  subjects: ["get.ratings"]
+  subjects: ["*.ratings"]
   storage: memory
   maxAge: 1h
   noAck: true
@@ -18,6 +18,6 @@ spec:
   streamName: mystream
   durableName: my-pull-consumer
   deliverPolicy: all
-  filterSubject: get.ratings
+  filterSubject: "*.ratings"
   maxDeliver: 20
   ackPolicy: explicit
