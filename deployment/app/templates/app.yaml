@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: rating-service-container
-          image: localdevcluster-registry:5000/rating-service
+          image: {{ .Values.docker_registry }}/rating-service
           imagePullPolicy: Always
           resources:
             requests:

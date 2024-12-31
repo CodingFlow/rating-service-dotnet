@@ -23,8 +23,6 @@ spec:
   parentRefs:
     - name: http
       namespace: gloo-system
-  hostnames:
-    - "www.example.com"
   rules:
     - backendRefs:
         - name: http-to-nats-proxy-service

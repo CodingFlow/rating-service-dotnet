@@ -7,7 +7,10 @@
     "kubernetes-helm@3.16.3",
     "glooctl@1.17.16",
     "k9s@latest",
-    "k6@latest"
+    "azure-cli@2.67",
+    "kubelogin@0.1.6",
+    "yq-go@4.44",
+    "k6@0.55.1"
   ],
   "shell": {
     "init_hook": [

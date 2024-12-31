@@ -1,0 +1,2 @@
+docker_registry: localhost:5000
+docker_registry_name: localdevcluster-registry:5000

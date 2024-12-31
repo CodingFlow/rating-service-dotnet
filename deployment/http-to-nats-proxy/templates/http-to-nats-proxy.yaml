@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: http-to-nats-proxy-container
-          image: localdevcluster-registry:5000/http-to-nats-proxy
+          image: {{ .Values.docker_registry }}/http-to-nats-proxy
           imagePullPolicy: Always
           ports:
             - name: service-port
