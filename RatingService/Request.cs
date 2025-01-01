@@ -2,7 +2,7 @@
 
 namespace RatingService;
 
-public struct RatingRequest<T>
+public struct Request<T>
 {
     [JsonPropertyName("originReplyTo")]
     public string OriginReplyTo { get; set; }

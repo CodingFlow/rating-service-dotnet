@@ -2,13 +2,13 @@
 
 namespace RatingService;
 
-public struct RatingResponse
+public struct Response<T>
 {
     [JsonPropertyName("headers")]
     public required Dictionary<string, string> Headers { get; init; }
 
     [JsonPropertyName("body")]
-    public Rating Body { get; set; }
+    public T Body { get; set; }
 
     [JsonPropertyName("statusCode")]
     public int StatusCode { get; set; }

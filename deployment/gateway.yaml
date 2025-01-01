@@ -24,6 +24,28 @@ spec:
     - name: http
       namespace: gloo-system
   rules:
-    - backendRefs:
+    - matches:
+        - path:
+            value: "/api"
+      filters:
+        - type: ExtensionRef
+          extensionRef:
+            group: gateway.solo.io
+            kind: RouteOption
+            name: rewrite
+      backendRefs:
         - name: http-to-nats-proxy-service
           port: 8080
+
+---
+apiVersion: gateway.solo.io/v1
+kind: RouteOption
+metadata:
+  name: rewrite
+  namespace: default
+spec:
+  options:
+    regexRewrite:
+      pattern:
+        regex: "/api"
+      substitution: ""

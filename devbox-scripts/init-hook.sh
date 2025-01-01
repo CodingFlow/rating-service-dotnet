@@ -13,7 +13,7 @@ alias delete-cluster='k3d cluster delete $cluster_name'
 alias start-cluster='k3d cluster start $cluster_name'
 alias stop-cluster='k3d cluster stop $cluster_name'
 
-alias deploy-gateway='kubectl apply -f ./deployment/gateway.yaml'
+alias deploy-gateway='deploy_gateway'
 alias deploy-http-to-nats-proxy='deploy_http_to_nats_proxy'
 alias deploy-nack='kubectl apply -f ./deployment/nack.yaml'
 alias deploy-service='deploy_service'
@@ -25,6 +25,11 @@ load_config dev
 create_cluster() {
     k3d cluster create $cluster_name --image rancher/k3s:v1.31.4-k3s1 --registry-create $cluster_name-registry:$docker_registry &&
     install_deploy_infrastructure
+}
+
+deploy_gateway() {
+    kubectl apply -f ./deployment/gateway.yaml &&
+    kubectl apply -f ./deployment/gateway-dev.yaml
 }
 
 deploy_http_to_nats_proxy() {
