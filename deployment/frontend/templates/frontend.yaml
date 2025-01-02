@@ -37,8 +37,8 @@ spec:
               value: {{ .Values.RATING_SERVICE_URL_BASE }}
           resources:
             requests:
-              cpu: 250m
-              memory: 200Mi
+              cpu: 150m
+              memory: 300Mi
             limits:
-              cpu: 400m
-              memory: 400Mi
+              cpu: 200m
+              memory: 500Mi
