@@ -2,6 +2,7 @@
 using NATS.Net;
 using RatingService;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 Console.WriteLine($"Beginning program");
 
@@ -16,7 +17,7 @@ var consumer = await jetStream.GetConsumerAsync("mystream", "my-pull-consumer");
 
 Console.WriteLine("Ready to process messages");
 
-await foreach (var message in consumer.ConsumeAsync<Request<string>>())
+await foreach (var message in consumer.ConsumeAsync<Request<JsonNode>>())
 {
     Console.WriteLine("processing message");
     var splitSubject = ExtractHttpMethod(message);
@@ -28,13 +29,25 @@ await foreach (var message in consumer.ConsumeAsync<Request<string>>())
     await message.AckAsync();
 }
 
-void HandleRequest<T>((string httpMethod, string pathPart) splitSubject, NatsJSMsg<Request<T>> message)
+void HandleRequest((string httpMethod, string pathPart) splitSubject, NatsJSMsg<Request<JsonNode>> message)
 {
     Console.WriteLine($"httpMethod: {splitSubject.httpMethod} -- pathPart: {splitSubject.pathPart}");
     switch (splitSubject)
     {
         case ("get", "users"):
             _ = handleGetUsersAsync(message);
+            break;
+        case ("post", "users"):
+            Console.WriteLine($"Received request body: {message.Data.Body}");
+            var body = message.Data.Body.Deserialize<User>();
+            var request = new Request<User>
+            {
+                Headers = message.Data.Headers,
+                OriginReplyTo = message.Data.OriginReplyTo,
+                Body = body
+            };
+            Console.WriteLine($"Post request body username: {request.Body.Username}");
+            _ = handlePostUsersAsync(request);
             break;
     };
 
@@ -46,9 +59,19 @@ async Task handleGetUsersAsync<T>(NatsJSMsg<Request<T>> message)
     {
         StatusCode = 200,
         Body = [
-            new User { Username = "katz", Id = 27 },
-            new User { Username = "dogs are here", Id = 3 }
+            new User { Username = "lionel57", Id = 27 },
+            new User { Username = "catmaster", Id = 3 }
         ],
+        Headers = new Dictionary<string, string>()
+    });
+}
+
+async Task handlePostUsersAsync(Request<User> request)
+{
+    await client.PublishAsync(request.OriginReplyTo, new Response<string>
+    {
+        StatusCode = 201,
+        Body = string.Empty,
         Headers = new Dictionary<string, string>()
     });
 }
