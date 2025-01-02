@@ -36,5 +36,6 @@ load_config() {
 
     export docker_registry="$(echo "$config" | yq '.docker_registry')"
     export docker_registry_name="$(echo "$config" | yq '.docker_registry_name')"
+    export RATING_SERVICE_URL_BASE="$(echo "$config" | yq '.RATING_SERVICE_URL_BASE')"
     export http_to_nats_build_directory="$(echo "$config" | yq '.http_to_nats_build_directory')"
 }

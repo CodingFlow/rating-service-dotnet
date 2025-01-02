@@ -17,6 +17,7 @@ alias deploy-gateway='deploy_gateway'
 alias deploy-http-to-nats-proxy='deploy_http_to_nats_proxy'
 alias deploy-nack='kubectl apply -f ./deployment/nack.yaml'
 alias deploy-service='deploy_service'
+alias deploy-frontend='deploy_frontend'
 
 alias port-forward-gateway='kubectl port-forward deployment/gloo-proxy-http -n gloo-system 8080:8080'
 
@@ -42,13 +43,18 @@ deploy_service() {
     apply_rollout rating-service ./deployment/app ./deployment/app-values.yaml rating-service-deployment
 }
 
+deploy_frontend() {
+    build_push_docker_image $docker_registry frontend https://github.com/CodingFlow/rating-app.git#main &&
+    apply_rollout frontend ./deployment/frontend ./deployment/frontend-values.yaml frontend-deployment
+}
+
 apply_rollout() {
     local name=$1
     local deploy_file=$2
     local values_file=$3
     local deployment_name=$4
 
-    local merged_values="$(yq '.docker_registry = strenv(docker_registry_name)' "$values_file")"
+    local merged_values="$(yq '.docker_registry = strenv(docker_registry_name) | .RATING_SERVICE_URL_BASE = strenv(RATING_SERVICE_URL_BASE)' "$values_file")"
 
     echo values are:
     echo "$merged_values"

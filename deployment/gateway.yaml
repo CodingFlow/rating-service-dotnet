@@ -36,6 +36,18 @@ spec:
       backendRefs:
         - name: http-to-nats-proxy-service
           port: 8080
+    - matches:
+        - path:
+            value: "/ui"
+      # filters:
+      #   - type: ExtensionRef
+      #     extensionRef:
+      #       group: gateway.solo.io
+      #       kind: RouteOption
+      #       name: rewrite-ui
+      backendRefs:
+        - name: frontend-service
+          port: 8080
 
 ---
 apiVersion: gateway.solo.io/v1
@@ -48,4 +60,17 @@ spec:
     regexRewrite:
       pattern:
         regex: "/api"
+      substitution: ""
+
+---
+apiVersion: gateway.solo.io/v1
+kind: RouteOption
+metadata:
+  name: rewrite-ui
+  namespace: default
+spec:
+  options:
+    regexRewrite:
+      pattern:
+        regex: "/ui"
       substitution: ""
