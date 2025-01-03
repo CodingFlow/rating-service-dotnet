@@ -7,6 +7,9 @@ for enterprise-grade applications.
 
 The frontend repository lives here: https://github.com/CodingFlow/rating-app
 
+The http-to-nats proxy lives here:
+https://github.com/CodingFlow/http-to-nats-proxy
+
 Tools and frameworks used by backend and infrastructure:
 
 - [Azure AKS](https://azure.microsoft.com/en-us/products/kubernetes-service) -
