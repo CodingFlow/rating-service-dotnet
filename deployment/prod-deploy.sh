@@ -28,7 +28,11 @@ load_config() {
         local config="$(yq -n 'load("./deployment/prod-config.yaml")')"
 
     elif [ "$environment" = "dev" ]; then
-        local config="$(yq -n 'load("./deployment/prod-config.yaml") * load("./deployment/dev-config.yaml") * load("./deployment/local-config.yaml")')"
+        if [ -f "./deployment/local-config.yaml" ]; then
+            local config="$(yq -n 'load("./deployment/prod-config.yaml") * load("./deployment/dev-config.yaml") * load("./deployment/local-config.yaml")')"
+        else
+            local config="$(yq -n 'load("./deployment/prod-config.yaml") * load("./deployment/dev-config.yaml")')"
+        fi
     else
         echo "incorrect value for argument. Pass in either 'prod' or 'dev'."
         exit 1
