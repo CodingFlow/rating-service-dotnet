@@ -65,7 +65,7 @@ internal class Main(IGetUsersHandler getUsersHandler, IPostUsersHandler postUser
                 Console.WriteLine($"Post request body username: {request.Body.Username}");
                 var responseBodyPost = postUsersHandler.HandlePostUsersAsync(requestBody);
 
-                await client.PublishAsync(request.OriginReplyTo, new Response<string>
+                await client.PublishAsync(message.Data.OriginReplyTo, new Response<string>
                 {
                     StatusCode = 201,
                     Body = responseBodyPost,
