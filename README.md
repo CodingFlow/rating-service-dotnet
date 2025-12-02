@@ -111,6 +111,9 @@ project:
 devbox shell
 ```
 
+> [!NOTE]
+> if you encounter an error with docker, "Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?", Then the workaround is to, unfortunately, install Docker on your machine (or in WSL if on Windows). A [GitHub issue](https://github.com/jetify-com/devbox/issues/2485) has been created with DevBox, but no solutions or workarounds have been proposed.
+
 Scripts for creating a local Kubernetes cluster using k3d and to deploy various
 components to the cluster are available as shell aliases for convenience:
 
