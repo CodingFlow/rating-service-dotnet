@@ -1,8 +1,8 @@
-﻿using NATS.Client.JetStream;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+using NATS.Client.JetStream;
 using NATS.Net;
 using RatingService;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 
 Console.WriteLine($"Beginning program");
 
@@ -17,25 +17,27 @@ var consumer = await jetStream.GetConsumerAsync("mystream", "my-pull-consumer");
 
 Console.WriteLine("Ready to process messages");
 
-await foreach (var message in consumer.ConsumeAsync<Request<JsonNode>>())
+var messages = consumer.ConsumeAsync<Request<JsonNode>>();
+
+await Parallel.ForEachAsync(messages, async (message, cancellationToken) =>
 {
     Console.WriteLine("processing message");
     var splitSubject = ExtractHttpMethod(message);
 
     Console.WriteLine($"Data: {JsonSerializer.Serialize(message.Data)}");
 
-    HandleRequest(splitSubject, message);
+    HandleRequest(splitSubject, message, cancellationToken);
 
     await message.AckAsync();
-}
+});
 
-void HandleRequest((string httpMethod, string pathPart) splitSubject, NatsJSMsg<Request<JsonNode>> message)
+void HandleRequest((string httpMethod, string pathPart) splitSubject, NatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
 {
     Console.WriteLine($"httpMethod: {splitSubject.httpMethod} -- pathPart: {splitSubject.pathPart}");
     switch (splitSubject)
     {
         case ("get", "users"):
-            _ = handleGetUsersAsync(message);
+            _ = handleGetUsersAsync(message, cancellationToken);
             break;
         case ("post", "users"):
             Console.WriteLine($"Received request body: {message.Data.Body}");
@@ -47,13 +49,13 @@ void HandleRequest((string httpMethod, string pathPart) splitSubject, NatsJSMsg<
                 Body = body
             };
             Console.WriteLine($"Post request body username: {request.Body.Username}");
-            _ = handlePostUsersAsync(request);
+            _ = handlePostUsersAsync(request, cancellationToken);
             break;
     };
 
 }
 
-async Task handleGetUsersAsync<T>(NatsJSMsg<Request<T>> message)
+async Task handleGetUsersAsync<T>(NatsJSMsg<Request<T>> message, CancellationToken cancellationToken)
 {
     await client.PublishAsync(message.Data.OriginReplyTo, new Response<User[]>
     {
@@ -63,17 +65,19 @@ async Task handleGetUsersAsync<T>(NatsJSMsg<Request<T>> message)
             new User { Username = "catmaster", Id = 3 }
         ],
         Headers = new Dictionary<string, string>()
-    });
+    }, 
+    cancellationToken: cancellationToken);
 }
 
-async Task handlePostUsersAsync(Request<User> request)
+async Task handlePostUsersAsync(Request<User> request, CancellationToken cancellationToken)
 {
     await client.PublishAsync(request.OriginReplyTo, new Response<string>
     {
         StatusCode = 201,
         Body = string.Empty,
         Headers = new Dictionary<string, string>()
-    });
+    },
+    cancellationToken: cancellationToken);
 }
 
 static (string httpMethod, string pathPart) ExtractHttpMethod<T>(NatsJSMsg<Request<T>> message)
