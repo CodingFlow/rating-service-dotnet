@@ -3,7 +3,7 @@
 internal class GetUsersHandler : IGetUsersHandler
 {
 
-    public User[] HandleGetUsers()
+    public User[] Handle()
     {
         return [
             new User { Username = "lionel57", Id = 27 },

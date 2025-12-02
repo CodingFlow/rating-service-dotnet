@@ -1,6 +1,5 @@
 ﻿namespace RatingService.Handlers;
 
-internal interface IGetUsersHandler
+internal interface IGetUsersHandler : IGetHandler<User[]>
 {
-    User[] HandleGetUsers();
 }
