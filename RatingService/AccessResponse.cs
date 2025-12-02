@@ -2,11 +2,11 @@
 
 public class AccessResponse
 {
-    public Result result { get; set; }
+    public required Result result { get; set; }
 }
 
 public class Result
 {
     public bool get { get; set; }
-    public string call { get; set; }
+    public required string call { get; set; }
 }
