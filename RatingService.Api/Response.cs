@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace RatingService;
+namespace RatingService.Api;
 
 public struct Response<T>
 {

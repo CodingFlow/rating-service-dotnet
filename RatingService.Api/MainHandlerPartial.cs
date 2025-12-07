@@ -1,7 +1,8 @@
 ﻿using System.Text.Json.Nodes;
 using NATS.Client.JetStream;
 using NATS.Net;
-using RatingService.Handlers;
+using RatingService.Api;
+using RatingService.Application.Handlers;
 
 namespace RatingService;
 

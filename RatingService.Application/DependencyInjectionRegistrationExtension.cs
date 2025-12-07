@@ -1,14 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using RatingService.Handlers;
+using RatingService.Application.Handlers;
 
-namespace RatingService;
+namespace RatingService.Application;
 
-internal static class DependencyInjectionRegistrationExtension
+public static class DependencyInjectionRegistrationExtension
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddTransient<IMain, Main>();
-        services.AddTransient<IMainHandler, MainHandler>();
         services.AddTransient<IGetUsersHandler, GetUsersHandler>();
         services.AddTransient<IPostUsersHandler, PostUsersHandler>();
 

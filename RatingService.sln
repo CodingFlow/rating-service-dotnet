@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.0.11222.15
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RatingService", "RatingService\RatingService.csproj", "{1CC703F2-22E0-4865-BF06-4036008CDA9B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RatingService.Api", "RatingService.Api\RatingService.Api.csproj", "{1CC703F2-22E0-4865-BF06-4036008CDA9B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{4EABD424-8D4D-4B88-9EED-768C02E4F3A2}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,6 +15,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncApiBindingsGenerator.UnitTests", "AsyncApiBindingsGenerator.UnitTests\AsyncApiBindingsGenerator.UnitTests.csproj", "{0EFD5397-3174-BC1B-10D6-AC9760FA6D5B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLibrary", "TestLibrary\TestLibrary.csproj", "{9FB25056-3E60-433F-9A04-397B5F03C1DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RatingService.Application", "RatingService.Application\RatingService.Application.csproj", "{52AC27A6-40F9-4127-B840-6EF0F1D89350}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{9FB25056-3E60-433F-9A04-397B5F03C1DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FB25056-3E60-433F-9A04-397B5F03C1DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FB25056-3E60-433F-9A04-397B5F03C1DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52AC27A6-40F9-4127-B840-6EF0F1D89350}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52AC27A6-40F9-4127-B840-6EF0F1D89350}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52AC27A6-40F9-4127-B840-6EF0F1D89350}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52AC27A6-40F9-4127-B840-6EF0F1D89350}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

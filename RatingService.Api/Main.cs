@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 using NATS.Client.JetStream;
 using NATS.Net;
 
-namespace RatingService;
+namespace RatingService.Api;
 
 internal class Main(IMainHandler mainHandler) : IMain
 {

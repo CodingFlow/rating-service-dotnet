@@ -20,7 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\AsyncApiBindingsGenerator\AsyncApiBindingsGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+	  <ProjectReference Include="..\RatingService.Application\RatingService.Application.csproj" />
 	</ItemGroup>
 
 </Project>

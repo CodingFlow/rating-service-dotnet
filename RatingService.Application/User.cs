@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace RatingService;
+namespace RatingService.Application;
 
 public struct User
 {

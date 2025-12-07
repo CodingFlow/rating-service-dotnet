@@ -1,13 +1,12 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
-using AsyncApiBindingsGenerator;
 using NATS.Client.JetStream;
 using NATS.Net;
-using RatingService.Handlers;
+using RatingService.Api;
+using RatingService.Application.Handlers;
 
 namespace RatingService;
 
-[AsyncApiBindingsMain]
 internal partial class MainHandler : IMainHandler
 {
     public async Task HandleRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, NatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)

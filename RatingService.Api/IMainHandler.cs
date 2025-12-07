@@ -2,7 +2,7 @@
 using NATS.Client.JetStream;
 using NATS.Net;
 
-namespace RatingService;
+namespace RatingService.Api;
 
 internal interface IMainHandler
 {

@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RatingService;
+using RatingService.Api;
 
 Console.WriteLine($"Beginning program");
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services.AddApplicationServices();
+DependenciesRegistration.RegisterDependencies(builder.Services);
 
 using IHost host = builder.Build();
 
@@ -18,3 +18,4 @@ var main = provider.GetRequiredService<IMain>();
 _ = main.Run();
 
 await host.RunAsync();
+

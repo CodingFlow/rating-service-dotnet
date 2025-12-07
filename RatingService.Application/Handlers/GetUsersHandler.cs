@@ -1,4 +1,4 @@
-﻿namespace RatingService.Handlers;
+﻿namespace RatingService.Application.Handlers;
 
 internal class GetUsersHandler : IGetUsersHandler
 {
