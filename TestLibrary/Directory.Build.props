@@ -1,0 +1,7 @@
+<Project>
+
+    <ItemGroup>
+		<InternalsVisibleTo Include="AsyncApiBindingsGenerator.UnitTests" />
+    </ItemGroup>
+
+</Project>

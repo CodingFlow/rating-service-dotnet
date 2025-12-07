@@ -1,0 +1,97 @@
+﻿asyncapi: 3.0.0
+info:
+  title: Ratings API
+  version: 1.0.0
+  description: |-
+    The Ratings API provides information on service ratings from users.
+
+channels:
+  getUsers:
+    address: 'get.users'
+    messages:
+      users:
+        $ref: '#/components/messages/getUsers'
+  postUsers:
+    address: 'post.users'
+    messages:
+      users:
+        $ref: '#/components/messages/postUsers'
+
+operations:
+  getUsers:
+    action: receive
+    channel:
+      $ref: '#/channels/getUsers'
+    messages:
+      - $ref: '#/channels/getUsers/messages/users'
+    reply:
+      address:
+        location: '$message.payload#/originReplyTo'
+      messages:
+        - $ref: '#/components/messages/getUsersReply'
+  postUsers:
+    action: receive
+    channel:
+      $ref: '#/channels/postUsers'
+    messages:
+      - $ref: '#/channels/postUsers/messages/users'
+    reply:
+      address:
+        location: '$message.payload#/originReplyTo'
+      messages:
+        - $ref: '#/components/messages/postUsersReply'
+
+components:
+  messages:
+    getUsers:
+      payload: 
+        $ref: '#/components/schemas/getUsersPayload'
+    getUsersReply:
+      payload:
+        $ref: '#/components/schemas/getUsersReplyPayload'
+    postUsers:
+      payload:
+        $ref: '#/components/schemas/postUsersPayload'
+    postUsersReply:
+      payload:
+        $ref: '#/components/schemas/postUsersReplyPayload'
+        
+  schemas:
+    getUsersPayload:
+      properties:
+        originReplyTo:
+          type: string
+        headers:
+          type: object
+    getUsersReplyPayload:
+      properties:
+        headers:
+          type: object
+        body:
+          type: array
+          items:
+            $ref: '#/components/schemas/user'
+        statusCode:
+          type: integer
+    postUsersPayload:
+      properties:
+        originReplyTo:
+          type: string
+        headers:
+          type: object
+        body:
+          type: array
+          items:
+            $ref: '#/components/schemas/user'
+    postUsersReplyPayload:
+      properties:
+        headers:
+          type: object
+        statusCode:
+          type: integer
+    user:
+      properties:
+        id:
+          type: integer
+        username:
+          type: string

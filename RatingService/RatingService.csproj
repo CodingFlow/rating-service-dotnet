@@ -15,4 +15,12 @@
     <PackageReference Include="NATS.Net" Version="2.6.11" />
   </ItemGroup>
 
+	<ItemGroup>
+		<AdditionalFiles Include="../asyncapi.yaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\AsyncApiBindingsGenerator\AsyncApiBindingsGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+	</ItemGroup>
+
 </Project>
