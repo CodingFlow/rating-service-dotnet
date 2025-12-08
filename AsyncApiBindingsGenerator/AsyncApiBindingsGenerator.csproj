@@ -31,7 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="ByteBard.AsyncAPI.NET.Readers" Version="2.1.1" />
+        <PackageReference Include="ByteBard.AsyncAPI.NET.Readers" Version="2.1.2-beta.12" />
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Nodes;
 using NATS.Client.JetStream;
 using NATS.Net;
-using RatingService.Api;
 using RatingService.Application.Handlers;
 
-namespace RatingService;
+namespace RatingService.Api;
 
 internal partial class MainHandler(IGetUsersHandler getUsersHandler, IPostUsersHandler postUsersHandler)
 {

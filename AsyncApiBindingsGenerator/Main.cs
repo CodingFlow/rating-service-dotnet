@@ -35,8 +35,7 @@ namespace AsyncApiBindingsGenerator
 
             var apiSpecsWithMainHandler = apiSpecs.Combine(mainHandler);
 
-            //context.RegisterSourceOutput(apiSpecsWithMainHandler, Execute);
-            context.RegisterSourceOutput(apiSpecs, ExecuteTest);
+            context.RegisterSourceOutput(apiSpecsWithMainHandler, Execute);
         }
 
         private bool IsSyntaxTargetForGeneration(SyntaxNode node, CancellationToken token)
@@ -54,11 +53,6 @@ namespace AsyncApiBindingsGenerator
             var (classSource, className) = OutputGenerator.GenerateSpecOutputs(info.asyncApiDocument, symbol);
 
             context.AddSource($"{className}.generated.cs", SourceText.From(classSource, Encoding.UTF8, SourceHashAlgorithm.Sha256));
-        }
-
-        private static void ExecuteTest(SourceProductionContext context, AsyncApiDocument apiDoc)
-        {
-            var a = apiDoc;
         }
     }
 }

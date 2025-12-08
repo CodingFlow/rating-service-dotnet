@@ -2,7 +2,7 @@ using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Text;
 using System.Reflection;
 using System.Text;
-using TestLibrary;
+using TestLibrary.Application.Handlers;
 using VerifyCS = AsyncApiBindingsGenerator.UnitTests.CSharpSourceGeneratorVerifier<AsyncApiBindingsGenerator.Main>;
 
 namespace AsyncApiBindingsGenerator.UnitTests;

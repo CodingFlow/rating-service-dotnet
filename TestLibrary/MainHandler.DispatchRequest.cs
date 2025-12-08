@@ -4,11 +4,22 @@
 using System.Text.Json.Nodes;
 using NATS.Client.JetStream;
 using NATS.Net;
-using TestLibrary.Handlers;
+using TestLibrary.Application.Handlers;
 
-namespace TestLibrary;
+namespace TestLibrary.Application.Handlers;
 
-internal partial class MainHandler
+internal partial class MainHandler(IGetUsersHandler getUsersHandler, IPostUsersHandler postUsersHandler)
 {
-    
+    private async Task DispatchRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, NatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
+    {
+        switch (splitSubject)
+        {
+            case ("get", "users"):
+                await HandleGet(client, message, getUsersHandler, cancellationToken);
+                break;
+            case ("post", "users"):
+                await HandlePost(client, message, postUsersHandler, cancellationToken);
+                break;
+        }
+    }
 }
