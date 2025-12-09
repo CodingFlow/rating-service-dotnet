@@ -1,19 +1,20 @@
-﻿using ByteBard.AsyncAPI.Models;
+﻿using System;
+using System.Collections.Immutable;
+using System.Text;
+using System.Threading;
+using ByteBard.AsyncAPI.Models;
 using ByteBard.AsyncAPI.Readers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using System;
-using System.Collections.Immutable;
-using System.Text;
-using System.Threading;
 
 namespace AsyncApiBindingsGenerator
 {
     [Generator]
     public class Main : IIncrementalGenerator
     {
-        public void Initialize(IncrementalGeneratorInitializationContext context) {
+        public void Initialize(IncrementalGeneratorInitializationContext context)
+        {
             var texts = context.AdditionalTextsProvider
                 .Where(text => text.Path.EndsWith("asyncapi.yaml"))
                 .Select((text, cancellationToken) => text.GetText(cancellationToken));
@@ -48,7 +49,8 @@ namespace AsyncApiBindingsGenerator
             return context.TargetSymbol as INamedTypeSymbol;
         }
 
-        private static void Execute(SourceProductionContext context, (AsyncApiDocument asyncApiDocument, ImmutableArray<INamedTypeSymbol> symbols) info) {
+        private static void Execute(SourceProductionContext context, (AsyncApiDocument asyncApiDocument, ImmutableArray<INamedTypeSymbol> symbols) info)
+        {
             var symbol = info.symbols[0];
             var (classSource, className) = OutputGenerator.GenerateSpecOutputs(info.asyncApiDocument, symbol);
 

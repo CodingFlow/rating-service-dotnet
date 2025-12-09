@@ -1,14 +1,15 @@
-﻿using ByteBard.AsyncAPI.Models;
-using Microsoft.CodeAnalysis;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ByteBard.AsyncAPI.Models;
+using Microsoft.CodeAnalysis;
 
 namespace AsyncApiBindingsGenerator
 {
     internal static class OutputGenerator
     {
-        public static (string source, string className) GenerateSpecOutputs(AsyncApiDocument spec, INamedTypeSymbol mainClassSymbol) {
+        public static (string source, string className) GenerateSpecOutputs(AsyncApiDocument spec, INamedTypeSymbol mainClassSymbol)
+        {
             var @namespace = mainClassSymbol.ContainingNamespace.ToDisplayString();
             var serviceNamespacePart = @namespace.Split('.').First();
             var channels = spec.Channels;

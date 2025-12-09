@@ -1,7 +1,7 @@
-using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Text;
 using System.Reflection;
 using System.Text;
+using Microsoft.CodeAnalysis.Testing;
+using Microsoft.CodeAnalysis.Text;
 using TestLibrary.Application.Handlers;
 using VerifyCS = AsyncApiBindingsGenerator.UnitTests.CSharpSourceGeneratorVerifier<AsyncApiBindingsGenerator.Main>;
 
@@ -12,12 +12,14 @@ public class Tests
     private Assembly implementationAssembly;
 
     [SetUp]
-    public void Setup() {
+    public void Setup()
+    {
         implementationAssembly = GetAssembly("AsyncApiBindingsGenerator");
     }
 
     [Test]
-    public async Task OneInterface() {
+    public async Task OneInterface()
+    {
         var source = await ReadCSharpFile<MainHandler>(true);
         var generatedClass = await ReadCSharpFileByName(true, "MainHandler.DispatchRequest");
 
@@ -48,7 +50,8 @@ public class Tests
         }.RunAsync();
     }
 
-    private static Assembly GetAssembly(string name) {
+    private static Assembly GetAssembly(string name)
+    {
         var implementationAssemblyName = Assembly.GetExecutingAssembly().GetReferencedAssemblies().First(a => a.FullName.Contains(name));
         return Assembly.Load(implementationAssemblyName);
     }
@@ -77,11 +80,13 @@ public class Tests
         return await fileReader.ReadToEndAsync();
     }
 
-    private static DirectoryInfo? GetCurrentDirectory() {
+    private static DirectoryInfo? GetCurrentDirectory()
+    {
         return Directory.GetParent(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName);
     }
 
-    private static DirectoryInfo GetTestLibraryDirectory(DirectoryInfo currentDirectory) {
+    private static DirectoryInfo GetTestLibraryDirectory(DirectoryInfo currentDirectory)
+    {
         return currentDirectory.Parent.GetDirectories("TestLibrary").First();
     }
 }

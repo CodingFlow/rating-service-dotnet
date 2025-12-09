@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RatingService.Api", "Rating
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{4EABD424-8D4D-4B88-9EED-768C02E4F3A2}"
 	ProjectSection(SolutionItems) = preProject
-		asyncapi.yaml = asyncapi.yaml
+		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncApiBindingsGenerator", "AsyncApiBindingsGenerator\AsyncApiBindingsGenerator.csproj", "{201CA75F-E58E-B45C-BDBA-A974DA09BDB7}"
