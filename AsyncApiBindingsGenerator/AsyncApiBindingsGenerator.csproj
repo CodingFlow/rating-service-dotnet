@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
@@ -6,7 +6,7 @@
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <Title>Async Api Bindings Generator</Title>
         <PackageProjectUrl></PackageProjectUrl>
-        <PackageReadmeFile></PackageReadmeFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl></RepositoryUrl>
         <PackageTags></PackageTags>
         <PackageLicenseExpression></PackageLicenseExpression>
@@ -31,7 +31,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="ByteBard.AsyncAPI.NET.Readers" Version="2.1.2-beta.12" />
+        <PackageReference Include="ByteBard.AsyncAPI.NET" Version="2.1.2-beta.12" GeneratePathProperty="true" PrivateAssets="all" />
+        <PackageReference Include="ByteBard.AsyncAPI.NET.Readers" Version="2.1.2-beta.12" GeneratePathProperty="true" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -42,6 +43,29 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="YamlDotNet" Version="13.0.1" GeneratePathProperty="true" PrivateAssets="all" />
     </ItemGroup>
+
+    <ItemGroup>
+      <None Update="README.md">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>
+
+	<PropertyGroup>
+		<GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+	</PropertyGroup>
+
+	<Target Name="GetDependencyTargetPaths">
+		<ItemGroup>
+			<None Include="$(PKGYamlDotNet)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+			<None Include="$(PKGByteBard_AsyncAPI_NET)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+			<None Include="$(PKGByteBard_AsyncAPI_NET_Readers)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+			<TargetPathWithTargetPlatformMoniker Include="$(PKGYamlDotNet)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
+			<TargetPathWithTargetPlatformMoniker Include="$(PKGByteBard_AsyncAPI_NET)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
+			<TargetPathWithTargetPlatformMoniker Include="$(PKGByteBard_AsyncAPI_NET_Readers)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" /> 			
+		</ItemGroup>
+	</Target>
 
 </Project>

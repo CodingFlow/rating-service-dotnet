@@ -16,12 +16,12 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<AdditionalFiles Include="../asyncapi.yaml" />
+		<ProjectReference Include="..\AsyncApiBindingsGenerator\AsyncApiBindingsGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+	  <ProjectReference Include="..\RatingService.Application\RatingService.Application.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\AsyncApiBindingsGenerator\AsyncApiBindingsGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
-	  <ProjectReference Include="..\RatingService.Application\RatingService.Application.csproj" />
+		<AdditionalFiles Include="asyncapi.yaml" />
 	</ItemGroup>
 
 </Project>
