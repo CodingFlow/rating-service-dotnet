@@ -1,4 +1,6 @@
-﻿namespace RatingService.Application.Handlers;
+﻿using Service.Application.Common.Handlers;
+
+namespace RatingService.Application.Handlers;
 
 public interface IGetUsersHandler : IGetHandler<User[]>
 {

@@ -1,21 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using RatingService.Api;
+﻿using RatingService.Api;
+using Service.Api.Common;
 
-Console.WriteLine($"Beginning program");
+Console.WriteLine("Starting Rating Service API...");
 
-var builder = Host.CreateApplicationBuilder(args);
-
-DependenciesRegistration.RegisterDependencies(builder.Services);
-
-using IHost host = builder.Build();
-
-using var serviceScope = host.Services.CreateScope();
-var provider = serviceScope.ServiceProvider;
-
-var main = provider.GetRequiredService<IMain>();
-
-_ = main.Run();
-
-await host.RunAsync();
-
+await Starter.Start<RequestDispatcher>(args, DependenciesRegistration.RegisterDependencies);

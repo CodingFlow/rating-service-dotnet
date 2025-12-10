@@ -1,4 +1,4 @@
-﻿namespace TestLibrary.Application.Handlers;
+﻿namespace Service.Application.Common.Handlers;
 
 public interface IPostHandler<TRequest, TResponse>
 {

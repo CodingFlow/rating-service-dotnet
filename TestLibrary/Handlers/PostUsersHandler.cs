@@ -1,4 +1,4 @@
-﻿namespace TestLibrary.Application.Handlers;
+﻿namespace TestProject.Application.Handlers;
 
 internal class PostUsersHandler : IPostUsersHandler
 {

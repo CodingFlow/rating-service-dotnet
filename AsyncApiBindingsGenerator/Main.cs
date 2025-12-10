@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Immutable;
 using System.Text;
-using System.Threading;
 using ByteBard.AsyncAPI.Models;
 using ByteBard.AsyncAPI.Readers;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 namespace AsyncApiBindingsGenerator
@@ -27,32 +24,16 @@ namespace AsyncApiBindingsGenerator
                 return asyncApiDocument;
             });
 
-            var mainHandler = context.SyntaxProvider.ForAttributeWithMetadataName(
-                $"AsyncApiBindingsGenerator.{nameof(AsyncApiBindingsMainAttribute)}",
-                predicate: IsSyntaxTargetForGeneration,
-                transform: GetSemanticTargetForGeneration
-            )
-                .Collect();
+            var assemblyNameProvider = context.CompilationProvider.Select((compilation, _ ) => compilation.Assembly.Name);
 
-            var apiSpecsWithMainHandler = apiSpecs.Combine(mainHandler);
+            var apiSpecsWithAssemblyNames = apiSpecs.Combine(assemblyNameProvider);
 
-            context.RegisterSourceOutput(apiSpecsWithMainHandler, Execute);
+            context.RegisterSourceOutput(apiSpecsWithAssemblyNames, Execute);
         }
 
-        private bool IsSyntaxTargetForGeneration(SyntaxNode node, CancellationToken token)
+        private static void Execute(SourceProductionContext context, (AsyncApiDocument asyncApiDocument, string assemblyName) info)
         {
-            return node is ClassDeclarationSyntax;
-        }
-
-        private INamedTypeSymbol GetSemanticTargetForGeneration(GeneratorAttributeSyntaxContext context, CancellationToken token)
-        {
-            return context.TargetSymbol as INamedTypeSymbol;
-        }
-
-        private static void Execute(SourceProductionContext context, (AsyncApiDocument asyncApiDocument, ImmutableArray<INamedTypeSymbol> symbols) info)
-        {
-            var symbol = info.symbols[0];
-            var (classSource, className) = OutputGenerator.GenerateSpecOutputs(info.asyncApiDocument, symbol);
+            var (classSource, className) = OutputGenerator.GenerateSpecOutputs(info.asyncApiDocument, info.assemblyName);
 
             context.AddSource($"{className}.generated.cs", SourceText.From(classSource, Encoding.UTF8, SourceHashAlgorithm.Sha256));
         }

@@ -1,4 +1,4 @@
-﻿namespace RatingService.Api;
+﻿namespace Service.Api.Common;
 
 internal interface IMain
 {

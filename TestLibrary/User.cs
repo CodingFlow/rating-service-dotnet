@@ -1,4 +1,4 @@
-﻿namespace TestLibrary;
+﻿namespace TestProject;
 
 public struct User
 {

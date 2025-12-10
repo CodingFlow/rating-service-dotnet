@@ -10,6 +10,8 @@ COPY RatingService.Application/*.csproj ./RatingService.Application/
 COPY AsyncApiBindingsGenerator/*.csproj ./AsyncApiBindingsGenerator/
 COPY AsyncApiBindingsGenerator.UnitTests/*.csproj ./AsyncApiBindingsGenerator.UnitTests/
 COPY TestLibrary/*.csproj ./TestLibrary/
+COPY Service.Api.Common/*.csproj ./Service.Api.Common/
+COPY Service.Application.Common/*.csproj ./Service.Application.Common/
 RUN dotnet restore
 
 # copy everything else and build app
@@ -18,6 +20,8 @@ COPY RatingService.Application/. ./RatingService.Application/
 COPY AsyncApiBindingsGenerator/. ./AsyncApiBindingsGenerator/
 COPY AsyncApiBindingsGenerator.UnitTests/. ./AsyncApiBindingsGenerator.UnitTests/
 COPY TestLibrary/. ./TestLibrary/
+COPY Service.Api.Common/. ./Service.Api.Common/
+COPY Service.Application.Common/. ./Service.Application.Common/
 WORKDIR /source/RatingService.Api
 RUN dotnet publish -c release -o /app --no-restore
 

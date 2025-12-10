@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace RatingService.Api;
+namespace Service.Api.Common;
 
 internal static class DependencyInjectionRegistrationExtension
 {

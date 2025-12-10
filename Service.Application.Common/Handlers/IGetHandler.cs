@@ -1,4 +1,4 @@
-﻿namespace RatingService.Application.Handlers;
+﻿namespace Service.Application.Common.Handlers;
 
 public interface IGetHandler<TResponse>
 {

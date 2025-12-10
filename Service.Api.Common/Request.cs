@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace RatingService.Api;
+namespace Service.Api.Common;
 
 public struct Request<T>
 {

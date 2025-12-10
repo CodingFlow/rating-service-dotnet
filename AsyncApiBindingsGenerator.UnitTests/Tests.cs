@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Text;
-using TestLibrary.Application.Handlers;
+using TestProject;
 using VerifyCS = AsyncApiBindingsGenerator.UnitTests.CSharpSourceGeneratorVerifier<AsyncApiBindingsGenerator.Main>;
 
 namespace AsyncApiBindingsGenerator.UnitTests;
@@ -18,10 +18,9 @@ public class Tests
     }
 
     [Test]
-    public async Task OneInterface()
+    public async Task SimpleGetPost()
     {
-        var source = await ReadCSharpFile<MainHandler>(true);
-        var generatedClass = await ReadCSharpFileByName(true, "MainHandler.DispatchRequest");
+        var generatedClass = await ReadCSharpFile<RequestDispatcher>(true);
 
         const string asyncApiFilename = "asyncapi.yaml";
         var asyncapiYaml = await ReadFile(true, asyncApiFilename);
@@ -40,11 +39,12 @@ public class Tests
                 {
                     (asyncApiFilename, asyncapiYaml)
                 },
+                
 
-                Sources = { source },
+                Sources = {  },
                 GeneratedSources =
                 {
-                    (typeof(Main), "MainHandler.DispatchRequest.generated.cs", SourceText.From(generatedClass, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "RequestDispatcher.generated.cs", SourceText.From(generatedClass, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                 },
             },
         }.RunAsync();
