@@ -1,16 +1,22 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using Microsoft.Extensions.Options;
 using NATS.Client.JetStream;
 using NATS.Net;
 
 namespace Service.Api.Common;
 
-internal class Main(IMainHandler mainHandler) : IMain
+internal class Main(IMainHandler mainHandler, IOptions<NatsService> natsServiceOptions) : IMain
 {
+    private readonly NatsService natsServiceSettings = natsServiceOptions.Value;
+
     public async Task Run()
     {
-        var host = Environment.GetEnvironmentVariable("NATS_SERVICE_HOST");
-        var port = Environment.GetEnvironmentVariable("NATS_SERVICE_PORT");
+        var host = natsServiceSettings.ServiceHost;
+        var port = natsServiceSettings.Port;
+
+        Console.WriteLine($"~~ ~~ Connecting to NATS at {host}:{port}");
+
         var url = $"nats://{host}:{port}";
 
         var client = new NatsClient(url);

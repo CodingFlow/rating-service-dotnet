@@ -10,3 +10,5 @@ docker-compose.*.yml
 **/obj
 bin/
 obj/
+
+local-nuget-feed

@@ -14,6 +14,7 @@ public static class Starter
 
         DependenciesRegistration.RegisterDependencies(builder.Services);
         DependenciesRegistration.RegisterAsyncApiBindings<TAsyncApiBindingsClass>(builder.Services);
+        DependenciesRegistration.RegisterConfiguration(builder.Services, builder.Configuration);
         registerDependencies(builder.Services);
 
         using IHost host = builder.Build();

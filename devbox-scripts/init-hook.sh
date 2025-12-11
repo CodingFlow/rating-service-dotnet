@@ -26,13 +26,9 @@ alias create-local-nuget-packages='create_local_nuget_packages'
 load_config dev
 
 create_local_nuget_packages() {
-    dotnet publish ./Service.Api.Common/
-    dotnet publish ./Service.Application.Common/
-    dotnet publish ./AsyncApiBindingsGenerator/
-    mkdir -p ./local-nuget-feed/ &&
-    cp ./Service.Api.Common/Service.Api.Common/bin/release/*.nupkg -t ./local-nuget-feed/ &&
-    cp ./Service.Application.Common/Service.Application.Common/bin/release/*.nupkg -t ./local-nuget-feed/ &&
-    cp ./AsyncApiBindingsGenerator/AsyncApiBindingsGenerator/bin/release/*.nupkg -t ./local-nuget-feed/
+    dotnet pack -c release -o ./local-nuget-feed ./Service.Application.Common/
+    dotnet pack -c release -o ./local-nuget-feed ./Service.Api.Common/
+    dotnet pack -c release -o ./local-nuget-feed ./AsyncApiBindingsGenerator/
 }
 
 create_cluster() {
