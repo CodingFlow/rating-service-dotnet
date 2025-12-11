@@ -2,11 +2,11 @@
 
 namespace RatingService.Application;
 
-public struct User
+public readonly struct User
 {
     [JsonPropertyName("id")]
-    public int Id { get; set; }
+    public int Id { get; init; }
 
     [JsonPropertyName("username")]
-    public string Username { get; set; }
+    public string Username { get; init; }
 }
