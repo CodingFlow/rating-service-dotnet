@@ -16,7 +16,7 @@ RUN dotnet publish -c release -o ./local-nuget-feed ./AsyncApiBindingsGenerator/
 COPY local-nuget-feed/. ./local-nuget-feed/
 
 # copy csproj and restore as distinct layers
-COPY *.sln .
+COPY *.slnx .
 COPY RatingService.Api/*.csproj ./RatingService.Api/
 COPY RatingService.Application/*.csproj ./RatingService.Application/
 RUN dotnet restore
