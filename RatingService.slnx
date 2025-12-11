@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/SolutionItems/">
+    <File Path=".editorconfig" />
+    <File Path="nuget.config" />
+  </Folder>
+  <Project Path="RatingService.Api/RatingService.Api.csproj" />
+  <Project Path="RatingService.Application/RatingService.Application.csproj" />
+</Solution>
