@@ -21,7 +21,19 @@ alias deploy-frontend='deploy_frontend'
 
 alias port-forward-gateway='kubectl port-forward deployment/gloo-proxy-http -n gloo-system 8080:8080'
 
+alias create-local-nuget-packages='create_local_nuget_packages'
+
 load_config dev
+
+create_local_nuget_packages() {
+    dotnet publish ./Service.Api.Common/
+    dotnet publish ./Service.Application.Common/
+    dotnet publish ./AsyncApiBindingsGenerator/
+    mkdir -p ./local-nuget-feed/ &&
+    cp ./Service.Api.Common/Service.Api.Common/bin/release/*.nupkg -t ./local-nuget-feed/ &&
+    cp ./Service.Application.Common/Service.Application.Common/bin/release/*.nupkg -t ./local-nuget-feed/ &&
+    cp ./AsyncApiBindingsGenerator/AsyncApiBindingsGenerator/bin/release/*.nupkg -t ./local-nuget-feed/
+}
 
 create_cluster() {
     k3d cluster create $cluster_name --image rancher/k3s:v1.31.4-k3s1 --registry-create $cluster_name-registry:$docker_registry &&

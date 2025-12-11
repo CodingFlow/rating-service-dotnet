@@ -10,7 +10,8 @@
     "azure-cli@2.67",
     "kubelogin@0.1.6",
     "yq-go@4.44",
-    "k6@0.55.1"
+    "k6@0.55.1",
+    "dotnet-sdk_10@10.0"
   ],
   "shell": {
     "init_hook": [

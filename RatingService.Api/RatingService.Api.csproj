@@ -10,13 +10,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AsyncApiBindingsGenerator\AsyncApiBindingsGenerator.csproj" OutputItemType="Analyzer" />
         <ProjectReference Include="..\RatingService.Application\RatingService.Application.csproj" />
-        <ProjectReference Include="..\Service.Api.Common\Service.Api.Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <AdditionalFiles Include="asyncapi.yaml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AsyncApiBindingsGenerator" Version="1.0.0" />
+      <PackageReference Include="Service.Api.Common" Version="1.0.0" />
     </ItemGroup>
 
 </Project>

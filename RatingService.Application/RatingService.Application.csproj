@@ -8,10 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Service.Application.Common\Service.Application.Common.csproj" />
+        <PackageReference Include="Service.Application.Common" Version="1.0.0" />
     </ItemGroup>
 
 </Project>

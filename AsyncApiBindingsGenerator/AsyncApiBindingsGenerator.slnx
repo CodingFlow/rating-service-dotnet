@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="AsyncApiBindingsGenerator.UnitTests/AsyncApiBindingsGenerator.UnitTests.csproj" />
+  <Project Path="AsyncApiBindingsGenerator/AsyncApiBindingsGenerator.csproj" />
+  <Project Path="TestLibrary/TestLibrary.csproj" />
+</Solution>

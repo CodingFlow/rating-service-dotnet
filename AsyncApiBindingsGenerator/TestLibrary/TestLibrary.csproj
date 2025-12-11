@@ -8,11 +8,11 @@
 
     <ItemGroup>
         <PackageReference Include="NATS.Net" Version="2.6.11" />
+        <PackageReference Include="Service.Api.Common" Version="1.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AsyncApiBindingsGenerator\AsyncApiBindingsGenerator.csproj" />
-        <ProjectReference Include="..\Service.Api.Common\Service.Api.Common.csproj" />
+      <ProjectReference Include="..\AsyncApiBindingsGenerator\AsyncApiBindingsGenerator.csproj" />
     </ItemGroup>
 
 </Project>

@@ -27,7 +27,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AsyncApiBindingsGenerator\AsyncApiBindingsGenerator.csproj" />
         <ProjectReference Include="..\TestLibrary\TestLibrary.csproj" />
     </ItemGroup>
 
