@@ -2,3 +2,5 @@ docker_registry: ratingserviceclusterregistry.azurecr.io
 docker_registry_name: ratingserviceclusterregistry.azurecr.io
 RATING_SERVICE_URL_BASE: http://172.212.7.109:8080/api
 http_to_nats_build_directory: https://github.com/CodingFlow/http-to-nats-proxy.git#main
+rating_service_stream_name: mystream
+rating_service_consumer_name: my-pull-consumer

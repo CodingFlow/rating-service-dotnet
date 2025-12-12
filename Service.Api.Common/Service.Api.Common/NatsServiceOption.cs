@@ -1,0 +1,15 @@
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Configuration;
+
+namespace Service.Api.Common;
+
+internal record NatsServiceOption
+{
+    [Required]
+    [ConfigurationKeyName("NATS_SERVICE_HOST")]
+    public required string ServiceHost { get; init; }
+
+    [Required]
+    [ConfigurationKeyName("NATS_SERVICE_PORT")]
+    public required string Port { get; init; }
+}

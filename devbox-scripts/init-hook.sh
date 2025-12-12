@@ -15,7 +15,7 @@ alias stop-cluster='k3d cluster stop $cluster_name'
 
 alias deploy-gateway='deploy_gateway'
 alias deploy-http-to-nats-proxy='deploy_http_to_nats_proxy'
-alias deploy-nack='kubectl apply -f ./deployment/nack.yaml'
+alias deploy-nack='deploy_nack'
 alias deploy-service='deploy_service'
 alias deploy-frontend='deploy_frontend'
 
@@ -41,6 +41,12 @@ deploy_gateway() {
     kubectl apply -f ./deployment/gateway-dev.yaml
 }
 
+deploy_nack() {
+    # kubectl apply -f ./deployment/nack.yaml
+    helm upgrade --install rating-service-queue ./deployment/app-queue -f ./deployment/app-queue-values.yaml
+    apply_helm_package rating-service-queue ./deployment/app-queue ./deployment/app-queue-values.yaml rating-service-queue
+}
+
 deploy_http_to_nats_proxy() {
     build_push_docker_image $docker_registry http-to-nats-proxy $http_to_nats_build_directory &&
     apply_rollout http-to-nats-proxy ./deployment/http-to-nats-proxy ./deployment/http-to-nats-proxy-values.yaml http-to-nats-proxy-deployment
@@ -56,17 +62,25 @@ deploy_frontend() {
     apply_rollout frontend ./deployment/frontend ./deployment/frontend-values.yaml frontend-deployment
 }
 
+apply_helm_package() {
+    local name=$1
+    local deploy_file=$2
+    local values_file=$3
+
+    local merged_values="$(yq '.docker_registry = strenv(docker_registry_name) | .RATING_SERVICE_URL_BASE = strenv(RATING_SERVICE_URL_BASE) | .rating_service_stream_name = strenv(rating_service_stream_name) | .rating_service_consumer_name = strenv(rating_service_consumer_name)' "$values_file")"
+
+    echo values are:
+    echo "$merged_values"
+
+    echo "$merged_values" | helm upgrade --install $name $deploy_file -f -
+}
+
 apply_rollout() {
     local name=$1
     local deploy_file=$2
     local values_file=$3
     local deployment_name=$4
 
-    local merged_values="$(yq '.docker_registry = strenv(docker_registry_name) | .RATING_SERVICE_URL_BASE = strenv(RATING_SERVICE_URL_BASE)' "$values_file")"
-
-    echo values are:
-    echo "$merged_values"
-
-    echo "$merged_values" | helm upgrade --install $name $deploy_file -f - &&
+    apply_helm_package $name $deploy_file $values_file &&
     kubectl rollout restart deployment $deployment_name
 }

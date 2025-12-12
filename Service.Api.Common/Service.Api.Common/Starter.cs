@@ -24,7 +24,7 @@ public static class Starter
 
         var main = provider.GetRequiredService<IMain>();
 
-        _ = main.Run();
+        await main.Run();
 
         await host.RunAsync();
     }

@@ -6,9 +6,10 @@ using NATS.Net;
 
 namespace Service.Api.Common;
 
-internal class Main(IMainHandler mainHandler, IOptions<NatsService> natsServiceOptions) : IMain
+internal class Main(IMainHandler mainHandler, IOptions<NatsServiceOption> natsServiceOptions, IOptions<ServiceStreamConsumerOption> serviceStreamConsumerOptions) : IMain
 {
-    private readonly NatsService natsServiceSettings = natsServiceOptions.Value;
+    private readonly NatsServiceOption natsServiceSettings = natsServiceOptions.Value;
+    private readonly ServiceStreamConsumerOption serviceStreamConsumerSettings = serviceStreamConsumerOptions.Value;
 
     public async Task Run()
     {
@@ -22,7 +23,7 @@ internal class Main(IMainHandler mainHandler, IOptions<NatsService> natsServiceO
         var client = new NatsClient(url);
 
         var jetStream = client.CreateJetStreamContext();
-        var consumer = await jetStream.GetConsumerAsync("mystream", "my-pull-consumer");
+        var consumer = await jetStream.GetConsumerAsync(serviceStreamConsumerSettings.StreamName, serviceStreamConsumerSettings.ConsumerName);
 
         Console.WriteLine("Ready to process messages");
 
