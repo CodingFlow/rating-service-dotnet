@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using CodingFlow.OptionsBindingsGenerator;
 using Microsoft.Extensions.Configuration;
 
 namespace Service.Api.Common;
 
-internal record NatsServiceOption
+[OptionsBindings(true)]
+internal record NatsServiceOptions
 {
     [Required]
     [ConfigurationKeyName("NATS_SERVICE_HOST")]

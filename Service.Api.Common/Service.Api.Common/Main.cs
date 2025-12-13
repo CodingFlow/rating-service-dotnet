@@ -6,10 +6,10 @@ using NATS.Net;
 
 namespace Service.Api.Common;
 
-internal class Main(IMainHandler mainHandler, IOptions<NatsServiceOption> natsServiceOptions, IOptions<ServiceStreamConsumerOption> serviceStreamConsumerOptions) : IMain
+internal class Main(IMainHandler mainHandler, IOptions<NatsServiceOptions> natsServiceOptions, IOptions<ServiceStreamConsumerOptions> serviceStreamConsumerOptions) : IMain
 {
-    private readonly NatsServiceOption natsServiceSettings = natsServiceOptions.Value;
-    private readonly ServiceStreamConsumerOption serviceStreamConsumerSettings = serviceStreamConsumerOptions.Value;
+    private readonly NatsServiceOptions natsServiceSettings = natsServiceOptions.Value;
+    private readonly ServiceStreamConsumerOptions serviceStreamConsumerSettings = serviceStreamConsumerOptions.Value;
 
     public async Task Run()
     {

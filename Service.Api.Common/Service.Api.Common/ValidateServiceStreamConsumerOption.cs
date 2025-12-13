@@ -3,6 +3,6 @@
 namespace Service.Api.Common;
 
 [OptionsValidator]
-internal partial class ValidateServiceStreamConsumerOption : IValidateOptions<ServiceStreamConsumerOption>
+internal partial class ValidateServiceStreamConsumerOptions : IValidateOptions<ServiceStreamConsumerOptions>
 {
 }

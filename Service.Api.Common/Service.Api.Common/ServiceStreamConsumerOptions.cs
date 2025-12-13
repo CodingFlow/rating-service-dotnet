@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using CodingFlow.OptionsBindingsGenerator;
 using Microsoft.Extensions.Configuration;
 
 namespace Service.Api.Common;
 
-internal record ServiceStreamConsumerOption
+[OptionsBindings(true)]
+internal record ServiceStreamConsumerOptions
 {
     [Required]
     [ConfigurationKeyName("SERVICE_STREAM_NAME")]

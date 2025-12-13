@@ -9,6 +9,8 @@ COPY Service.Application.Common/. ./Service.Application.Common/
 COPY Service.Api.Common/. ./Service.Api.Common/
 COPY AsyncApiBindingsGenerator/. ./AsyncApiBindingsGenerator/
 
+RUN mkdir local-nuget-feed
+
 RUN dotnet pack -c release -o ./local-nuget-feed ./Service.Application.Common/
 RUN dotnet pack -c release -o ./local-nuget-feed ./Service.Api.Common/
 RUN dotnet pack -c release -o ./local-nuget-feed ./AsyncApiBindingsGenerator/

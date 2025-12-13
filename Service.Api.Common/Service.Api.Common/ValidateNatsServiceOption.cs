@@ -3,6 +3,6 @@
 namespace Service.Api.Common;
 
 [OptionsValidator]
-internal partial class ValidateNatsServiceOption : IValidateOptions<NatsServiceOption>
+internal partial class ValidateNatsServiceOptions : IValidateOptions<NatsServiceOptions>
 {
 }
