@@ -2,6 +2,6 @@
 
 namespace RatingService.Application.Handlers;
 
-public interface IPostUsersHandler : IPostHandler<User, string>
+public interface IPostUsersHandler : IPostHandler<User[], string>
 {
 }

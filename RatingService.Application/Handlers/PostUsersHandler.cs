@@ -3,9 +3,9 @@
 internal class PostUsersHandler : IPostUsersHandler
 {
 
-    public string Handle(User user)
+    public string Handle(User[] users)
     {
-        Console.WriteLine($"Post request body username: {user.Username}");
+        Console.WriteLine($"Post request body username: {users.First().Username}");
 
         return string.Empty;
     }
