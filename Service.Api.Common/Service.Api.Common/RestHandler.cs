@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization.Metadata;
 using NATS.Client.JetStream;
 using NATS.Net;
 using Service.Application.Common.Handlers;
@@ -8,10 +9,11 @@ namespace Service.Api.Common;
 
 internal class RestHandler : IRestHandler
 {
-    public async Task HandlePost<TRequest, TResponse>(NatsClient client, NatsJSMsg<Request<JsonNode>> message, IPostHandler<TRequest, TResponse> postHandler, CancellationToken cancellationToken)
+    public async Task HandlePost<TRequest, TResponse>(NatsClient client, NatsJSMsg<Request<JsonNode>> message, IPostHandler<TRequest, TResponse> postHandler, JsonTypeInfo<TRequest> requestJsonTypeInfo, CancellationToken cancellationToken)
     {
         Console.WriteLine($"Received request body: {message.Data.Body}");
-        var requestBody = message.Data.Body.Deserialize<TRequest>();
+
+        var requestBody = JsonSerializer.Deserialize(message.Data.Body, requestJsonTypeInfo);
         var responseBodyPost = postHandler.Handle(requestBody);
 
         await client.PublishAsync(message.Data.OriginReplyTo, new Response<TResponse>

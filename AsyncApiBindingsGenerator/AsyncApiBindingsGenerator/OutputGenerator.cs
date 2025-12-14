@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ByteBard.AsyncAPI.Models;
+using ByteBard.AsyncAPI.Models.Interfaces;
 using Microsoft.CodeAnalysis;
 
 namespace AsyncApiBindingsGenerator
@@ -13,26 +14,31 @@ namespace AsyncApiBindingsGenerator
             var @namespace = assemblyName;
             var serviceNamespacePart = @namespace.Split('.').First();
             var channels = spec.Channels;
-            var addresses = channels.Select(channel => channel.Value.Address);
-            var splitAddresses = addresses.Select(address =>
+            var addressMessages = channels.Select(channel => (channel.Value.Address, channel.Value.Messages.First().Value));
+            var splitAddressesMessages = addressMessages.Select(((string address, AsyncApiMessage message) addressMessage) =>
             {
-                var parts = address.Split('.');
-                return (parts.First(), parts.ElementAt(1));
+                var parts = addressMessage.address.Split('.');
+
+                var serialized = addressMessage.message.SerializeAsJson(ByteBard.AsyncAPI.AsyncApiVersion.AsyncApi3_0);
+                
+                return (parts.First(), parts.ElementAt(1), addressMessage.message);
             });
 
-            var formattedDependencies = splitAddresses.Select(((string restMethod, string pathPart) addressInfo) =>
+            var formattedDependencies = splitAddressesMessages.Select(((string restMethod, string pathPart, AsyncApiMessage message) addressInfo) =>
             {
                 var interfaceName = $"I{ToPascalCase(addressInfo.restMethod)}{ToPascalCase(addressInfo.pathPart)}Handler";
                 var variableName = $"{addressInfo.restMethod}{ToPascalCase(addressInfo.pathPart)}Handler";
                 return $"{interfaceName} {variableName}";
             });
 
-            var formattedCases = splitAddresses.Select(((string restMethod, string pathPart) addressInfo) =>
+            var formattedCases = splitAddressesMessages.Select(((string restMethod, string pathPart, AsyncApiMessage message) addressInfo) =>
             {
-                var variableName = $"{addressInfo.restMethod}{ToPascalCase(addressInfo.pathPart)}Handler";
                 var methodName = GetCaseMethodName(addressInfo.restMethod);
+                var variableName = $"{addressInfo.restMethod}{ToPascalCase(addressInfo.pathPart)}Handler";
+                var requestJsonInfo = GetFormattedRequestJsonInfo(addressInfo, spec);
+
                 return $@"            case (""{addressInfo.restMethod}"", ""{addressInfo.pathPart}""):
-                await restHandler.{methodName}(client, message, {variableName}, cancellationToken);
+                await restHandler.{methodName}(client, message, {variableName}{requestJsonInfo}, cancellationToken);
                 break;";
             });
 
@@ -62,6 +68,26 @@ internal class RequestDispatcher({string.Join(", ", formattedDependencies)}) : I
 ";
 
             return (source, "RequestDispatcher");
+        }
+
+        private static string GetFormattedRequestJsonInfo((string restMethod, string pathPart, AsyncApiMessage message) addressInfo, AsyncApiDocument spec)
+        {
+            return addressInfo.restMethod == "post"
+                ? GetRequestJsonInfo(addressInfo, spec)
+                : string.Empty;
+        }
+
+        private static string GetRequestJsonInfo((string restMethod, string pathPart, AsyncApiMessage message) addressInfo, AsyncApiDocument spec)
+        {
+            var MethodNamePart = $"{ToPascalCase(addressInfo.restMethod)}{ToPascalCase(addressInfo.pathPart)}Handler";
+            var channelMessageSchema = addressInfo.message.Payload.Schema.As<AsyncApiJsonSchema>();
+            var requestBodySchema = channelMessageSchema.Properties.First(p => p.Key == "body");
+            var requestBodyItemsSchema = requestBodySchema.Value.Items;
+            var schemas = spec.Components.Schemas;
+            var requestType = schemas.First(m => requestBodyItemsSchema.Equals(m.Value.Schema.As<AsyncApiJsonSchema>())).Key;
+            var formattedRequestType = $"{ToPascalCase(requestType)}Array";
+
+            return $", SourceGenerationContext{MethodNamePart}.Default.{formattedRequestType}";
         }
 
         private static string GetCaseMethodName(string restMethod)

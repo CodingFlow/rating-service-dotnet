@@ -19,7 +19,7 @@ internal class RequestDispatcher(IGetUsersHandler getUsersHandler, IPostUsersHan
                 await restHandler.HandleGet(client, message, getUsersHandler, cancellationToken);
                 break;
             case ("post", "users"):
-                await restHandler.HandlePost(client, message, postUsersHandler, cancellationToken);
+                await restHandler.HandlePost(client, message, postUsersHandler, SourceGenerationContextPostUsersHandler.Default.UserArray, cancellationToken);
                 break;
         }
     }

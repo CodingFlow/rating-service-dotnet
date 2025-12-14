@@ -37,8 +37,6 @@ internal class Main(IMainHandler mainHandler, IOptions<NatsServiceOptions> natsS
         Console.WriteLine("processing message");
         var splitSubject = ExtractHttpMethod(message);
 
-        Console.WriteLine($"Data: {JsonSerializer.Serialize(message.Data)}");
-
         _ = mainHandler.HandleRequest(client, splitSubject, message, cancellationToken);
 
         await message.AckAsync(cancellationToken: cancellationToken);

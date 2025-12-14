@@ -58,12 +58,14 @@ components:
         
   schemas:
     getUsersPayload:
+      type: object
       properties:
         originReplyTo:
           type: string
         headers:
           type: object
     getUsersReplyPayload:
+      type: object
       properties:
         headers:
           type: object
@@ -74,6 +76,7 @@ components:
         statusCode:
           type: integer
     postUsersPayload:
+      type: object
       properties:
         originReplyTo:
           type: string
@@ -84,12 +87,14 @@ components:
           items:
             $ref: '#/components/schemas/user'
     postUsersReplyPayload:
+      type: object
       properties:
         headers:
           type: object
         statusCode:
           type: integer
     user:
+      type: object
       properties:
         id:
           type: integer

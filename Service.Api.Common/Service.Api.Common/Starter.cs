@@ -1,11 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Service.Api.Common;
 
 public static class Starter
 {
-    public static async Task Start<TAsyncApiBindingsClass>(string[] args, Action<IServiceCollection> registerDependencies)
+    public static async Task Start<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TAsyncApiBindingsClass>(string[] args, Action<IServiceCollection> registerDependencies)
         where TAsyncApiBindingsClass: class, IRequestDispatcher
     {
         Console.WriteLine($"Beginning program");

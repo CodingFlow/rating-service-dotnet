@@ -1,4 +1,5 @@
-﻿using CodingFlow.Generated.OptionsBindingsGenerator.GeneratedService.Api.Common;
+﻿using System.Diagnostics.CodeAnalysis;
+using CodingFlow.Generated.OptionsBindingsGenerator.GeneratedService.Api.Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,7 +12,7 @@ internal static class DependenciesRegistration
         services.AddApiServices();
     }
 
-    public static void RegisterAsyncApiBindings<TRequestDispatcher>(IServiceCollection services)
+    public static void RegisterAsyncApiBindings<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestDispatcher>(IServiceCollection services)
         where TRequestDispatcher : class, IRequestDispatcher
     {
         services.AddTransient<IRequestDispatcher, TRequestDispatcher>();
