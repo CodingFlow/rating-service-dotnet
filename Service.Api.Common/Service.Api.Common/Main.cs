@@ -34,14 +34,21 @@ internal class Main(IMainHandler mainHandler, IOptions<NatsServiceOptions> natsS
 
     private async ValueTask HandleMessage(NatsClient client, NatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
     {
-        Console.WriteLine("processing message");
-        var splitSubject = ExtractHttpMethod(message);
+        try
+        {
+            Console.WriteLine("processing message");
+            var splitSubject = ExtractHttpMethod(message);
 
-        Console.WriteLine($"Data: {JsonSerializer.Serialize(message.Data)}");
+            Console.WriteLine($"Data: {JsonSerializer.Serialize(message.Data)}");
 
-        _ = mainHandler.HandleRequest(client, splitSubject, message, cancellationToken);
+            await mainHandler.HandleRequest(client, splitSubject, message, cancellationToken);
 
-        await message.AckAsync(cancellationToken: cancellationToken);
+            await message.AckAsync(cancellationToken: cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error processing message: {ex}");
+        }
     }
 
     private static (string httpMethod, string pathPart) ExtractHttpMethod<T>(NatsJSMsg<Request<T>> message)

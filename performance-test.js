@@ -7,13 +7,13 @@ export const options = {
 };
 
 export default function () {
-    let data = JSON.stringify({ animal: "furry cats!!"});
+    let data = JSON.stringify([{ username: "DogMaster"}]);
     let headers = {
       'Content-Type': 'application/json',
       "Host": "www.example.com"
     };
 
-    http.post('http://localhost:8080/ratings', data, {headers: headers});
+    http.post('http://localhost:8080/api/users', data, {headers: headers});
   
     sleep(0.3);
   }
