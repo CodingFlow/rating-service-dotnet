@@ -7,7 +7,7 @@ export const options = {
 };
 
 export default function () {
-    let data = JSON.stringify([{ username: "DogMaster"}]);
+    let data = createData();
     let headers = {
       'Content-Type': 'application/json',
       "Host": "www.example.com"
@@ -16,4 +16,14 @@ export default function () {
     http.post('http://localhost:8080/api/users', data, {headers: headers});
   
     sleep(0.3);
+  }
+
+  function createData() {
+    return JSON.stringify({
+      items: [
+        { 
+          username: "DogMaster"
+        }
+      ]
+    });
   }
