@@ -1,11 +1,12 @@
-﻿namespace RatingService.Application.Handlers;
+﻿using RatingService.Application.Commands;
+
+namespace RatingService.Application.Handlers;
 
 internal class PostUsersHandler : IPostUsersHandler
 {
-
-    public string Handle(User[] users)
+    public string Handle(PostUsersCommand command)
     {
-        Console.WriteLine($"Post request body username: {users.First().Username}");
+        Console.WriteLine($"Post request body username: {command.Items.First().Username}");
 
         return string.Empty;
     }

@@ -29,6 +29,7 @@ create_local_nuget_packages() {
     dotnet pack -c release -o ./local-nuget-feed ./Service.Application.Common/
     dotnet pack -c release -o ./local-nuget-feed ./Service.Api.Common/
     dotnet pack -c release -o ./local-nuget-feed ./AsyncApiBindingsGenerator/
+    dotnet pack -c release -o ./local-nuget-feed ./AsyncApiApplicationSupportGenerator/
 }
 
 create_cluster() {

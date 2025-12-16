@@ -7,6 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <AdditionalFiles Include="../RatingService.Api/asyncapi.yaml" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AsyncApiApplicationSupportGenerator" Version="1.0.0">
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
         <PackageReference Include="Service.Application.Common" Version="1.0.0" />
     </ItemGroup>

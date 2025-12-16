@@ -1,0 +1,7 @@
+<Project>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="AsyncApiApplicationSupportGenerator.UnitTests" />
+    </ItemGroup>
+
+</Project>

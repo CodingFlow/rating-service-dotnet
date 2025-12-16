@@ -1,13 +1,18 @@
-﻿namespace RatingService.Application.Handlers;
+﻿using RatingService.Application.Models;
+using RatingService.Application.QueryResponses;
+
+namespace RatingService.Application.Handlers;
 
 internal class GetUsersHandler : IGetUsersHandler
 {
-
-    public User[] Handle()
+    public GetUsersQueryResponse Handle()
     {
-        return [
-            new User { Username = "lionel57", Id = 27 },
-            new User { Username = "catmaster", Id = 3 }
-        ];
+        return new()
+        {
+            Items = [
+                new User { Username = "lionel57", Id = 27 },
+                new User { Username = "catmaster", Id = 3 }
+            ]
+        };
     }
 }

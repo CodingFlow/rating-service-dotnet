@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="AsyncApiApplicationSupportGenerator.UnitTests/AsyncApiApplicationSupportGenerator.UnitTests.csproj" />
+  <Project Path="AsyncApiApplicationSupportGenerator/AsyncApiApplicationSupportGenerator.csproj" />
+  <Project Path="TestLibrary/TestLibrary.csproj" />
+</Solution>
