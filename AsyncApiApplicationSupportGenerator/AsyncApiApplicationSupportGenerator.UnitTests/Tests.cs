@@ -3,7 +3,9 @@ using System.Text;
 using AsyncApiApplicationSupportGenerator;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Text;
+using TestProject.Commands;
 using TestProject.Handlers;
+using TestProject.QueryResponses;
 using VerifyCS = AsyncApiBindingsGenerator.UnitTests.CSharpSourceGeneratorVerifier<AsyncApiApplicationSupportGenerator.Main>;
 
 namespace AsyncApiBindingsGenerator.UnitTests;
@@ -23,6 +25,8 @@ public class Tests
     {
         var generatedInterfaceOne = await ReadCSharpFile<IGetUsersHandler>(true);
         var generatedInterfaceTwo = await ReadCSharpFile<IPostUsersHandler>(true);
+        var generatedModelOne = await ReadCSharpFile<GetUsersQueryResponse>(true);
+        var generatedModelTwo = await ReadCSharpFile<PostUsersCommand>(true);
 
         const string asyncApiFilename = "asyncapi.yaml";
         var asyncapiYaml = await ReadFile(true, asyncApiFilename);
@@ -48,6 +52,8 @@ public class Tests
                 {
                     (typeof(Main), "IGetUsersHandler.generated.cs", SourceText.From(generatedInterfaceOne, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                     (typeof(Main), "IPostUsersHandler.generated.cs", SourceText.From(generatedInterfaceTwo, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "GetUsersQueryResponse.generated.cs", SourceText.From(generatedModelOne, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "PostUsersCommand.generated.cs", SourceText.From(generatedModelTwo, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                 },
             },
         }.RunAsync();

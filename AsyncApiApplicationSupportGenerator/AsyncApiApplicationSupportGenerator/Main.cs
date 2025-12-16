@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using ByteBard.AsyncAPI.Models;
 using ByteBard.AsyncAPI.Readers;
@@ -33,9 +34,12 @@ namespace AsyncApiApplicationSupportGenerator
 
         private static void Execute(SourceProductionContext context, (AsyncApiDocument asyncApiDocument, string assemblyName) info)
         {
-            var outputs = OutputGenerator.GenerateSpecOutputs(info.asyncApiDocument, info.assemblyName);
+            var interfaceOutputs = OutputGenerator.GenerateInterfacesOutputs(info.asyncApiDocument, info.assemblyName);
+            var modelOutputs = OutputGenerator.GenerateModelOutputs(info.asyncApiDocument, info.assemblyName);
 
-            foreach (var (classSource, className) in outputs)
+            var allOutputs = interfaceOutputs.Concat(modelOutputs);
+
+            foreach (var (classSource, className) in allOutputs)
             {
                 context.AddSource($"{className}.generated.cs", SourceText.From(classSource, Encoding.UTF8, SourceHashAlgorithm.Sha256));
             }

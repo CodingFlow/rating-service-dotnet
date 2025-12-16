@@ -1,6 +1,6 @@
 ﻿namespace AsyncApiApplicationSupportGenerator
 {
-    internal interface IOperationTypeStrategy
+    internal interface IOperationInterfaceTypeStrategy
     {
         string RequestBodyPresent();
         string RequestBodyNotPresent();

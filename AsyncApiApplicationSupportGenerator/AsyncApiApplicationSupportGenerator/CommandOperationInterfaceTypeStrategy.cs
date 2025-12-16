@@ -2,14 +2,16 @@
 
 namespace AsyncApiApplicationSupportGenerator
 {
-    internal class PostOperationTypeStrategy : IOperationTypeStrategy
+    internal class CommandOperationInterfaceTypeStrategy : IOperationInterfaceTypeStrategy
     {
         private readonly string assemblyName;
+        private readonly string restMethod;
         private readonly string pathPart;
 
-        public PostOperationTypeStrategy(string assemblyName, string pathPart)
+        public CommandOperationInterfaceTypeStrategy(string assemblyName, string restMethod, string pathPart)
         {
             this.assemblyName = assemblyName;
+            this.restMethod = restMethod;
             this.pathPart = pathPart;
         }
 
@@ -20,7 +22,7 @@ namespace AsyncApiApplicationSupportGenerator
 
         public string RequestBodyPresent()
         {
-            return $"{assemblyName}.Commands.Post{StringUtils.ToPascalCase(pathPart)}Command";
+            return $"{assemblyName}.Commands.{StringUtils.ToPascalCase(restMethod)}{StringUtils.ToPascalCase(pathPart)}Command";
         }
 
         public string ResponseBodyNotPresent()
@@ -30,7 +32,7 @@ namespace AsyncApiApplicationSupportGenerator
 
         public string ResponseBodyPresent()
         {
-            return $"{assemblyName}.CommandResponses.Post{StringUtils.ToPascalCase(pathPart)}CommandResponse";
+            return $"{assemblyName}.CommandResponses.{StringUtils.ToPascalCase(restMethod)}{StringUtils.ToPascalCase(pathPart)}CommandResponse";
         }
     }
 }
