@@ -147,7 +147,7 @@ The code generator, `AsyncApiApplicationSupportGenerator`, generates:
 - The handler interfaces from the AsyncApi spec for each operation defined.
 - All types for query, command, query response, command response, and their nested types.
 
-The handler interfaces are derived from a generic interface with types specified for the request and response types that must be handled. In practical terms, it gives a convenient way to create the concrete handler class wit the right method types by using [Visual Studio's "Implement interface" code generation quick action](https://learn.microsoft.com/en-us/visualstudio/ide/reference/implement-interface?view=visualstudio).
+The handler interfaces are derived from a generic interface with types specified for the request and response types that must be handled. In practical terms, it gives a convenient way to create the concrete handler class with the right method types by using [Visual Studio's "Implement interface" code generation quick action](https://learn.microsoft.com/en-us/visualstudio/ide/reference/implement-interface?view=visualstudio).
 
 # Usage
 
