@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
+using AsyncApiApplicationSupportGenerator.OperationInterfaceTypeStrategies;
+using AsyncApiApplicationSupportGenerator.OperationModelStrategies;
 using ByteBard.AsyncAPI.Models;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AsyncApiApplicationSupportGenerator
 {

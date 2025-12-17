@@ -1,4 +1,4 @@
-﻿namespace AsyncApiApplicationSupportGenerator
+﻿namespace AsyncApiApplicationSupportGenerator.OperationInterfaceTypeStrategies
 {
     internal interface IOperationInterfaceTypeStrategy
     {

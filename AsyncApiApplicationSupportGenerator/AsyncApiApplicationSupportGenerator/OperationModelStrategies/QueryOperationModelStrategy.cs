@@ -1,4 +1,4 @@
-﻿namespace AsyncApiApplicationSupportGenerator
+﻿namespace AsyncApiApplicationSupportGenerator.OperationModelStrategies
 {
     internal class QueryOperationModelStrategy : IOperationModelStrategy
     {

@@ -1,14 +1,12 @@
-﻿using System;
-
-namespace AsyncApiApplicationSupportGenerator
+﻿namespace AsyncApiApplicationSupportGenerator.OperationInterfaceTypeStrategies
 {
-    internal class CommandOperationInterfaceTypeStrategy : IOperationInterfaceTypeStrategy
+    internal class QueryOperationInterfaceTypeStrategy : IOperationInterfaceTypeStrategy
     {
         private readonly string assemblyName;
         private readonly string restMethod;
         private readonly string pathPart;
 
-        public CommandOperationInterfaceTypeStrategy(string assemblyName, string restMethod, string pathPart)
+        public QueryOperationInterfaceTypeStrategy(string assemblyName, string restMethod, string pathPart)
         {
             this.assemblyName = assemblyName;
             this.restMethod = restMethod;
@@ -22,17 +20,17 @@ namespace AsyncApiApplicationSupportGenerator
 
         public string RequestBodyPresent()
         {
-            return $"{assemblyName}.Commands.{StringUtils.ToPascalCase(restMethod)}{StringUtils.ToPascalCase(pathPart)}Command";
+            return $"{assemblyName}.Queries.{StringUtils.ToPascalCase(restMethod)}{StringUtils.ToPascalCase(pathPart)}Query";
         }
 
         public string ResponseBodyNotPresent()
         {
-            return "string";
+            return string.Empty;
         }
 
         public string ResponseBodyPresent()
         {
-            return $"{assemblyName}.CommandResponses.{StringUtils.ToPascalCase(restMethod)}{StringUtils.ToPascalCase(pathPart)}CommandResponse";
+            return $"{assemblyName}.QueryResponses.{StringUtils.ToPascalCase(restMethod)}{StringUtils.ToPascalCase(pathPart)}QueryResponse";
         }
     }
 }
