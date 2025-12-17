@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Text;
 using TestProject.Commands;
 using TestProject.Handlers;
+using TestProject.Models;
 using TestProject.QueryResponses;
 using VerifyCS = AsyncApiBindingsGenerator.UnitTests.CSharpSourceGeneratorVerifier<AsyncApiApplicationSupportGenerator.Main>;
 
@@ -23,10 +24,11 @@ public class Tests
     [Test]
     public async Task SimpleGetPost()
     {
-        var generatedInterfaceOne = await ReadCSharpFile<IGetUsersHandler>(true);
-        var generatedInterfaceTwo = await ReadCSharpFile<IPostUsersHandler>(true);
-        var generatedModelOne = await ReadCSharpFile<GetUsersQueryResponse>(true);
-        var generatedModelTwo = await ReadCSharpFile<PostUsersCommand>(true);
+        var generatedInterfaceGetUsers = await ReadCSharpFile<IGetUsersHandler>(true);
+        var generatedInterfacePostUsers = await ReadCSharpFile<IPostUsersHandler>(true);
+        var generatedModelGetUsersQueryResponse = await ReadCSharpFile<GetUsersQueryResponse>(true);
+        var generatedModelPostUsersCommand = await ReadCSharpFile<PostUsersCommand>(true);
+        var generatedModelUser = await ReadCSharpFile<User>(true);
 
         const string asyncApiFilename = "asyncapi.yaml";
         var asyncapiYaml = await ReadFile(true, asyncApiFilename);
@@ -50,10 +52,11 @@ public class Tests
                 Sources = {  },
                 GeneratedSources =
                 {
-                    (typeof(Main), "IGetUsersHandler.generated.cs", SourceText.From(generatedInterfaceOne, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
-                    (typeof(Main), "IPostUsersHandler.generated.cs", SourceText.From(generatedInterfaceTwo, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
-                    (typeof(Main), "GetUsersQueryResponse.generated.cs", SourceText.From(generatedModelOne, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
-                    (typeof(Main), "PostUsersCommand.generated.cs", SourceText.From(generatedModelTwo, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "IGetUsersHandler.generated.cs", SourceText.From(generatedInterfaceGetUsers, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "IPostUsersHandler.generated.cs", SourceText.From(generatedInterfacePostUsers, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "GetUsersQueryResponse.generated.cs", SourceText.From(generatedModelGetUsersQueryResponse, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "PostUsersCommand.generated.cs", SourceText.From(generatedModelPostUsersCommand, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "User.generated.cs", SourceText.From(generatedModelUser, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                 },
             },
         }.RunAsync();

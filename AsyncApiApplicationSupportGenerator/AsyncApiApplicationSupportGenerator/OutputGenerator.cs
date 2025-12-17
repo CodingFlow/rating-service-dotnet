@@ -49,7 +49,7 @@ public interface {interfaceName} : {parentInterfaceName}
 
         public static IEnumerable<(string source, string className)> GenerateModelOutputs(AsyncApiDocument spec, string assemblyName)
         {
-            var topLevelSchemas = spec.Operations.Values.SelectMany(operation =>
+            var topLevelSchemaInfos = spec.Operations.Values.SelectMany(operation =>
             {
                 var typeSchemasToProcess = new List<(string, string, AsyncApiJsonSchema)>();
 
@@ -65,7 +65,7 @@ public interface {interfaceName} : {parentInterfaceName}
                 return typeSchemasToProcess;
             });
 
-            var outputs = ProcessSchemaInfo(topLevelSchemas, new Dictionary<AsyncApiJsonSchema, bool>(), assemblyName, spec);
+            var outputs = ProcessSchemaInfo(topLevelSchemaInfos, new HashSet<AsyncApiJsonSchema>(), assemblyName, spec).Distinct();
 
             return outputs;
         }
@@ -81,9 +81,9 @@ public interface {interfaceName} : {parentInterfaceName}
             }
         }
 
-        private static IEnumerable<(string source, string className)> ProcessSchemaInfo(IEnumerable<(string, string, AsyncApiJsonSchema)> topLevelSchemas, Dictionary<AsyncApiJsonSchema, bool> dictionary, string assemblyName, AsyncApiDocument spec)
+        private static IEnumerable<(string source, string className)> ProcessSchemaInfo(IEnumerable<(string, string, AsyncApiJsonSchema)> schemaInfos, HashSet<AsyncApiJsonSchema> processedSchemas, string assemblyName, AsyncApiDocument spec)
         {
-            var outputs = topLevelSchemas.Select(((string @namespace, string typeName, AsyncApiJsonSchema schema) info) =>
+            var outputs = schemaInfos.Select(((string @namespace, string typeName, AsyncApiJsonSchema schema) info) =>
             {
                 var properties = info.schema.Properties;
                 var formattedItems = properties.Select(property =>
@@ -113,6 +113,7 @@ namespace {info.@namespace};
 public readonly struct {info.typeName}
 {{
 {string.Join(@"
+
 ", formattedItems)}
 }}
 ";
@@ -120,7 +121,38 @@ public readonly struct {info.typeName}
                 return (source, info.typeName);
             });
 
-            return outputs;
+            foreach (var (@namespace, typeName, schema) in schemaInfos)
+            {
+                processedSchemas.Add(schema);
+            }
+
+            var schemaInfosToProcess = schemaInfos.SelectMany(info => GetChildSchemaInfos(assemblyName, spec, info));
+
+            var childOutputs = schemaInfosToProcess.Any()
+                ? ProcessSchemaInfo(schemaInfosToProcess, processedSchemas, assemblyName, spec)
+                : new List<(string, string)>();
+
+            return outputs.Concat(childOutputs);
+        }
+
+        private static IEnumerable<(string @namespace, string typeName, AsyncApiJsonSchema schema)> GetChildSchemaInfos(string assemblyName, AsyncApiDocument spec, (string @namespace, string typeName, AsyncApiJsonSchema schema) info)
+        {
+            return info.schema.Properties
+                .Where(property => property.Value.Type == SchemaType.Array || property.Value.Type == SchemaType.Object)
+                .Select(property =>
+                {
+                    var schema = property.Value;
+                    var @namespace = $"{assemblyName}.Models";
+                    var typeName = schema.Type == SchemaType.Array
+                        ? spec.Components.Schemas.First(entry => schema.Items.Equals(entry.Value.Schema)).Key
+                        : spec.Components.Schemas.First(entry => schema.Equals(entry.Value.Schema)).Key;
+                    
+                    var schemaToProcess = schema.Type == SchemaType.Array
+                        ? schema.Items
+                        : schema;
+
+                    return (@namespace, StringUtils.ToPascalCase(typeName), schemaToProcess);
+                });
         }
 
         private static string GetMemberType(AsyncApiJsonSchema schema, AsyncApiDocument spec)
@@ -130,8 +162,12 @@ public readonly struct {info.typeName}
                 case SchemaType.Array:
                     var type = spec.Components.Schemas.First(schemaEntry => schema.Items.Equals(schemaEntry.Value.Schema)).Key;
                     return StringUtils.ToPascalCase(type);
+                case SchemaType.Integer:
+                    return "int";
+                case SchemaType.String:
+                    return "string";
                 default:
-                    throw new InvalidOperationException($"Schema type '{schema}' not supported. ");
+                    throw new InvalidOperationException($"Schema type '{schema.Type}' not supported. ");
             }
         }
 

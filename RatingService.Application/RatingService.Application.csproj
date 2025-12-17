@@ -18,9 +18,4 @@
         <PackageReference Include="Service.Application.Common" Version="1.0.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Commands\" />
-      <Folder Include="QueryResponses\" />
-    </ItemGroup>
-
 </Project>
