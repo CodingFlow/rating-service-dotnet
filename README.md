@@ -31,7 +31,17 @@ Tools and frameworks used by backend and infrastructure:
 
 # Architectural Design
 
-## Conceptual Design
+Definitions:
+
+**Conceptual**: High level, not very technical, business domain level.
+
+**Logical**: Technical, agnostic of particular techlibraries and frameworks.
+
+**Physical/Concrete**: More detailed, uses specific technologies.
+
+([Reference](https://medium.com/@nolomokgosi/conceptual-logical-and-physical-design-c24100846931))
+
+## Logical Design
 
 The main idea is to have a service pull architecture: microservices pull from
 queues and communcate using an asynchronous, distributed messaging system via
@@ -98,6 +108,47 @@ API Service -) HTTP to NATS Proxy: NATS message REST response
 HTTP to NATS Proxy ->> Browser (HTTP Client): HTTP REST response
 ```
 
+## Service Design
+
+- Generally follow the ideas and guidelines for Domain Driven Design from the book **.NET Microservices: Architecture for Containerized .NET Applications** ([Completely free to view online](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/))
+- Focus on opinionated shared libraries, code generators, and tools to enable standardization, reduce boilerplate, and ease improvements across all services.
+
+Services will be composed of the following four layers:
+
+- API
+- Application
+- Domain
+- Infrastructure
+
+### API Layer
+
+The frontend of the service, the API layer contains the technical infrastructure to accept and deserialize requests and serialize responses back to consumers. This includes:
+
+- Connecting to a NATS server.
+- Dispatching request queries/commands to the right handler in the Application layer.
+- Setting up dependency injection.
+- Setting up configuration.
+
+A common library has been created to set up the preceding items: `Service.Api.Common`.
+
+The API layer will follow an API-first approach instead of a code-first approach for the following reasons:
+
+- There will be code generation opportunities regardless of approach.
+- Code-first means creating a specification using code. Code is not the most ideal format for creating declarative specification. AsyncAPI specifications were made for it.
+
+ Code generation is used to create the needed code from the API specification, [AsyncAPI spec](https://www.asyncapi.com). The common source generator, `AsyncApiBindingsGenerator`, will be used across all services' API layers for this purpose. A useful tool for editing and validating in real time AsyncAPI spec files is [AsyncAPI Studio](https://studio.asyncapi.com/).
+
+### Application Layer
+
+Handles queries and commands from the API layer by orchestrating between the domain and infrastructure layers.
+
+The code generator, `AsyncApiApplicationSupportGenerator`, generates:
+
+- The handler interfaces from the AsyncApi spec for each operation defined.
+- All types for query, command, query response, command response, and their nested types.
+
+The handler interfaces are derived from a generic interface with types specified for the request and response types that must be handled. In practical terms, it gives a convenient way to create the concrete handler class wit the right method types by using [Visual Studio's "Implement interface" code generation quick action](https://learn.microsoft.com/en-us/visualstudio/ide/reference/implement-interface?view=visualstudio).
+
 # Usage
 
 [Install Devbox](https://www.jetify.com/docs/devbox/installing_devbox/). On
@@ -149,5 +200,5 @@ deploy-frontend
 port-forward-gateway
 ```
 
-Then a request to http://localhost:8080/api/users to get users from the API. Or
+Then send a request to http://localhost:8080/api/users to get users from the API. Or
 access http://localhost:8080/ui in the browser.
