@@ -20,4 +20,10 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\RatingService.Domain\RatingService.Domain.csproj">
+        <PrivateAssets>all</PrivateAssets>
+      </ProjectReference>
+    </ItemGroup>
+
 </Project>

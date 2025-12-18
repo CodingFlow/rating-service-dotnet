@@ -7,8 +7,8 @@ public static class DependencyInjectionRegistrationExtension
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddTransient<IGetUsersHandler, GetUsersHandler>();
-        services.AddTransient<IPostUsersHandler, PostUsersHandler>();
+        services.AddTransient<IGetRatingsHandler, GetRatingsHandler>();
+        services.AddTransient<IPostRatingsHandler, PostRatingsHandler>();
 
         return services;
     }

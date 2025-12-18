@@ -6,64 +6,64 @@ info:
     The Ratings API provides information on service ratings from users.
 
 channels:
-  getUsers:
-    address: 'get.users'
+  getRatings:
+    address: 'get.ratings'
     messages:
-      users:
-        $ref: '#/components/messages/getUsers'
-  postUsers:
-    address: 'post.users'
+      ratings:
+        $ref: '#/components/messages/getRatings'
+  postRatings:
+    address: 'post.ratings'
     messages:
-      users:
-        $ref: '#/components/messages/postUsers'
+      ratings:
+        $ref: '#/components/messages/postRatings'
 
 operations:
-  getUsers:
+  getRatings:
     action: receive
     channel:
-      $ref: '#/channels/getUsers'
+      $ref: '#/channels/getRatings'
     messages:
-      - $ref: '#/channels/getUsers/messages/users'
+      - $ref: '#/channels/getRatings/messages/ratings'
     reply:
       address:
         location: '$message.payload#/originReplyTo'
       messages:
-        - $ref: '#/components/messages/getUsersReply'
-  postUsers:
+        - $ref: '#/components/messages/getRatingsReply'
+  postRatings:
     action: receive
     channel:
-      $ref: '#/channels/postUsers'
+      $ref: '#/channels/postRatings'
     messages:
-      - $ref: '#/channels/postUsers/messages/users'
+      - $ref: '#/channels/postRatings/messages/ratings'
     reply:
       address:
         location: '$message.payload#/originReplyTo'
       messages:
-        - $ref: '#/components/messages/postUsersReply'
+        - $ref: '#/components/messages/postRatingsReply'
 
 components:
   messages:
-    getUsers:
+    getRatings:
       payload: 
-        $ref: '#/components/schemas/getUsersPayload'
-    getUsersReply:
+        $ref: '#/components/schemas/getRatingsPayload'
+    getRatingsReply:
       payload:
-        $ref: '#/components/schemas/getUsersReplyPayload'
-    postUsers:
+        $ref: '#/components/schemas/getRatingsReplyPayload'
+    postRatings:
       payload:
-        $ref: '#/components/schemas/postUsersPayload'
-    postUsersReply:
+        $ref: '#/components/schemas/postRatingsPayload'
+    postRatingsReply:
       payload:
-        $ref: '#/components/schemas/postUsersReplyPayload'
+        $ref: '#/components/schemas/postRatingsReplyPayload'
         
   schemas:
-    getUsersPayload:
+    getRatingsPayload:
       properties:
         originReplyTo:
           type: string
         headers:
           type: object
-    getUsersReplyPayload:
+    getRatingsReplyPayload:
       properties:
         headers:
           type: object
@@ -73,10 +73,10 @@ components:
             items:
               type: array
               items:
-                $ref: '#/components/schemas/user'
+                $ref: '#/components/schemas/rating'
         statusCode:
           type: integer
-    postUsersPayload:
+    postRatingsPayload:
       properties:
         originReplyTo:
           type: string
@@ -88,16 +88,20 @@ components:
             items:
               type: array
               items:
-                $ref: '#/components/schemas/user'
-    postUsersReplyPayload:
+                $ref: '#/components/schemas/rating'
+    postRatingsReplyPayload:
       properties:
         headers:
           type: object
         statusCode:
           type: integer
-    user:
+    rating:
       properties:
         id:
           type: integer
-        username:
-          type: string
+        userId:
+          type: integer
+        serviceId:
+          type: integer
+        score:
+          type: integer

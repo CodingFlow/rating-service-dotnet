@@ -5,4 +5,6 @@
   </Folder>
   <Project Path="RatingService.Api/RatingService.Api.csproj" />
   <Project Path="RatingService.Application/RatingService.Application.csproj" />
+  <Project Path="RatingService.Domain/RatingService.Domain.csproj" Id="55fdaa55-0c50-4e66-968b-a9b5b40cb120" />
+  <Project Path="RatingService.Infrastructure/RatingService.Infrastructure.csproj" Id="c610bd4b-9c0f-4142-9f10-ddd4d0fe318e" />
 </Solution>
