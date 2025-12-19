@@ -48,7 +48,7 @@ using {serviceNamespacePart}.Application.Handlers;
 
 namespace {@namespace};
 
-internal class RequestDispatcher({string.Join(", ", formattedDependencies)}) : IRequestDispatcher
+public class RequestDispatcher({string.Join(", ", formattedDependencies)}) : IRequestDispatcher
 {{
     public async Task DispatchRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, NatsJSMsg<Request<JsonNode>> message, IRestHandler restHandler, CancellationToken cancellationToken)
     {{

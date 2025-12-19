@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Service.AppHost.Common;
 
 namespace Service.Api.Common;
 

@@ -7,15 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+      <PackageReference Include="OptionsBindingsGenerator" Version="0.2.1">
+          <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
       <PackageReference Include="Validly" Version="1.2.0">
           <PrivateAssets>all</PrivateAssets>
       </PackageReference>
       <PackageReference Include="Validly.Extensions.Validators" Version="1.1.4">
           <PrivateAssets>all</PrivateAssets>
       </PackageReference>
-      <PackageReference Include="Validly.SourceGenerator" Version="1.2.0">
-          <PrivateAssets>all</PrivateAssets>
-      </PackageReference>
+      <PackageReference Include="Validly.SourceGenerator" Version="1.2.0" />
   </ItemGroup>
 
 </Project>

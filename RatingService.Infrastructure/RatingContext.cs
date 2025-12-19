@@ -1,14 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using RatingService.Domain;
 
 namespace RatingService.Infrastructure;
 
-public class RatingContext : DbContext
+internal class RatingContext(IOptions<PostgreSqlDatabaseOptions> databaseOptions) : DbContext
 {
+    private readonly PostgreSqlDatabaseOptions databaseSettings = databaseOptions.Value;
+
     public DbSet<Rating> Ratings { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("");
+        optionsBuilder.UseNpgsql(databaseSettings.DatabaseConnectionString);
     }
 }

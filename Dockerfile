@@ -12,6 +12,7 @@ COPY AsyncApiApplicationSupportGenerator/. ./AsyncApiApplicationSupportGenerator
 
 RUN mkdir local-nuget-feed
 
+RUN dotnet pack -c release -o ./local-nuget-feed ./Service.AppHost.Common/
 RUN dotnet pack -c release -o ./local-nuget-feed ./Service.Application.Common/
 RUN dotnet pack -c release -o ./local-nuget-feed ./Service.Api.Common/
 RUN dotnet pack -c release -o ./local-nuget-feed ./AsyncApiBindingsGenerator/
@@ -19,13 +20,19 @@ RUN dotnet pack -c release -o ./local-nuget-feed ./AsyncApiApplicationSupportGen
 
 # copy csproj and restore as distinct layers
 COPY *.slnx .
+COPY RatingService.AppHost/*.csproj ./RatingService.AppHost/
 COPY RatingService.Api/*.csproj ./RatingService.Api/
 COPY RatingService.Application/*.csproj ./RatingService.Application/
+COPY RatingService.Infrastructure/*.csproj ./RatingService.Infrastructure/
+COPY RatingService.Domain/*.csproj ./RatingService.Domain/
 RUN dotnet restore
 
 # copy everything else and build app
+COPY RatingService.AppHost/. ./RatingService.AppHost/
 COPY RatingService.Api/. ./RatingService.Api/
 COPY RatingService.Application/. ./RatingService.Application/
+COPY RatingService.Infrastructure/. ./RatingService.Infrastructure/
+COPY RatingService.Domain/. ./RatingService.Domain/
 WORKDIR /source/RatingService.Api
 RUN dotnet publish -c release -o /app --no-restore
 
@@ -34,4 +41,4 @@ FROM mcr.microsoft.com/dotnet/runtime:10.0
 WORKDIR /app
 COPY --from=build /app ./
 
-ENTRYPOINT ["dotnet", "RatingService.Api.dll"]
+ENTRYPOINT ["dotnet", "RatingService.AppHost.dll"]

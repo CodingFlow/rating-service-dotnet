@@ -28,4 +28,10 @@ spec:
               value: {{ .Values.rating_service_stream_name }}
             - name: SERVICE_CONSUMER_NAME
               value: {{ .Values.rating_service_consumer_name }}
+            - name: DATABASE_POSTGRESQL_URI
+              valueFrom:
+                secretKeyRef:
+                  name: cluster-example-app
+                  key: uri
+
 

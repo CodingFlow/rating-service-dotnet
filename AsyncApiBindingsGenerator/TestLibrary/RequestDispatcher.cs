@@ -9,7 +9,7 @@ using TestProject.Application.Handlers;
 
 namespace TestProject;
 
-internal class RequestDispatcher(IGetUsersHandler getUsersHandler, IPostUsersHandler postUsersHandler) : IRequestDispatcher
+public class RequestDispatcher(IGetUsersHandler getUsersHandler, IPostUsersHandler postUsersHandler) : IRequestDispatcher
 {
     public async Task DispatchRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, NatsJSMsg<Request<JsonNode>> message, IRestHandler restHandler, CancellationToken cancellationToken)
     {

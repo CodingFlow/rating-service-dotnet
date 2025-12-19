@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 using Microsoft.Extensions.Options;
 using NATS.Client.JetStream;
 using NATS.Net;
+using Service.AppHost.Common;
 
 namespace Service.Api.Common;
 

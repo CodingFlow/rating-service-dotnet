@@ -16,6 +16,7 @@ alias stop-cluster='k3d cluster stop $cluster_name'
 alias deploy-gateway='deploy_gateway'
 alias deploy-http-to-nats-proxy='deploy_http_to_nats_proxy'
 alias deploy-nack='deploy_nack'
+alias deploy-database='deploy_database'
 alias deploy-service='deploy_service'
 alias deploy-frontend='deploy_frontend'
 
@@ -26,6 +27,7 @@ alias create-local-nuget-packages='create_local_nuget_packages'
 load_config dev
 
 create_local_nuget_packages() {
+    dotnet pack -c release -o ./local-nuget-feed ./Service.AppHost.Common/
     dotnet pack -c release -o ./local-nuget-feed ./Service.Application.Common/
     dotnet pack -c release -o ./local-nuget-feed ./Service.Api.Common/
     dotnet pack -c release -o ./local-nuget-feed ./AsyncApiBindingsGenerator/
@@ -51,6 +53,12 @@ deploy_nack() {
 deploy_http_to_nats_proxy() {
     build_push_docker_image $docker_registry http-to-nats-proxy $http_to_nats_build_directory &&
     apply_rollout http-to-nats-proxy ./deployment/http-to-nats-proxy ./deployment/http-to-nats-proxy-values.yaml http-to-nats-proxy-deployment
+}
+
+deploy_database() {
+    kubectl apply --server-side -f \
+  https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.28/releases/cnpg-1.28.0.yaml &&
+    kubectl apply -f ./deployment/postgres-cnpg.yaml
 }
 
 deploy_service() {
