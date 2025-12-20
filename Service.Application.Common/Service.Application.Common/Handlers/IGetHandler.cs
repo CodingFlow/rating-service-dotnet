@@ -2,5 +2,5 @@
 
 public interface IGetHandler<TResponse>
 {
-    TResponse Handle();
+    Task<TResponse> Handle();
 }

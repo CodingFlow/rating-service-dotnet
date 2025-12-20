@@ -28,10 +28,25 @@ spec:
               value: {{ .Values.rating_service_stream_name }}
             - name: SERVICE_CONSUMER_NAME
               value: {{ .Values.rating_service_consumer_name }}
-            - name: DATABASE_POSTGRESQL_URI
+            - name: DATABASE_POSTGRESQL_HOST
               valueFrom:
                 secretKeyRef:
                   name: cluster-example-app
-                  key: uri
+                  key: host
+            - name: DATABASE_POSTGRESQL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: cluster-example-app
+                  key: username
+            - name: DATABASE_POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cluster-example-app
+                  key: password
+            - name: DATABASE_POSTGRESQL_DATABASENAME
+              valueFrom:
+                secretKeyRef:
+                  name: cluster-example-app
+                  key: dbname
 
 

@@ -4,9 +4,9 @@ namespace RatingService.Application.Handlers;
 
 internal class GetRatingsHandler : IGetRatingsHandler
 {
-    public GetRatingsQueryResponse Handle()
+    public async Task<GetRatingsQueryResponse> Handle()
     {
-        return new()
+        return await Task.FromResult(new GetRatingsQueryResponse()
         {
             Items = [
                 new() {
@@ -16,6 +16,6 @@ internal class GetRatingsHandler : IGetRatingsHandler
                     Score = 2
                 }
             ]
-        };
+        });
     }
 }

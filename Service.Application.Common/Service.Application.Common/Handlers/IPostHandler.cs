@@ -2,5 +2,5 @@
 
 public interface IPostHandler<TRequest, TResponse>
 {
-    TResponse Handle(TRequest request);
+    Task<TResponse> Handle(TRequest request);
 }

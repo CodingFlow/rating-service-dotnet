@@ -12,7 +12,7 @@ internal class RestHandler : IRestHandler
     {
         Console.WriteLine($"Received request body: {message.Data.Body}");
         var requestBody = message.Data.Body.Deserialize<TRequest>();
-        var responseBodyPost = postHandler.Handle(requestBody);
+        var responseBodyPost = await postHandler.Handle(requestBody);
 
         await client.PublishAsync(message.Data.OriginReplyTo, new Response<TResponse>
         {
@@ -25,7 +25,7 @@ internal class RestHandler : IRestHandler
 
     public async Task HandleGet<TResponse>(NatsClient client, NatsJSMsg<Request<JsonNode>> message, IGetHandler<TResponse> getHandler, CancellationToken cancellationToken)
     {
-        var responseBody = getHandler.Handle();
+        var responseBody = await getHandler.Handle();
         await client.PublishAsync(message.Data.OriginReplyTo, new Response<TResponse>
         {
             StatusCode = 200,

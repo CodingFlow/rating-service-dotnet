@@ -18,7 +18,7 @@ public static class Starter
 
         using IHost host = builder.Build();
 
-        using var serviceScope = host.Services.CreateScope();
+        await using var serviceScope = host.Services.CreateAsyncScope();
         var provider = serviceScope.ServiceProvider;
 
         var main = provider.GetRequiredService<IMain>();

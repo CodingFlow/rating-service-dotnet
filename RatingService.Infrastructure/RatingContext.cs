@@ -12,6 +12,10 @@ internal class RatingContext(IOptions<PostgreSqlDatabaseOptions> databaseOptions
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(databaseSettings.DatabaseConnectionString);
+        var connectionString = $"Host={databaseSettings.Host};Username={databaseSettings.Username};Password={databaseSettings.Password};Database={databaseSettings.DatabaseName}";
+        
+        Console.WriteLine($"RatingContext - environment variable connection string: {connectionString}");
+        
+        optionsBuilder.UseNpgsql(connectionString);
     }
 }

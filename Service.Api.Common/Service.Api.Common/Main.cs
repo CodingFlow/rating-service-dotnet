@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NATS.Client.JetStream;
 using NATS.Net;
@@ -7,7 +8,10 @@ using Service.AppHost.Common;
 
 namespace Service.Api.Common;
 
-internal class Main(IMainHandler mainHandler, IOptions<NatsServiceOptions> natsServiceOptions, IOptions<ServiceStreamConsumerOptions> serviceStreamConsumerOptions) : IMain
+internal class Main(
+    IOptions<NatsServiceOptions> natsServiceOptions,
+    IOptions<ServiceStreamConsumerOptions> serviceStreamConsumerOptions,
+    IServiceScopeFactory serviceScopeFactory) : IMain
 {
     private readonly NatsServiceOptions natsServiceSettings = natsServiceOptions.Value;
     private readonly ServiceStreamConsumerOptions serviceStreamConsumerSettings = serviceStreamConsumerOptions.Value;
@@ -30,10 +34,15 @@ internal class Main(IMainHandler mainHandler, IOptions<NatsServiceOptions> natsS
 
         var messages = consumer.ConsumeAsync<Request<JsonNode>>();
 
-        await Parallel.ForEachAsync(messages, async (message, cancellationToken) => await HandleMessage(client, message, cancellationToken));
+        await Parallel.ForEachAsync(messages, async (message, cancellationToken) =>
+        {
+            await using var scope = serviceScopeFactory.CreateAsyncScope();
+            var mainHandler = scope.ServiceProvider.GetService<IMainHandler>();
+            await HandleMessage(client, message, mainHandler, cancellationToken);
+        });
     }
 
-    private async ValueTask HandleMessage(NatsClient client, NatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
+    private async ValueTask HandleMessage(NatsClient client, NatsJSMsg<Request<JsonNode>> message, IMainHandler mainHandler, CancellationToken cancellationToken)
     {
         try
         {

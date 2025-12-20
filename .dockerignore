@@ -4,6 +4,8 @@
 .gitignore
 .vs
 .vscode
+**/.vs
+**/.vscode
 docker-compose.yml
 docker-compose.*.yml
 **/bin

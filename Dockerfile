@@ -5,6 +5,7 @@ WORKDIR /source
 
 # create local nuget packages
 COPY nuget.config ./
+COPY Service.AppHost.Common/ ./Service.AppHost.Common/
 COPY Service.Application.Common/. ./Service.Application.Common/
 COPY Service.Api.Common/. ./Service.Api.Common/
 COPY AsyncApiBindingsGenerator/. ./AsyncApiBindingsGenerator/
@@ -33,7 +34,7 @@ COPY RatingService.Api/. ./RatingService.Api/
 COPY RatingService.Application/. ./RatingService.Application/
 COPY RatingService.Infrastructure/. ./RatingService.Infrastructure/
 COPY RatingService.Domain/. ./RatingService.Domain/
-WORKDIR /source/RatingService.Api
+WORKDIR /source/RatingService.AppHost
 RUN dotnet publish -c release -o /app --no-restore
 
 # final stage/image

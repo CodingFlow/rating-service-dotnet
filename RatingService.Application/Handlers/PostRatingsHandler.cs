@@ -1,11 +1,24 @@
 ﻿using RatingService.Application.Commands;
+using RatingService.Domain;
 
 namespace RatingService.Application.Handlers;
 
-internal class PostRatingsHandler : IPostRatingsHandler
+internal class PostRatingsHandler(IRatingRepository ratingRepository) : IPostRatingsHandler
 {
-    public string Handle(PostRatingsCommand request)
+    public async Task<string> Handle(PostRatingsCommand request)
     {
-        return string.Empty;
+        var requestRating = request.Items.First();
+        var ratings = new Rating
+        {
+            UserId = requestRating.UserId,
+            ServiceId = requestRating.ServiceId,
+            Score = requestRating.Score,
+        };
+
+        await ratingRepository.Add([ratings]);
+
+        await ratingRepository.Save();
+
+        return await Task.FromResult(string.Empty);
     }
 }

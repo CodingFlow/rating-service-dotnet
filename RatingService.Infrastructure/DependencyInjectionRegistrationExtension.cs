@@ -1,6 +1,7 @@
 ﻿using CodingFlow.Generated.OptionsBindingsGenerator.GeneratedRatingService.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RatingService.Domain;
 
 namespace RatingService.Infrastructure;
 
@@ -10,6 +11,7 @@ public static class DependencyInjectionRegistrationExtension
     {
         services.AddOptionsBindings(configuration);
         services.AddDbContext<RatingContext>();
+        services.AddScoped<IRatingRepository, RatingRepository>();
 
         return services;
     }
