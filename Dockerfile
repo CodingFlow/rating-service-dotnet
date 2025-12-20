@@ -25,6 +25,7 @@ COPY RatingService.AppHost/*.csproj ./RatingService.AppHost/
 COPY RatingService.Api/*.csproj ./RatingService.Api/
 COPY RatingService.Application/*.csproj ./RatingService.Application/
 COPY RatingService.Infrastructure/*.csproj ./RatingService.Infrastructure/
+COPY RatingService.Infrastructure.DesignTime/*.csproj ./RatingService.Infrastructure.DesignTime/
 COPY RatingService.Domain/*.csproj ./RatingService.Domain/
 RUN dotnet restore
 

@@ -1,0 +1,7 @@
+<Project>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="RatingService.Infrastructure.DesignTime" />
+    </ItemGroup>
+
+</Project>

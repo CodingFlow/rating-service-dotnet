@@ -15,8 +15,11 @@ build_push_docker_image() {
     local registry=$1
     local image_name=$2
     local build_directory=$3
+    local dockerfile=$4
 
-    docker build -t $registry/$image_name $build_directory &&
+    local file="-f $dockerfile"
+
+    docker build -t $registry/$image_name $build_directory $file &&
     docker push $registry/$image_name
 }
 

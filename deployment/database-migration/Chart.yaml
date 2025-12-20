@@ -1,0 +1,3 @@
+apiVersion: v2
+name: rating-service-database-migration-job
+version: 1.0.0

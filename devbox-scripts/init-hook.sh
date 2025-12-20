@@ -24,6 +24,9 @@ alias port-forward-gateway='kubectl port-forward deployment/gloo-proxy-http -n g
 
 alias create-local-nuget-packages='create_local_nuget_packages'
 
+alias create-database-migration='create_database_migration'
+alias update-database='update_database'
+
 load_config dev
 
 create_local_nuget_packages() {
@@ -45,7 +48,6 @@ deploy_gateway() {
 }
 
 deploy_nack() {
-    # kubectl apply -f ./deployment/nack.yaml
     helm upgrade --install rating-service-queue ./deployment/app-queue -f ./deployment/app-queue-values.yaml
     apply_helm_package rating-service-queue ./deployment/app-queue ./deployment/app-queue-values.yaml rating-service-queue
 }
@@ -59,6 +61,15 @@ deploy_database() {
     kubectl apply --server-side -f \
   https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.28/releases/cnpg-1.28.0.yaml &&
     kubectl apply -f ./deployment/postgres-cnpg.yaml
+}
+
+create_database_migration() {
+    dotnet ef migrations add InitialCreate -p ./RatingService.Infrastructure/ --startup-project ./RatingService.Infrastructure.DesignTime/
+}
+
+update_database() {
+    build_push_docker_image $docker_registry rating-service-database-migration-job . database-migration.Dockerfile &&
+    apply_helm_package rating-service-database-migration-job ./deployment/database-migration ./deployment/database-migration-values.yaml
 }
 
 deploy_service() {

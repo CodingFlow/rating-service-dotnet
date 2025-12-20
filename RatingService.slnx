@@ -7,5 +7,6 @@
   <Project Path="RatingService.AppHost/RatingService.AppHost.csproj" Id="51099be0-bda2-4be7-be6b-bad2b1b6b9e0" />
   <Project Path="RatingService.Application/RatingService.Application.csproj" />
   <Project Path="RatingService.Domain/RatingService.Domain.csproj" Id="55fdaa55-0c50-4e66-968b-a9b5b40cb120" />
+  <Project Path="RatingService.Infrastructure.DesignTime/RatingService.Infrastructure.DesignTime.csproj" Id="95886544-526d-44c1-816c-47f554e3e001" />
   <Project Path="RatingService.Infrastructure/RatingService.Infrastructure.csproj" Id="c610bd4b-9c0f-4142-9f10-ddd4d0fe318e" />
 </Solution>
