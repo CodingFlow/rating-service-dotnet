@@ -16,14 +16,7 @@ public static class Starter
         commonDependenciesRegistration.RegisterConfiguration(builder.Services, builder.Configuration);
         registerDependencies(builder.Services, builder.Configuration);
 
-        using IHost host = builder.Build();
-
-        await using var serviceScope = host.Services.CreateAsyncScope();
-        var provider = serviceScope.ServiceProvider;
-
-        var main = provider.GetRequiredService<IMain>();
-
-        await main.Run();
+        using var host = builder.Build();
 
         await host.RunAsync();
     }

@@ -1,22 +1,32 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using NATS.Client.JetStream;
 using NATS.Net;
-using Service.AppHost.Common;
 
 namespace Service.Api.Common;
 
 internal class Main(
     IOptions<NatsServiceOptions> natsServiceOptions,
     IOptions<ServiceStreamConsumerOptions> serviceStreamConsumerOptions,
-    IServiceScopeFactory serviceScopeFactory) : IMain
+    IServiceScopeFactory serviceScopeFactory) : IHostedService
 {
     private readonly NatsServiceOptions natsServiceSettings = natsServiceOptions.Value;
     private readonly ServiceStreamConsumerOptions serviceStreamConsumerSettings = serviceStreamConsumerOptions.Value;
 
-    public async Task Run()
+    public async Task StartAsync(CancellationToken cancellationToken)
+    {
+        await Run();
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task Run()
     {
         var host = natsServiceSettings.ServiceHost;
         var port = natsServiceSettings.Port;
@@ -42,7 +52,7 @@ internal class Main(
         });
     }
 
-    private async ValueTask HandleMessage(NatsClient client, NatsJSMsg<Request<JsonNode>> message, IMainHandler mainHandler, CancellationToken cancellationToken)
+    private static async ValueTask HandleMessage(NatsClient client, NatsJSMsg<Request<JsonNode>> message, IMainHandler mainHandler, CancellationToken cancellationToken)
     {
         try
         {

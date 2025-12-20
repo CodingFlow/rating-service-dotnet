@@ -11,11 +11,11 @@ public class CommonDependenciesRegistration<TRequestDispatcher> : ICommonDepende
     public void RegisterConfiguration(IServiceCollection services, IConfigurationManager configuration)
     {
         services.AddOptionsBindings(configuration);
-        services.AddTransient<IRequestDispatcher, TRequestDispatcher>();
     }
 
     public void RegisterDependencies(IServiceCollection services)
     {
+        services.AddTransient<IRequestDispatcher, TRequestDispatcher>();
         services.AddApiServices();
     }
 }
