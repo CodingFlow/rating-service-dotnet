@@ -2,9 +2,9 @@
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.7/.schema/devbox.schema.json",
   "packages": [
     "docker@28.5.1",
-    "k3d@5.7.4",
+    "k3d@5.8.3",
     "kubectl@latest",
-    "kubernetes-helm@3.16.3",
+    "kubernetes-helm@3.19.1",
     "glooctl@1.17.16",
     "k9s@latest",
     "azure-cli@2.67",
