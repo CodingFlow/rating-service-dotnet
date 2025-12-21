@@ -7,15 +7,14 @@ internal class PostRatingsHandler(IRatingRepository ratingRepository) : IPostRat
 {
     public async Task<string> Handle(PostRatingsCommand request)
     {
-        var requestRating = request.Items.First();
-        var rating = new Rating
+        var ratings = request.Items.Select(requestRating => new Rating
         {
             UserId = requestRating.UserId,
             ServiceId = requestRating.ServiceId,
             Score = requestRating.Score,
-        };
+        });
 
-        await ratingRepository.Add([rating]);
+        await ratingRepository.Add(ratings);
 
         await ratingRepository.Save();
 
