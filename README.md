@@ -178,10 +178,13 @@ components to the cluster are available as shell aliases for convenience:
 | `deploy-nack`                 | Apply JetStream kubernetes configuration.                                                                                      |
 | `deploy-gateway`              | Apply k8sGateway kubernetes configurations.                                                                                    |
 | `deploy-http-to-nats-proxy`   | Build and push to docker registry the docker image for http-to-nats-proxy and deploy via kubernetes configuration.             |
+| `deploy_database`             | Installs Cloudnative-pg and apply Postgresql kubernetes configuration                                                          |
 | `deploy-service`              | Build and push to docker registry the docker image for rating-service and deploy via kubernetes configuration.                 |
 | `deploy-frontend`             | Build and push to docker registry the docker image for the frontend and deploy via kubernetes configuration.                   |
 | `port-forward-gateway`        | Port forward the gateway to localhost so the frontend and backend can be accessed for testing.                                 |
-| `create-local-nuget-packages` | Create local nuget packages for local libraries used by the service.                                                                 |
+| `create-local-nuget-packages` | Create local nuget packages for local libraries used by the service.                                                           |
+| `create-database-migration`   | Creates database migration files via Entity Framework Core.                                                                    |
+| `update-database` | Executes database migration using database migration files via kubernetes job.                                                             |
 
 Devbox is set up to run `load_config dev` on starting a devbox environment e.g.
 via `devbox shell`.
@@ -193,6 +196,8 @@ for testing:
 create-local-nuget-packages
 create-cluster
 deploy-nack
+deploy-database
+update-database
 deploy-service
 deploy-http-to-nats-proxy
 deploy-gateway
