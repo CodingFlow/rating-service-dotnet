@@ -1,21 +1,24 @@
 ﻿using RatingService.Application.QueryResponses;
+using RatingService.Domain;
 
 namespace RatingService.Application.Handlers;
 
-internal class GetRatingsHandler : IGetRatingsHandler
+internal class GetRatingsHandler(IRatingRepository ratingRepository) : IGetRatingsHandler
 {
     public async Task<GetRatingsQueryResponse> Handle()
     {
-        return await Task.FromResult(new GetRatingsQueryResponse()
+        var ratings = await ratingRepository.FindAll();
+        var responseRatings = ratings.Select(rating => new Models.Rating
         {
-            Items = [
-                new() {
-                    Id = 5,
-                    UserId = 1,
-                    ServiceId = 3,
-                    Score = 2
-                }
-            ]
-        });
+            Id = rating.Id,
+            UserId = rating.UserId,
+            ServiceId = rating.ServiceId,
+            Score = rating.Score,
+        }).ToArray();
+
+        return new()
+        {
+            Items = responseRatings
+        };
     }
 }

@@ -110,7 +110,7 @@ HTTP to NATS Proxy ->> Browser (HTTP Client): HTTP REST response
 
 ## Service Design
 
-- Generally follow the ideas and guidelines for Domain Driven Design from the book **.NET Microservices: Architecture for Containerized .NET Applications** ([Completely free to view online](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/))
+- Generally follow the ideas and guidelines for Domain Driven Design from the free book **.NET Microservices: Architecture for Containerized .NET Applications** ([view online](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/))
 - Focus on opinionated shared libraries, code generators, and tools to enable standardization, reduce boilerplate, and ease improvements across all services.
 
 Services will be composed of the following four layers:

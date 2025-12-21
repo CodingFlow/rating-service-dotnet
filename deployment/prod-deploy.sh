@@ -17,7 +17,11 @@ build_push_docker_image() {
     local build_directory=$3
     local dockerfile=$4
 
-    local file="-f $dockerfile"
+    if [[ -n "$4" ]]; then
+        local file="-f $dockerfile"
+    else
+        local file=""
+    fi
 
     docker build -t $registry/$image_name $build_directory $file &&
     docker push $registry/$image_name
