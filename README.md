@@ -1,9 +1,8 @@
 # Introduction
 
-The backend and infrastructure for a prototype full-stack C#, Preact web
+The backend and infrastructure for a reference architecture prototype full-stack C#, Preact web
 application deployed on Azure AKS using modern tools. This project primarily
-focuses on architectural design, implementation, and tools that can be leveraged
-for enterprise-grade applications.
+focuses on architectural design, implementation, and tools that can be leveraged for enterprise-grade applications.
 
 The frontend repository lives here: https://github.com/CodingFlow/rating-app
 
