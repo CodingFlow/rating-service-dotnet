@@ -18,11 +18,11 @@ spec:
           imagePullPolicy: Always
           resources:
             requests:
-              cpu: 200m
-              memory: 150Mi
-            limits:
               cpu: 300m
-              memory: 300Mi
+              memory: 250Mi
+            limits:
+              cpu: 800m
+              memory: 400Mi
           env:
             - name: SERVICE_STREAM_NAME
               value: {{ .Values.rating_service_stream_name }}

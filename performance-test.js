@@ -7,13 +7,14 @@ export const options = {
 };
 
 export default function () {
-    let data = createData();
+    // let data = createData();
     let headers = {
       'Content-Type': 'application/json',
       "Host": "www.example.com"
     };
 
-    http.post('http://localhost:8080/api/users', data, {headers: headers});
+    // http.post('http://localhost:8080/api/ratings', data, {headers: headers});
+    http.get('http://localhost:8080/api/ratings', {headers: headers});
   
     sleep(0.3);
   }
