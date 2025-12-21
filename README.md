@@ -113,12 +113,44 @@ HTTP to NATS Proxy ->> Browser (HTTP Client): HTTP REST response
 - Generally follow the ideas and guidelines for Domain Driven Design from the free book **.NET Microservices: Architecture for Containerized .NET Applications** ([view online](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/))
 - Focus on opinionated shared libraries, code generators, and tools to enable standardization, reduce boilerplate, and ease improvements across all services.
 
-Services will be composed of the following four layers:
+Services will be composed of the following five layers:
 
+- AppHost
 - API
 - Application
-- Domain
 - Infrastructure
+- Domain
+
+Also there is a `Infrastructure.DesignTime` project which is not a runtime layer, but a supporting design time project for the infrastructure layer.
+
+The following diagram shows the layer dependencies:
+
+```mermaid
+flowchart TD
+  apphost[AppHost]
+  api[API]
+  app[Application]
+  infrastructure[Infrastructure]
+  domain[Domain]
+  apphost --> api
+  apphost --> app
+  apphost --> infrastructure
+  api --> app
+  app --> domain
+  infrastructure --> domain
+```
+
+Notice that `Domain` depends on no other layer and that `Application` does not directly depend on `Infrastructure`. `Domain` is the final layer and the core of the application. `Application` indirectly receives dependencies from `Infrastructure` through `AppHost` using dependency injection.
+
+### AppHost Layer
+
+The application composition root and host for the entire application. Responsible for:
+
+- Hosting and starting the main application logic.
+- Setting up dependency injection.
+- Setting up configuration.
+
+A common library has been created to set up the preceding items: `Service.AppHost.Common`.
 
 ### API Layer
 
@@ -126,8 +158,6 @@ The frontend of the service, the API layer contains the technical infrastructure
 
 - Connecting to a NATS server.
 - Dispatching request queries/commands to the right handler in the Application layer.
-- Setting up dependency injection.
-- Setting up configuration.
 
 A common library has been created to set up the preceding items: `Service.Api.Common`.
 
@@ -148,6 +178,18 @@ The code generator, `AsyncApiApplicationSupportGenerator`, generates:
 - All types for query, command, query response, command response, and their nested types.
 
 The handler interfaces are derived from a generic interface with types specified for the request and response types that must be handled. In practical terms, it gives a convenient way to create the concrete handler class with the right method types by using [Visual Studio's "Implement interface" code generation quick action](https://learn.microsoft.com/en-us/visualstudio/ide/reference/implement-interface?view=visualstudio).
+
+### Infrastructure Layer
+
+Contains implementations of repositories that implement the interfaces from the domain layer. Repositories provide an abstraction to database-related logic. Repositories use [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/) `DBContext`s to interact with the service's database.
+
+### Domain Layer
+
+All business/domain logic resides here following DDD best practices. Aggregates, entities, value objects, as well as repository interfaces reside in this layer. Repository implementations are not present so only the abstractions are exposed to the application layer.
+
+### Infrastructure.DesignTime Project
+
+Contains Entity Framework Core design time support code for the `DBContext`s in the infrastructure layer, such as for generating database migration code and performing migrations.
 
 # Usage
 
@@ -193,11 +235,11 @@ For first time setup, create local nuget packages of service dependencies in thi
 for testing:
 
 ```bash
-create-local-nuget-packages
 create-cluster
 deploy-nack
 deploy-database
 update-database
+create-local-nuget-packages
 deploy-service
 deploy-http-to-nats-proxy
 deploy-gateway
@@ -205,5 +247,5 @@ deploy-frontend
 port-forward-gateway
 ```
 
-Then send a request to http://localhost:8080/api/users to get users from the API. Or
+Then send a request to http://localhost:8080/api/ratings to get ratings from the API. Or
 access http://localhost:8080/ui in the browser.

@@ -1,7 +1,0 @@
-<Project>
-
-    <ItemGroup>
-        <InternalsVisibleTo Include="TestProject2" />
-    </ItemGroup>
-
-</Project>
