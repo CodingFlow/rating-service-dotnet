@@ -2,8 +2,8 @@
 
 public interface IRatingRepository : IRepository<Rating>
 {
-    Task<Rating[]> Find(int[] ratingIds);
-    Task<Rating[]> FindAll();
-    public Task Add(Rating[] rating);
+    IAsyncEnumerable<Rating> Find(int[] ratingIds);
+    IAsyncEnumerable<Rating> FindAll();
+    public Task Add(IEnumerable<Rating> rating);
     public Task<int> Save();
 }

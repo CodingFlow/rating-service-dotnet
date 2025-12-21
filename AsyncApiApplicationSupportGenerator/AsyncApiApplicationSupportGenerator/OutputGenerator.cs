@@ -93,11 +93,11 @@ public interface {interfaceName} : {parentInterfaceName}
                         ? $"{assemblyName}.Models."
                         : string.Empty;
                     var memberType = GetMemberType(property.Value, spec);
-                    var arrayBrackets = property.Value.Type == SchemaType.Array
-                        ? "[]"
-                        : string.Empty;
+                    var wholeType = property.Value.Type == SchemaType.Array
+                        ? $"IEnumerable<{propertyNamespace}{memberType}>"
+                        : $"{propertyNamespace}{memberType}";
                     var formattedItem = $@"    [JsonPropertyName(""{propertyName}"")]
-    public {propertyNamespace}{memberType}{arrayBrackets} {StringUtils.ToPascalCase(property.Key)} {{ get; init; }}";
+    public {wholeType} {StringUtils.ToPascalCase(property.Key)} {{ get; init; }}";
 
                     return formattedItem;
                 });

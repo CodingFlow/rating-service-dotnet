@@ -8,5 +8,5 @@ namespace TestProject.Commands;
 public readonly struct PostUsersCommand
 {
     [JsonPropertyName("items")]
-    public TestProject.Models.User[] Items { get; init; }
+    public IEnumerable<TestProject.Models.User> Items { get; init; }
 }

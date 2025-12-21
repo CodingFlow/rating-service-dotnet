@@ -5,17 +5,17 @@ namespace RatingService.Infrastructure;
 
 internal class RatingRepository(RatingContext ratingContext) : IRatingRepository
 {
-    public async Task<Rating[]> Find(int[] ratingIds)
+    public IAsyncEnumerable<Rating> Find(int[] ratingIds)
     {
-        return await ratingContext.Ratings.Where(r => ratingIds.Contains(r.Id)).AsNoTracking().ToArrayAsync();
+        return ratingContext.Ratings.Where(r => ratingIds.Contains(r.Id)).AsNoTracking().AsAsyncEnumerable();
     }
 
-    public async Task<Rating[]> FindAll()
+    public IAsyncEnumerable<Rating> FindAll()
     {
-        return await ratingContext.Ratings.AsNoTracking().ToArrayAsync();
+        return ratingContext.Ratings.AsNoTracking().AsAsyncEnumerable();
     }
 
-    public async Task Add(Rating[] ratings)
+    public async Task Add(IEnumerable<Rating> ratings)
     {
         await ratingContext.AddRangeAsync(ratings);
     }

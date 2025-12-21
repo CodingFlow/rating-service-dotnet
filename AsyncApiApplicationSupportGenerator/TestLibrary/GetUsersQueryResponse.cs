@@ -8,5 +8,5 @@ namespace TestProject.QueryResponses;
 public readonly struct GetUsersQueryResponse
 {
     [JsonPropertyName("items")]
-    public TestProject.Models.User[] Items { get; init; }
+    public IEnumerable<TestProject.Models.User> Items { get; init; }
 }

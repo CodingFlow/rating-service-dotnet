@@ -7,14 +7,14 @@ internal class GetRatingsHandler(IRatingRepository ratingRepository) : IGetRatin
 {
     public async Task<GetRatingsQueryResponse> Handle()
     {
-        var ratings = await ratingRepository.FindAll();
+        var ratings = ratingRepository.FindAll();
         var responseRatings = ratings.Select(rating => new Models.Rating
         {
             Id = rating.Id,
             UserId = rating.UserId,
             ServiceId = rating.ServiceId,
             Score = rating.Score,
-        }).ToArray();
+        }).ToBlockingEnumerable();
 
         return new()
         {
