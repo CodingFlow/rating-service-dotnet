@@ -53,10 +53,12 @@ internal class Main(
         try
         {
             Console.WriteLine("processing message");
+            Console.WriteLine($"Headers: {JsonSerializer.Serialize(message.Headers)}");
+            Console.WriteLine($"Data: {JsonSerializer.Serialize(message.Data)}");
+
             var splitSubject = ExtractHttpMethod(message);
 
-            Console.Write($"Headers: {message.Headers}");
-            Console.WriteLine($"Data: {JsonSerializer.Serialize(message.Data)}");
+            Console.WriteLine($"httpMethod: {splitSubject.httpMethod} -- pathPart: {splitSubject.pathPart}");
 
             await mainHandler.HandleRequest(client, splitSubject, message, cancellationToken);
 
@@ -77,8 +79,6 @@ internal class Main(
         {
             secondPartIndex = message.Subject.Length;
         }
-
-        Console.WriteLine($"first index: {firstPartIndex} -- second index: {secondPartIndex}");
 
         return (message.Subject[..firstPartIndex], message.Subject[(firstPartIndex + 1)..secondPartIndex]);
     }
