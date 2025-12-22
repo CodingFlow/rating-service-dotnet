@@ -39,7 +39,7 @@ internal class Main(
 
         var jetStream = client.CreateJetStreamContext();
         var consumer = await jetStream.GetConsumerAsync(serviceStreamConsumerSettings.StreamName, serviceStreamConsumerSettings.ConsumerName);
-
+        
         Console.WriteLine("Ready to process messages");
 
         var messages = consumer.ConsumeAsync<Request<JsonNode>>();
@@ -59,6 +59,7 @@ internal class Main(
             Console.WriteLine("processing message");
             var splitSubject = ExtractHttpMethod(message);
 
+            Console.Write($"Headers: {message.Headers}");
             Console.WriteLine($"Data: {JsonSerializer.Serialize(message.Data)}");
 
             await mainHandler.HandleRequest(client, splitSubject, message, cancellationToken);

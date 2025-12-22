@@ -21,3 +21,4 @@ spec:
   # filterSubjects: ["*.services", "*.users", "*.ratings"]
   maxDeliver: 20
   ackPolicy: explicit
+  ackWait: 10ms
