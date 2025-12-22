@@ -43,7 +43,10 @@ internal class Main(
             var messageAlreadyReceived = memoryCache.TryGetValue(messageId, out _);
             if (!messageAlreadyReceived)
             {
-                memoryCache.Set(messageId, true);
+                var memoryCacheOptions = new MemoryCacheEntryOptions { 
+                    SlidingExpiration = TimeSpan.FromSeconds(1)
+                };
+                memoryCache.Set(messageId, true, memoryCacheOptions);
                 await using var scope = serviceScopeFactory.CreateAsyncScope();
                 var mainHandler = scope.ServiceProvider.GetService<IMainHandler>();
                 await HandleMessage(client, message, mainHandler, cancellationToken);
@@ -59,7 +62,7 @@ internal class Main(
         await client!.DisposeAsync();
     }
 
-    private static async ValueTask HandleMessage(NatsClient client, INatsJSMsg<Request<JsonNode>> message, IMainHandler mainHandler, CancellationToken cancellationToken)
+    private async ValueTask HandleMessage(NatsClient client, INatsJSMsg<Request<JsonNode>> message, IMainHandler mainHandler, CancellationToken cancellationToken)
     {
         try
         {
@@ -78,6 +81,11 @@ internal class Main(
         catch (Exception ex)
         {
             Console.WriteLine($"Error processing message: {ex}");
+
+            message.Headers.TryGetValue("Nats-Msg-Id", out var messageId);
+            memoryCache.Remove(messageId);
+
+            await message.NakAsync(cancellationToken: cancellationToken);
         }
     }
 
