@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -11,6 +12,7 @@ namespace Service.Api.Common;
 internal class Main(
     IOptions<NatsServiceOptions> natsServiceOptions,
     IOptions<ServiceStreamConsumerOptions> serviceStreamConsumerOptions,
+    IMemoryCache memoryCache,
     IServiceScopeFactory serviceScopeFactory) : IHostedService
 {
     private readonly NatsServiceOptions natsServiceSettings = natsServiceOptions.Value;
@@ -30,16 +32,25 @@ internal class Main(
 
         var jetStream = client.CreateJetStreamContext();
         var consumer = await jetStream.GetConsumerAsync(serviceStreamConsumerSettings.StreamName, serviceStreamConsumerSettings.ConsumerName, cancellationToken);
-
+        
         Console.WriteLine("Ready to process messages");
 
         var messages = consumer.ConsumeAsync<Request<JsonNode>>(cancellationToken: cancellationToken);
 
         await Parallel.ForEachAsync(messages, async (message, cancellationToken) =>
         {
-            await using var scope = serviceScopeFactory.CreateAsyncScope();
-            var mainHandler = scope.ServiceProvider.GetService<IMainHandler>();
-            await HandleMessage(client, message, mainHandler, cancellationToken);
+            message.Headers.TryGetValue("Nats-Msg-Id", out var messageId);
+            var messageAlreadyReceived = memoryCache.TryGetValue(messageId, out _);
+            if (!messageAlreadyReceived)
+            {
+                memoryCache.Set(messageId, true);
+                await using var scope = serviceScopeFactory.CreateAsyncScope();
+                var mainHandler = scope.ServiceProvider.GetService<IMainHandler>();
+                await HandleMessage(client, message, mainHandler, cancellationToken);
+            } else
+            {
+                Console.WriteLine($"Ignored duplicate message with id {messageId}");
+            }
         });
     }
 

@@ -8,6 +8,6 @@ internal class MainHandler(IRequestDispatcher requestDispatcher) : IMainHandler
 {
     public async Task HandleRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
     {
-        await requestDispatcher.DispatchRequest(client, splitSubject, message, new RestHandler(), cancellationToken);
+        await requestDispatcher.DispatchRequest(client, splitSubject, message, cancellationToken);
     }
 }

@@ -20,12 +20,13 @@ namespace AsyncApiBindingsGenerator
                 return (parts.First(), parts.ElementAt(1));
             });
 
-            var formattedDependencies = splitAddresses.Select(((string restMethod, string pathPart) addressInfo) =>
+            var firstDependency = new List<string>() { "IRestHandler restHandler" };
+            var formattedDependencies = firstDependency.Concat(splitAddresses.Select(((string restMethod, string pathPart) addressInfo) =>
             {
                 var interfaceName = $"I{ToPascalCase(addressInfo.restMethod)}{ToPascalCase(addressInfo.pathPart)}Handler";
                 var variableName = $"{addressInfo.restMethod}{ToPascalCase(addressInfo.pathPart)}Handler";
                 return $"{interfaceName} {variableName}";
-            });
+            }));
 
             var formattedCases = splitAddresses.Select(((string restMethod, string pathPart) addressInfo) =>
             {
@@ -50,7 +51,7 @@ namespace {@namespace};
 
 public class RequestDispatcher({string.Join(", ", formattedDependencies)}) : IRequestDispatcher
 {{
-    public async Task DispatchRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, INatsJSMsg<Request<JsonNode>> message, IRestHandler restHandler, CancellationToken cancellationToken)
+    public async Task DispatchRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
     {{
         switch (splitSubject)
         {{

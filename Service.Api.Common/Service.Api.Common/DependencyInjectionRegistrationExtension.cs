@@ -8,6 +8,8 @@ internal static class DependencyInjectionRegistrationExtension
     {
         services.AddHostedService<Main>();
         services.AddTransient<IMainHandler, MainHandler>();
+        services.AddTransient<IRestHandler, RestHandler>();
+        services.AddMemoryCache();
 
         return services;
     }

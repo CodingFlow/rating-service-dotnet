@@ -9,9 +9,9 @@ using TestProject.Application.Handlers;
 
 namespace TestProject;
 
-public class RequestDispatcher(IGetUsersHandler getUsersHandler, IPostUsersHandler postUsersHandler) : IRequestDispatcher
+public class RequestDispatcher(IRestHandler restHandler, IGetUsersHandler getUsersHandler, IPostUsersHandler postUsersHandler) : IRequestDispatcher
 {
-    public async Task DispatchRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, INatsJSMsg<Request<JsonNode>> message, IRestHandler restHandler, CancellationToken cancellationToken)
+    public async Task DispatchRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
     {
         switch (splitSubject)
         {
