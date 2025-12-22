@@ -59,11 +59,13 @@ deploy_http_to_nats_proxy() {
 
 deploy_database() {
     kubectl apply --server-side -f \
-  https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.28/releases/cnpg-1.28.0.yaml &&
+        https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.28/releases/cnpg-1.28.0.yaml &&
+    kubectl wait pod -l app.kubernetes.io/name=cloudnative-pg -n cnpg-system --for=condition=ready --timeout=10s &&
     kubectl apply -f ./deployment/postgres-cnpg.yaml
 }
 
 create_database_migration() {
+    kubectl wait pod -l app.kubernetes.io/instance=cluster-example --for=condition=Ready --timeout=10s &&
     dotnet ef migrations add InitialCreate -p ./RatingService.Infrastructure/ --startup-project ./RatingService.Infrastructure.DesignTime/
 }
 
