@@ -70,6 +70,7 @@ create_database_migration() {
 }
 
 update_database() {
+    kubectl wait pod -l app.kubernetes.io/instance=cluster-example --for=condition=Ready --timeout=10s &&
     build_push_docker_image $docker_registry rating-service-database-migration-job . database-migration.Dockerfile &&
     apply_helm_package rating-service-database-migration-job ./deployment/database-migration ./deployment/database-migration-values.yaml
 }

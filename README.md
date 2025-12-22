@@ -238,7 +238,6 @@ create-cluster
 deploy-nack
 deploy-database
 update-database
-create-local-nuget-packages
 deploy-service
 deploy-http-to-nats-proxy
 deploy-gateway
