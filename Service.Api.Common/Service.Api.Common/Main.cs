@@ -15,18 +15,9 @@ internal class Main(
 {
     private readonly NatsServiceOptions natsServiceSettings = natsServiceOptions.Value;
     private readonly ServiceStreamConsumerOptions serviceStreamConsumerSettings = serviceStreamConsumerOptions.Value;
+    private NatsClient? client;
 
     public async Task StartAsync(CancellationToken cancellationToken)
-    {
-        await Run();
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    private async Task Run()
     {
         var host = natsServiceSettings.ServiceHost;
         var port = natsServiceSettings.Port;
@@ -35,14 +26,14 @@ internal class Main(
 
         var url = $"nats://{host}:{port}";
 
-        var client = new NatsClient(url);
+        client = new NatsClient(url);
 
         var jetStream = client.CreateJetStreamContext();
-        var consumer = await jetStream.GetConsumerAsync(serviceStreamConsumerSettings.StreamName, serviceStreamConsumerSettings.ConsumerName);
-        
+        var consumer = await jetStream.GetConsumerAsync(serviceStreamConsumerSettings.StreamName, serviceStreamConsumerSettings.ConsumerName, cancellationToken);
+
         Console.WriteLine("Ready to process messages");
 
-        var messages = consumer.ConsumeAsync<Request<JsonNode>>();
+        var messages = consumer.ConsumeAsync<Request<JsonNode>>(cancellationToken: cancellationToken);
 
         await Parallel.ForEachAsync(messages, async (message, cancellationToken) =>
         {
@@ -50,6 +41,11 @@ internal class Main(
             var mainHandler = scope.ServiceProvider.GetService<IMainHandler>();
             await HandleMessage(client, message, mainHandler, cancellationToken);
         });
+    }
+
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        await client!.DisposeAsync();
     }
 
     private static async ValueTask HandleMessage(NatsClient client, INatsJSMsg<Request<JsonNode>> message, IMainHandler mainHandler, CancellationToken cancellationToken)
