@@ -7,6 +7,6 @@ namespace Service.Api.Common;
 
 public interface IRestHandler
 {
-    Task HandleGet<TResponse>(NatsClient client, NatsJSMsg<Request<JsonNode>> message, IGetHandler<TResponse> getHandler, CancellationToken cancellationToken);
-    Task HandlePost<TRequest, TResponse>(NatsClient client, NatsJSMsg<Request<JsonNode>> message, IPostHandler<TRequest, TResponse> postHandler, CancellationToken cancellationToken);
+    Task HandleGet<TResponse>(NatsClient client, INatsJSMsg<Request<JsonNode>> message, IGetHandler<TResponse> getHandler, CancellationToken cancellationToken);
+    Task HandlePost<TRequest, TResponse>(NatsClient client, INatsJSMsg<Request<JsonNode>> message, IPostHandler<TRequest, TResponse> postHandler, CancellationToken cancellationToken);
 }

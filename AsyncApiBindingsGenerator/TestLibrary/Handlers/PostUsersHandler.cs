@@ -3,8 +3,8 @@
 internal class PostUsersHandler : IPostUsersHandler
 {
 
-    public string Handle(User[] user)
+    public async Task<string> Handle(IEnumerable<User> user)
     {
-        return string.Empty;
+        return await Task.FromResult(string.Empty);
     }
 }

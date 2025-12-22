@@ -2,6 +2,6 @@
 
 namespace TestProject.Application.Handlers;
 
-public interface IPostUsersHandler : IPostHandler<User[], string>
+public interface IPostUsersHandler : IPostHandler<IEnumerable<User>, string>
 {
 }

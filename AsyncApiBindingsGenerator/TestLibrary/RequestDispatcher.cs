@@ -11,7 +11,7 @@ namespace TestProject;
 
 public class RequestDispatcher(IGetUsersHandler getUsersHandler, IPostUsersHandler postUsersHandler) : IRequestDispatcher
 {
-    public async Task DispatchRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, NatsJSMsg<Request<JsonNode>> message, IRestHandler restHandler, CancellationToken cancellationToken)
+    public async Task DispatchRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, INatsJSMsg<Request<JsonNode>> message, IRestHandler restHandler, CancellationToken cancellationToken)
     {
         switch (splitSubject)
         {

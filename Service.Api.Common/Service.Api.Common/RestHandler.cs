@@ -8,7 +8,7 @@ namespace Service.Api.Common;
 
 internal class RestHandler : IRestHandler
 {
-    public async Task HandlePost<TRequest, TResponse>(NatsClient client, NatsJSMsg<Request<JsonNode>> message, IPostHandler<TRequest, TResponse> postHandler, CancellationToken cancellationToken)
+    public async Task HandlePost<TRequest, TResponse>(NatsClient client, INatsJSMsg<Request<JsonNode>> message, IPostHandler<TRequest, TResponse> postHandler, CancellationToken cancellationToken)
     {
         Console.WriteLine($"Received request body: {message.Data.Body}");
         var requestBody = message.Data.Body.Deserialize<TRequest>();
@@ -23,7 +23,7 @@ internal class RestHandler : IRestHandler
         cancellationToken: cancellationToken);
     }
 
-    public async Task HandleGet<TResponse>(NatsClient client, NatsJSMsg<Request<JsonNode>> message, IGetHandler<TResponse> getHandler, CancellationToken cancellationToken)
+    public async Task HandleGet<TResponse>(NatsClient client, INatsJSMsg<Request<JsonNode>> message, IGetHandler<TResponse> getHandler, CancellationToken cancellationToken)
     {
         var responseBody = await getHandler.Handle();
         await client.PublishAsync(message.Data.OriginReplyTo, new Response<TResponse>

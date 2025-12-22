@@ -52,7 +52,7 @@ internal class Main(
         });
     }
 
-    private static async ValueTask HandleMessage(NatsClient client, NatsJSMsg<Request<JsonNode>> message, IMainHandler mainHandler, CancellationToken cancellationToken)
+    private static async ValueTask HandleMessage(NatsClient client, INatsJSMsg<Request<JsonNode>> message, IMainHandler mainHandler, CancellationToken cancellationToken)
     {
         try
         {
@@ -72,7 +72,7 @@ internal class Main(
         }
     }
 
-    private static (string httpMethod, string pathPart) ExtractHttpMethod<T>(NatsJSMsg<Request<T>> message)
+    private static (string httpMethod, string pathPart) ExtractHttpMethod<T>(INatsJSMsg<Request<T>> message)
     {
         var firstPartIndex = message.Subject.IndexOf('.');
         var secondPartIndex = message.Subject.IndexOf('.', firstPartIndex + 1);

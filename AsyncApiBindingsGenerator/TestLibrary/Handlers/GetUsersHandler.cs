@@ -3,8 +3,8 @@
 internal class GetUsersHandler : IGetUsersHandler
 {
 
-    public User[] Handle()
+    public async Task<IEnumerable<User>> Handle()
     {
-        return [];
+        return await Task.FromResult(new User[1]);
     }
 }
