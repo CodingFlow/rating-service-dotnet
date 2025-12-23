@@ -2,8 +2,8 @@ import http from 'k6/http';
 import { sleep } from 'k6';
 
 export const options = {
-  iterations: 10000,
-  vus: 200
+  iterations: 60000,
+  vus: 600
 };
 
 export default function () {
@@ -16,7 +16,7 @@ export default function () {
     // http.post('http://localhost:8080/api/ratings', data, {headers: headers});
     http.get('http://localhost:8080/api/ratings', {headers: headers});
   
-    sleep(0.3);
+    sleep(0.1);
   }
 
   function createData() {

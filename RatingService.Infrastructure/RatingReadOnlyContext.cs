@@ -4,7 +4,7 @@ using RatingService.Domain;
 
 namespace RatingService.Infrastructure;
 
-internal class RatingContext(IOptions<PostgreSqlDatabaseOptions> databaseOptions) : DbContext
+internal class RatingReadOnlyContext(IOptions<PostgreSqlDatabaseOptions> databaseOptions) : DbContext
 {
     private readonly PostgreSqlDatabaseOptions databaseSettings = databaseOptions.Value;
 
@@ -12,7 +12,7 @@ internal class RatingContext(IOptions<PostgreSqlDatabaseOptions> databaseOptions
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var connectionString = $"Host={databaseSettings.HostReadWrite};Username={databaseSettings.Username};Password={databaseSettings.Password};Database={databaseSettings.DatabaseName}";
+        var connectionString = $"Host={databaseSettings.HostReadOnly};Username={databaseSettings.Username};Password={databaseSettings.Password};Database={databaseSettings.DatabaseName}";
         
         Console.WriteLine($"RatingContext - environment variable connection string: {connectionString}");
         

@@ -10,8 +10,12 @@ public static class DependencyInjectionRegistrationExtension
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfigurationManager configuration)
     {
         services.AddOptionsBindings(configuration);
+
         services.AddDbContext<RatingContext>();
         services.AddScoped<IRatingRepository, RatingRepository>();
+
+        services.AddDbContext<RatingReadOnlyContext>();
+        services.AddScoped<IRatingReadOnlyRepository, RatingReadOnlyRepository>();
 
         return services;
     }

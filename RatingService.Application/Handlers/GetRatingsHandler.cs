@@ -3,7 +3,7 @@ using RatingService.Domain;
 
 namespace RatingService.Application.Handlers;
 
-internal class GetRatingsHandler(IRatingRepository ratingRepository) : IGetRatingsHandler
+internal class GetRatingsHandler(IRatingReadOnlyRepository ratingRepository) : IGetRatingsHandler
 {
     public async Task<GetRatingsQueryResponse> Handle()
     {

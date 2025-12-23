@@ -8,8 +8,16 @@ namespace RatingService.Infrastructure;
 internal record PostgreSqlDatabaseOptions
 {
     [Required]
-    [ConfigurationKeyName("DATABASE_POSTGRESQL_HOST")]
-    public required string Host { get; set; }
+    [ConfigurationKeyName("CLUSTER_EXAMPLE_R_SERVICE_HOST")]
+    public required string HostReadOnly { get; set; }
+
+    [Required]
+    [ConfigurationKeyName("CLUSTER_EXAMPLE_RW_SERVICE_HOST")]
+    public required string HostReadWrite { get; set; }
+
+    [Required]
+    [ConfigurationKeyName("CLUSTER_EXAMPLE_RO_SERVICE_HOST")]
+    public required string HostAny { get; set; }
 
     [Required]
     [ConfigurationKeyName("DATABASE_POSTGRESQL_USERNAME")]

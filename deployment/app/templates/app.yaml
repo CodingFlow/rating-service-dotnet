@@ -21,18 +21,13 @@ spec:
               cpu: 300m
               memory: 250Mi
             limits:
-              cpu: 800m
+              cpu: 1000m
               memory: 400Mi
           env:
             - name: SERVICE_STREAM_NAME
               value: {{ .Values.rating_service_stream_name }}
             - name: SERVICE_CONSUMER_NAME
               value: {{ .Values.rating_service_consumer_name }}
-            - name: DATABASE_POSTGRESQL_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: cluster-example-app
-                  key: host
             - name: DATABASE_POSTGRESQL_USERNAME
               valueFrom:
                 secretKeyRef:
