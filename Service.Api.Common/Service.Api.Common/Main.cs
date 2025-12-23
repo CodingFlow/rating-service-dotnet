@@ -69,13 +69,10 @@ internal class Main(
             Console.WriteLine("processing message");
             Console.WriteLine($"Headers: {JsonSerializer.Serialize(message.Headers)}");
             Console.WriteLine($"Data: {JsonSerializer.Serialize(message.Data)}");
+            
+            var pathParts = ExtractPathParts(message);
 
-            var splitSubject = ExtractHttpMethod(message);
-            var pathParts = ExtractRemaingPathParts(message);
-
-            Console.WriteLine($"httpMethod: {splitSubject.httpMethod} -- pathPart: {splitSubject.pathPart}");
-
-            await mainHandler.HandleRequest(client, splitSubject, pathParts, message, cancellationToken);
+            await mainHandler.HandleRequest(client, pathParts, message, cancellationToken);
 
             await message.AckAsync(cancellationToken: cancellationToken);
         }
@@ -90,31 +87,8 @@ internal class Main(
         }
     }
 
-    private static (string httpMethod, string pathPart) ExtractHttpMethod<T>(INatsJSMsg<Request<T>> message)
+    private static string[] ExtractPathParts(INatsJSMsg<Request<JsonNode>> message)
     {
-        var firstPartIndex = message.Subject.IndexOf('.');
-        var secondPartIndex = message.Subject.IndexOf('.', firstPartIndex + 1);
-
-        if (secondPartIndex == -1)
-        {
-            secondPartIndex = message.Subject.Length;
-        }
-
-        return (message.Subject[..firstPartIndex], message.Subject[(firstPartIndex + 1)..secondPartIndex]);
-    }
-
-    private static string[] ExtractRemaingPathParts(INatsJSMsg<Request<JsonNode>> message)
-    {
-        var firstPartIndex = message.Subject.IndexOf('.');
-        var secondPartIndex = message.Subject.IndexOf('.', firstPartIndex + 1);
-
-        if (secondPartIndex == -1)
-        {
-            secondPartIndex = message.Subject.Length;
-        }
-
-        var remainingParts = message.Subject.Substring(secondPartIndex);
-
-        return remainingParts.Split('.');
+        return message.Subject.Split('.');
     }
 }

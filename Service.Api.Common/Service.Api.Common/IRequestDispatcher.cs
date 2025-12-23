@@ -6,5 +6,5 @@ namespace Service.Api.Common;
 
 public interface IRequestDispatcher
 {
-    Task DispatchRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, string[] pathParts, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken);
+    Task DispatchRequest(NatsClient client, string[] pathParts, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken);
 }

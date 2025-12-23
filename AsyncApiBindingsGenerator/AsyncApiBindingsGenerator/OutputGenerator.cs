@@ -36,8 +36,11 @@ namespace AsyncApiBindingsGenerator
                 var IsmessageBodyExists = messageBodyExistsString != string.Empty;
 
                 var address = channel.Value.Address;
-                var parts = address.Split('.');
-                var (restMethod, pathPart) = (parts.First(), parts.ElementAt(1));
+                var addressParts = address.Split('.');
+                var restMethod = addressParts.First();
+                var pathPart = addressParts.ElementAt(1);
+
+                var pathPartsFormatted = string.Join(", ", addressParts.Select(p => $@"""{p}"""));
 
                 var variableName = $"{restMethod}{ToPascalCase(pathPart)}Handler";
                 var methodName = GetCaseMethodName(restMethod);
@@ -46,7 +49,7 @@ namespace AsyncApiBindingsGenerator
                     ? $"{mergeMethodName}, "
                     : string.Empty;
 
-                return $@"            case (""{restMethod}"", ""{pathPart}""):
+                return $@"            case [{pathPartsFormatted}]:
                 await restHandler.{methodName}(client, message, pathParts, {variableName}, {mergeMethodNameWithComma}cancellationToken);
                 break;";
             });
@@ -63,7 +66,8 @@ namespace AsyncApiBindingsGenerator
                 {
                     var address = channel.Value.Address;
                     var parts = address.Split('.');
-                    var (restMethod, pathPart) = (parts.First(), parts.ElementAt(1));
+                    var restMethod = parts.First();
+                    var pathPart = parts.ElementAt(1);
 
                     var requestType = GetRequestType(restMethod);
                     var mergeTypeNamespace = GetMergeTypeNamespace(restMethod, serviceNamespacePart);
@@ -97,9 +101,9 @@ namespace {@namespace};
 
 public class RequestDispatcher({string.Join(", ", formattedDependencies)}) : IRequestDispatcher
 {{
-    public async Task DispatchRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, string[] pathParts, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
+    public async Task DispatchRequest(NatsClient client, string[] pathParts, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
     {{
-        switch (splitSubject)
+        switch (pathParts)
         {{
 {string.Join(@"
 ", formattedCases)}

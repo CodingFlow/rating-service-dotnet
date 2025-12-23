@@ -6,8 +6,8 @@ namespace Service.Api.Common;
 
 internal class MainHandler(IRequestDispatcher requestDispatcher) : IMainHandler
 {
-    public async Task HandleRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, string[] pathParts, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
+    public async Task HandleRequest(NatsClient client, string[] pathParts, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
     {
-        await requestDispatcher.DispatchRequest(client, splitSubject, pathParts, message, cancellationToken);
+        await requestDispatcher.DispatchRequest(client, pathParts, message, cancellationToken);
     }
 }
