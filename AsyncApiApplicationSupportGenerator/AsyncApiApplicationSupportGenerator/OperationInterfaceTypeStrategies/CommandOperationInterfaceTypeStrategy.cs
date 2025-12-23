@@ -25,7 +25,7 @@
 
         public string ResponseBodyNotPresent()
         {
-            return "string";
+            return string.Empty;
         }
 
         public string ResponseBodyPresent()

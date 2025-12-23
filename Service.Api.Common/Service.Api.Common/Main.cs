@@ -71,10 +71,11 @@ internal class Main(
             Console.WriteLine($"Data: {JsonSerializer.Serialize(message.Data)}");
 
             var splitSubject = ExtractHttpMethod(message);
+            var pathParts = ExtractRemaingPathParts(message);
 
             Console.WriteLine($"httpMethod: {splitSubject.httpMethod} -- pathPart: {splitSubject.pathPart}");
 
-            await mainHandler.HandleRequest(client, splitSubject, message, cancellationToken);
+            await mainHandler.HandleRequest(client, splitSubject, pathParts, message, cancellationToken);
 
             await message.AckAsync(cancellationToken: cancellationToken);
         }
@@ -100,5 +101,20 @@ internal class Main(
         }
 
         return (message.Subject[..firstPartIndex], message.Subject[(firstPartIndex + 1)..secondPartIndex]);
+    }
+
+    private static string[] ExtractRemaingPathParts(INatsJSMsg<Request<JsonNode>> message)
+    {
+        var firstPartIndex = message.Subject.IndexOf('.');
+        var secondPartIndex = message.Subject.IndexOf('.', firstPartIndex + 1);
+
+        if (secondPartIndex == -1)
+        {
+            secondPartIndex = message.Subject.Length;
+        }
+
+        var remainingParts = message.Subject.Substring(secondPartIndex);
+
+        return remainingParts.Split('.');
     }
 }

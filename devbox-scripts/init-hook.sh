@@ -30,6 +30,7 @@ alias update-database='update_database'
 load_config dev
 
 create_local_nuget_packages() {
+    mkdir local-nuget-feed
     dotnet pack -c release -o ./local-nuget-feed ./Service.AppHost.Common/
     dotnet pack -c release -o ./local-nuget-feed ./Service.Application.Common/
     dotnet pack -c release -o ./local-nuget-feed ./Service.Api.Common/

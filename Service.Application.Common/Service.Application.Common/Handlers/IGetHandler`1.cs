@@ -4,3 +4,4 @@ public interface IGetHandler<TResponse>
 {
     Task<TResponse> Handle();
 }
+

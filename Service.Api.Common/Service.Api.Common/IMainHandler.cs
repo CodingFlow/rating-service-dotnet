@@ -6,5 +6,5 @@ namespace Service.Api.Common;
 
 internal interface IMainHandler
 {
-    Task HandleRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken);
+    Task HandleRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, string[] pathParts, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken);
 }

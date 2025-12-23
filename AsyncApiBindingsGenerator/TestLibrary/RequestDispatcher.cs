@@ -9,18 +9,23 @@ using TestProject.Application.Handlers;
 
 namespace TestProject;
 
-public class RequestDispatcher(IRestHandler restHandler, IGetUsersHandler getUsersHandler, IPostUsersHandler postUsersHandler) : IRequestDispatcher
+public class RequestDispatcher(IRestHandler restHandler, IGetRatingsHandler getRatingsHandler, IPostRatingsHandler postRatingsHandler) : IRequestDispatcher
 {
-    public async Task DispatchRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
+    public async Task DispatchRequest(NatsClient client, (string httpMethod, string pathPart) splitSubject, string[] pathParts, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
     {
         switch (splitSubject)
         {
-            case ("get", "users"):
-                await restHandler.HandleGet(client, message, getUsersHandler, cancellationToken);
+            case ("get", "ratings"):
+                await restHandler.HandleGet(client, message, pathParts, getRatingsHandler, cancellationToken);
                 break;
-            case ("post", "users"):
-                await restHandler.HandlePost(client, message, postUsersHandler, cancellationToken);
+            case ("post", "ratings"):
+                await restHandler.HandlePost(client, message, pathParts, postRatingsHandler, mergePostRatings, cancellationToken);
                 break;
         }
+    }
+
+    private static TestProject.Application.Commands.PostRatingsCommand mergePostRatings(TestProject.Application.Commands.PostRatingsCommand original, string[] pathParts)
+    {
+        return original;
     }
 }

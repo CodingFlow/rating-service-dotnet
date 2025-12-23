@@ -1,9 +1,11 @@
-﻿namespace TestProject.Application.Handlers;
+﻿using TestProject.Application.Commands;
 
-internal class PostUsersHandler : IPostUsersHandler
+namespace TestProject.Application.Handlers;
+
+internal class PostUsersHandler : IPostRatingsHandler
 {
 
-    public async Task<string> Handle(IEnumerable<User> user)
+    public async Task<string> Handle(PostRatingsCommand command)
     {
         return await Task.FromResult(string.Empty);
     }

@@ -5,7 +5,7 @@ namespace RatingService.Application.Handlers;
 
 internal class PostRatingsHandler(IRatingRepository ratingRepository) : IPostRatingsHandler
 {
-    public async Task<string> Handle(PostRatingsCommand request)
+    public async Task Handle(PostRatingsCommand request)
     {
         var ratings = request.Items.Select(requestRating => new Rating
         {
@@ -17,7 +17,5 @@ internal class PostRatingsHandler(IRatingRepository ratingRepository) : IPostRat
         await ratingRepository.Add(ratings);
 
         await ratingRepository.Save();
-
-        return await Task.FromResult(string.Empty);
     }
 }

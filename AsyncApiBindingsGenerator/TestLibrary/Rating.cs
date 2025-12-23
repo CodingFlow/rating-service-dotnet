@@ -1,6 +1,5 @@
 ﻿namespace TestProject;
 
-public struct User
+public struct Rating
 {
-
 }

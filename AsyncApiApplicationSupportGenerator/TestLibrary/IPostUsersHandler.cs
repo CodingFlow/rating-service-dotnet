@@ -5,6 +5,6 @@ using Service.Application.Common.Handlers;
 
 namespace TestProject.Handlers;
 
-public interface IPostUsersHandler : IPostHandler<TestProject.Commands.PostUsersCommand, string>
+public interface IPostUsersHandler : IPostHandler<TestProject.Commands.PostUsersCommand>
 {
 }
