@@ -8,8 +8,10 @@ internal class GetRatingsHandler(IRatingReadOnlyRepository ratingRepository) : I
 {
     public async Task<GetRatingsQueryResponse> Handle(GetRatingsQuery query)
     {
-        Console.WriteLine($"query ids: {query.Ids} {query.Ids == null}");
-        var ratings = ratingRepository.Find(query.Ids);
+        var ratings = query.Ids.Any()
+            ? ratingRepository.Find(query.Ids)
+            : ratingRepository.FindAll();
+
         var responseRatings = ratings.Select(rating => new Models.Rating
         {
             Id = rating.Id,

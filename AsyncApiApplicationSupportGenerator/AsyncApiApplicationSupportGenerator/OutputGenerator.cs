@@ -85,7 +85,11 @@ public interface {interfaceName} : {parentInterfaceName}
         {
             var outputs = schemaInfos.Select(((string @namespace, string typeName, AsyncApiJsonSchema schema) info) =>
             {
+                // TODO: Refactor to specify when type is response and pass it in instead of relying on naming convention.
+                var isResponse = info.typeName.Contains("Response");
+                
                 var properties = info.schema.Properties;
+                
                 var formattedItems = properties.Select(property =>
                 {
                     var propertyName = property.Key;
@@ -96,8 +100,15 @@ public interface {interfaceName} : {parentInterfaceName}
                     var wholeType = property.Value.Type == SchemaType.Array
                         ? $"IEnumerable<{memberType}>"
                         : $"{memberType}";
+                    var required = property.Value.Type == SchemaType.Array && isResponse
+                        ? " required"
+                        : string.Empty;
+                    var initializer = property.Value.Type == SchemaType.Array && !isResponse
+                        ? $" = new List<{memberType}>();"
+                        : string.Empty;
+
                     var formattedItem = $@"    [JsonPropertyName(""{propertyName}"")]
-    public {wholeType} {StringUtils.ToPascalCase(property.Key)} {{ get; init; }}";
+    public{required} {wholeType} {StringUtils.ToPascalCase(property.Key)} {{ get; init; }}{initializer}";
 
                     return formattedItem;
                 });
@@ -110,7 +121,7 @@ using System.Text.Json.Serialization;
 
 namespace {info.@namespace};
 
-public readonly struct {info.typeName}
+public readonly struct {info.typeName}()
 {{
 {string.Join(@"
 
