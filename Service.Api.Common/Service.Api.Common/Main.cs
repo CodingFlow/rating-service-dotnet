@@ -72,7 +72,7 @@ internal class Main(
             
             var pathParts = ExtractPathParts(message);
 
-            await mainHandler.HandleRequest(client, pathParts, message, cancellationToken);
+            await mainHandler.HandleRequest(client, pathParts, message.Data, cancellationToken);
 
             await message.AckAsync(cancellationToken: cancellationToken);
         }

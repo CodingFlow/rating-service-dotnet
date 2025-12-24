@@ -2,7 +2,6 @@
 #nullable restore
 
 using System.Text.Json.Nodes;
-using NATS.Client.JetStream;
 using NATS.Net;
 using Service.Api.Common;
 using TestProject.Application.Handlers;
@@ -11,15 +10,15 @@ namespace TestProject;
 
 public class RequestDispatcher(IRestHandler restHandler, IGetRatingsHandler getRatingsHandler, IPostRatingsHandler postRatingsHandler) : IRequestDispatcher
 {
-    public async Task DispatchRequest(NatsClient client, string[] pathParts, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
+    public async Task DispatchRequest(NatsClient client, string[] pathParts, Request<JsonNode> requestData, CancellationToken cancellationToken)
     {
         switch (pathParts)
         {
             case ["get", "ratings"]:
-                await restHandler.HandleGet(client, message, pathParts, getRatingsHandler, cancellationToken);
+                await restHandler.HandleGet(client, requestData, pathParts, getRatingsHandler, cancellationToken);
                 break;
             case ["post", "ratings"]:
-                await restHandler.HandlePost(client, message, pathParts, postRatingsHandler, mergePostRatings, cancellationToken);
+                await restHandler.HandlePost(client, requestData, pathParts, postRatingsHandler, mergePostRatings, cancellationToken);
                 break;
         }
     }

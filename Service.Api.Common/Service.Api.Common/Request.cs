@@ -10,6 +10,9 @@ public struct Request<T>
     [JsonPropertyName("headers")]
     public Dictionary<string, string> Headers { get; set; }
 
+    [JsonPropertyName("queryParameters")]
+    public Dictionary<string, string> QueryParameters { get; set; }
+
     [JsonPropertyName("body")]
     public T Body { get; set; }
 }
