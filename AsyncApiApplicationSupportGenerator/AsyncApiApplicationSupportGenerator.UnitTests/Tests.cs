@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.Text;
 using TestProject.Commands;
 using TestProject.Handlers;
 using TestProject.Models;
+using TestProject.Queries;
 using TestProject.QueryResponses;
 using VerifyCS = AsyncApiBindingsGenerator.UnitTests.CSharpSourceGeneratorVerifier<AsyncApiApplicationSupportGenerator.Main>;
 
@@ -24,11 +25,12 @@ public class Tests
     [Test]
     public async Task SimpleGetPost()
     {
-        var generatedInterfaceGetUsers = await ReadCSharpFile<IGetUsersHandler>(true);
-        var generatedInterfacePostUsers = await ReadCSharpFile<IPostUsersHandler>(true);
-        var generatedModelGetUsersQueryResponse = await ReadCSharpFile<GetUsersQueryResponse>(true);
-        var generatedModelPostUsersCommand = await ReadCSharpFile<PostUsersCommand>(true);
-        var generatedModelUser = await ReadCSharpFile<User>(true);
+        var generatedInterfaceGetRatings = await ReadCSharpFile<IGetRatingsHandler>(true);
+        var generatedInterfacePostRatings = await ReadCSharpFile<IPostRatingsHandler>(true);
+        var generatedModelGetRatingsQuery = await ReadCSharpFile<GetRatingsQuery>(true);
+        var generatedModelGetRatingsQueryResponse = await ReadCSharpFile<GetRatingsQueryResponse>(true);
+        var generatedModelPostRatingsCommand = await ReadCSharpFile<PostRatingsCommand>(true);
+        var generatedModelRating = await ReadCSharpFile<Rating>(true);
 
         const string asyncApiFilename = "asyncapi.yaml";
         var asyncapiYaml = await ReadFile(true, asyncApiFilename);
@@ -52,11 +54,12 @@ public class Tests
                 Sources = {  },
                 GeneratedSources =
                 {
-                    (typeof(Main), "IGetUsersHandler.generated.cs", SourceText.From(generatedInterfaceGetUsers, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
-                    (typeof(Main), "IPostUsersHandler.generated.cs", SourceText.From(generatedInterfacePostUsers, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
-                    (typeof(Main), "GetUsersQueryResponse.generated.cs", SourceText.From(generatedModelGetUsersQueryResponse, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
-                    (typeof(Main), "PostUsersCommand.generated.cs", SourceText.From(generatedModelPostUsersCommand, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
-                    (typeof(Main), "User.generated.cs", SourceText.From(generatedModelUser, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "IGetRatingsHandler.generated.cs", SourceText.From(generatedInterfaceGetRatings, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "IPostRatingsHandler.generated.cs", SourceText.From(generatedInterfacePostRatings, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "GetRatingsQuery.generated.cs", SourceText.From(generatedModelGetRatingsQuery, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "GetRatingsQueryResponse.generated.cs", SourceText.From(generatedModelGetRatingsQueryResponse, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "PostRatingsCommand.generated.cs", SourceText.From(generatedModelPostRatingsCommand, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "Rating.generated.cs", SourceText.From(generatedModelRating, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                 },
             },
         }.RunAsync();

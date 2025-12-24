@@ -15,12 +15,19 @@ public class RequestDispatcher(IRestHandler restHandler, IGetRatingsHandler getR
         switch (pathParts)
         {
             case ["get", "ratings"]:
-                await restHandler.HandleGet(client, requestData, pathParts, getRatingsHandler, cancellationToken);
+                await restHandler.HandleGet(client, requestData, pathParts, getRatingsHandler, mergeGetRatings, cancellationToken);
                 break;
             case ["post", "ratings"]:
                 await restHandler.HandlePost(client, requestData, pathParts, postRatingsHandler, mergePostRatings, cancellationToken);
                 break;
         }
+    }
+
+    private static TestProject.Application.Queries.GetRatingsQuery mergeGetRatings(TestProject.Application.Queries.GetRatingsQuery original, string[] pathParts)
+    {
+        return original with {
+            Ids = 0
+        };
     }
 
     private static TestProject.Application.Commands.PostRatingsCommand mergePostRatings(TestProject.Application.Commands.PostRatingsCommand original, string[] pathParts)

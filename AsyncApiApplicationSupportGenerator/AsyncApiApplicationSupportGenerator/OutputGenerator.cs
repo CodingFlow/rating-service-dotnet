@@ -92,10 +92,10 @@ public interface {interfaceName} : {parentInterfaceName}
                     var propertyNamespace = property.Value.Type == SchemaType.Array
                         ? $"{assemblyName}.Models."
                         : string.Empty;
-                    var memberType = GetMemberType(property.Value, spec);
+                    var memberType = GetMemberType(property.Value, spec, propertyNamespace);
                     var wholeType = property.Value.Type == SchemaType.Array
-                        ? $"IEnumerable<{propertyNamespace}{memberType}>"
-                        : $"{propertyNamespace}{memberType}";
+                        ? $"IEnumerable<{memberType}>"
+                        : $"{memberType}";
                     var formattedItem = $@"    [JsonPropertyName(""{propertyName}"")]
     public {wholeType} {StringUtils.ToPascalCase(property.Key)} {{ get; init; }}";
 
@@ -138,15 +138,19 @@ public readonly struct {info.typeName}
         private static IEnumerable<(string @namespace, string typeName, AsyncApiJsonSchema schema)> GetChildSchemaInfos(string assemblyName, AsyncApiDocument spec, (string @namespace, string typeName, AsyncApiJsonSchema schema) info)
         {
             return info.schema.Properties
-                .Where(property => property.Value.Type == SchemaType.Array || property.Value.Type == SchemaType.Object)
+                .Where(property =>
+                {
+                    var schema = property.Value;
+
+                    return schema.Type == SchemaType.Array && (schema.Items.Type == SchemaType.Object || schema.Items.Type == SchemaType.Array)
+                        || schema.Type == SchemaType.Object;
+                })
                 .Select(property =>
                 {
                     var schema = property.Value;
                     var @namespace = $"{assemblyName}.Models";
-                    var typeName = schema.Type == SchemaType.Array
-                        ? spec.Components.Schemas.First(entry => schema.Items.Equals(entry.Value.Schema)).Key
-                        : spec.Components.Schemas.First(entry => schema.Equals(entry.Value.Schema)).Key;
-                    
+                    var typeName = spec.Components.Schemas.First(entry => schema.Items.Equals(entry.Value.Schema)).Key;
+
                     var schemaToProcess = schema.Type == SchemaType.Array
                         ? schema.Items
                         : schema;
@@ -155,13 +159,24 @@ public readonly struct {info.typeName}
                 });
         }
 
-        private static string GetMemberType(AsyncApiJsonSchema schema, AsyncApiDocument spec)
+        private static string GetMemberType(AsyncApiJsonSchema schema, AsyncApiDocument spec, string propertyNamespace)
         {
             switch (schema.Type)
             {
                 case SchemaType.Array:
-                    var type = spec.Components.Schemas.First(schemaEntry => schema.Items.Equals(schemaEntry.Value.Schema)).Key;
-                    return StringUtils.ToPascalCase(type);
+                    string type;
+
+                    if (schema.Items.Type == SchemaType.Object)
+                    {
+                        var objectType = StringUtils.ToPascalCase(spec.Components.Schemas.First(schemaEntry => schema.Items.Equals(schemaEntry.Value.Schema)).Key);
+                        type = $"{propertyNamespace}{objectType}";
+                    }
+                    else
+                    {
+                        type = GetMemberType(schema.Items, spec, propertyNamespace);
+                    }
+
+                    return type;
                 case SchemaType.Integer:
                     return "int";
                 case SchemaType.String:

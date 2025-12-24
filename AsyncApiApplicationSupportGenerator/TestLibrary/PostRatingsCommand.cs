@@ -5,8 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace TestProject.Commands;
 
-public readonly struct PostUsersCommand
+public readonly struct PostRatingsCommand
 {
     [JsonPropertyName("items")]
-    public IEnumerable<TestProject.Models.User> Items { get; init; }
+    public IEnumerable<TestProject.Models.Rating> Items { get; init; }
 }

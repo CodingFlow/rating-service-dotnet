@@ -65,6 +65,21 @@ components:
           type: string
         headers:
           type: object
+        queryParameters:
+          type: object
+          additionalProperties: false
+          properties:
+            ids:
+              type: string
+        body:
+          type: object
+          additionalProperties: false
+          properties:
+            ids:
+              type: array
+              items:
+                type: integer
+        
     getRatingsReplyPayload:
       type: object
       additionalProperties: false
@@ -88,6 +103,8 @@ components:
         originReplyTo:
           type: string
         headers:
+          type: object
+        queryParameters:
           type: object
         body:
           type: object

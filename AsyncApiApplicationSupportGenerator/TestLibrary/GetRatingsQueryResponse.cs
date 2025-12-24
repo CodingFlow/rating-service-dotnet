@@ -5,8 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace TestProject.QueryResponses;
 
-public readonly struct GetUsersQueryResponse
+public readonly struct GetRatingsQueryResponse
 {
     [JsonPropertyName("items")]
-    public IEnumerable<TestProject.Models.User> Items { get; init; }
+    public IEnumerable<TestProject.Models.Rating> Items { get; init; }
 }

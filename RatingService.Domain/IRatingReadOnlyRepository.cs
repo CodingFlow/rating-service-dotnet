@@ -2,6 +2,6 @@
 
 public interface IRatingReadOnlyRepository
 {
-    IAsyncEnumerable<Rating> Find(int[] ratingIds);
+    IAsyncEnumerable<Rating> Find(IEnumerable<int> ratingIds);
     IAsyncEnumerable<Rating> FindAll();
 }
