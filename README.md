@@ -238,7 +238,7 @@ components to the cluster are available as shell aliases for convenience:
 Devbox is set up to run `load_config dev` on starting a devbox environment e.g.
 via `devbox shell`.
 
-For first time setup, create local nuget packages of service dependencies in this repository, create the cluster, deploy everything, then port forward
+For first time setup, create the cluster, deploy everything, then port forward
 for testing:
 
 ```bash
