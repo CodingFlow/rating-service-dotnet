@@ -104,8 +104,6 @@ components:
           type: string
         headers:
           type: object
-        queryParameters:
-          type: object
         body:
           type: object
           additionalProperties: false

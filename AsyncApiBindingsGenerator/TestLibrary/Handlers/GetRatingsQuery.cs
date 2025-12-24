@@ -3,5 +3,5 @@
 public readonly struct GetRatingsQuery
 {
     
-    public int Ids { get; init; }
+    public IEnumerable<int> Ids { get; init; }
 }

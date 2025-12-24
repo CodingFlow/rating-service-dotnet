@@ -7,30 +7,30 @@ namespace Service.Api.Common;
 
 internal class RestHandler : IRestHandler
 {
-    public async Task HandlePost<TRequest, TResponse>(NatsClient client, Request<JsonNode> requestData, string[] pathParts, IPostHandler<TRequest, TResponse> postHandler, Func<TRequest, string[], TRequest> requestMerger, CancellationToken cancellationToken)
+    public async Task HandlePost<TRequest, TResponse>(NatsClient client, Request<JsonNode> requestData, string[] pathParts, IPostHandler<TRequest, TResponse> postHandler, Func<TRequest, Dictionary<string, string>, string[], TRequest> requestMerger, CancellationToken cancellationToken)
     {
         var requestBody = requestData.Body.Deserialize<TRequest>();
-        var mergedRequest = requestMerger(requestBody, pathParts);
+        var mergedRequest = requestMerger(requestBody, requestData.QueryParameters, pathParts);
         
         var responseBody = await postHandler.Handle(mergedRequest);
 
         await Publish(client, requestData, responseBody, 201, cancellationToken);
     }
 
-    public async Task HandlePost<TRequest>(NatsClient client, Request<JsonNode> requestData, string[] pathParts, IPostHandler<TRequest> postHandler, Func<TRequest, string[], TRequest> requestMerger, CancellationToken cancellationToken)
+    public async Task HandlePost<TRequest>(NatsClient client, Request<JsonNode> requestData, string[] pathParts, IPostHandler<TRequest> postHandler, Func<TRequest, Dictionary<string, string>, string[], TRequest> requestMerger, CancellationToken cancellationToken)
     {
         var requestBody = requestData.Body.Deserialize<TRequest>();
-        var mergedRequest = requestMerger(requestBody, pathParts);
+        var mergedRequest = requestMerger(requestBody, requestData.QueryParameters, pathParts);
         
         await postHandler.Handle(mergedRequest);
 
         await Publish(client, requestData, string.Empty, 201, cancellationToken);
     }
 
-    public async Task HandleGet<TRequest, TResponse>(NatsClient client, Request<JsonNode> requestData, string[] pathParts, IGetHandler<TRequest, TResponse> getHandler, Func<TRequest, string[], TRequest> requestMerger, CancellationToken cancellationToken)
+    public async Task HandleGet<TRequest, TResponse>(NatsClient client, Request<JsonNode> requestData, string[] pathParts, IGetHandler<TRequest, TResponse> getHandler, Func<TRequest, Dictionary<string, string>, string[], TRequest> requestMerger, CancellationToken cancellationToken)
     {
         var requestBody = requestData.Body.Deserialize<TRequest>();
-        var mergedRequest = requestMerger(requestBody, pathParts);
+        var mergedRequest = requestMerger(requestBody, requestData.QueryParameters, pathParts);
         
         var responseBody = await getHandler.Handle(mergedRequest);
 

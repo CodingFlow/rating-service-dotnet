@@ -31,10 +31,6 @@ namespace AsyncApiBindingsGenerator
 
             var formattedCases = channels.Select(channel =>
             {
-                var messageReference = channel.Value.Messages.First().Value;
-                var messageBodyExistsString = GetType(spec, messageReference, string.Empty, "X");
-                var IsmessageBodyExists = messageBodyExistsString != string.Empty;
-
                 var address = channel.Value.Address;
                 var addressParts = address.Split('.');
                 var restMethod = addressParts.First();
@@ -45,7 +41,8 @@ namespace AsyncApiBindingsGenerator
                 var variableName = $"{restMethod}{ToPascalCase(pathPart)}Handler";
                 var methodName = GetCaseMethodName(restMethod);
                 var mergeMethodName = $"merge{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}";
-                var mergeMethodNameWithComma = IsmessageBodyExists
+                var messageReference = channel.Value.Messages.First().Value;
+                var mergeMethodNameWithComma = IsPayloadPropertyExists(messageReference, "body")
                     ? $"{mergeMethodName}, "
                     : string.Empty;
 
@@ -57,12 +54,10 @@ namespace AsyncApiBindingsGenerator
             var formattedMergeMethods = channels.Select(channel =>
             {
                 var messageReference = channel.Value.Messages.First().Value;
-                var messageBodyExistsString = GetType(spec, messageReference, string.Empty, "X");
-                var IsmessageBodyExists = messageBodyExistsString != string.Empty;
 
                 string result;
 
-                if (IsmessageBodyExists)
+                if (IsPayloadPropertyExists(messageReference, "body"))
                 {
                     var address = channel.Value.Address;
                     var parts = address.Split('.');
@@ -73,12 +68,14 @@ namespace AsyncApiBindingsGenerator
                     var mergeTypeNamespace = GetMergeTypeNamespace(restMethod, serviceNamespacePart);
                     var mergeType = $"{mergeTypeNamespace}.{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}{requestType}";
                     var mergeMethodName = $"merge{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}";
+                    string withBlock = CreateWithBlock(messageReference);
 
-                    result = $@"    private static {mergeType} {mergeMethodName}({mergeType} original, string[] pathParts)
+                    result = $@"    private static {mergeType} {mergeMethodName}({mergeType} original, Dictionary<string, string> queryParameters, string[] pathParts)
     {{
-        return original;
+        return original{withBlock};
     }}";
-                } else
+                }
+                else
                 {
                     result = string.Empty;
                 }
@@ -118,23 +115,84 @@ public class RequestDispatcher({string.Join(", ", formattedDependencies)}) : IRe
             return (source, "RequestDispatcher");
         }
 
-        private static string GetType(AsyncApiDocument spec, AsyncApiMessage messageReference, string noBodyValue, string hasBodyValue)
+        private static string CreateWithBlock(AsyncApiMessage messageReference)
         {
-            KeyValuePair<string, AsyncApiJsonSchema> bodyEntry = GetBodyEntry(messageReference);
+            string withBlock;
 
-            if (bodyEntry.Equals(default(KeyValuePair<string, AsyncApiJsonSchema>)))
+            if (IsPayloadPropertyExists(messageReference, "queryParameters"))
             {
-                return noBodyValue;
+                var formattedWithAssignments = GetPayloadSchemaEntry(messageReference, "queryParameters").Value.Properties.Select(entry =>
+                {
+                    var requestPropertyKey = ToPascalCase(entry.Key);
+                    var queryParameterKey = entry.Key;
+
+                    var matchingBodyProperty = GetPayloadSchemaEntry(messageReference, "body").Value.Properties[queryParameterKey];
+
+                    if (matchingBodyProperty.Type == SchemaType.Array)
+                    {
+                        var parseMethod = GetSelectParseMethod(matchingBodyProperty.Items.Type);
+                        return $@"{requestPropertyKey} = queryParameters.TryGetValue(""{queryParameterKey}"", out var {queryParameterKey})
+                ? {queryParameterKey}.Split("",""){parseMethod}
+                : original.{requestPropertyKey},";
+                    }
+                    else
+                    {
+                        var parseMethod = GetParseMethod(matchingBodyProperty.Type, queryParameterKey);
+                        return $@"{requestPropertyKey} = queryParameters.TryGetValue(""{queryParameterKey}"", out var {queryParameterKey})
+                ? {parseMethod})
+                : original.{queryParameterKey},";
+                    }
+                });
+
+                withBlock = $@" with {{
+            {string.Join(@"
+", formattedWithAssignments)}
+        }}";
+            }
+            else
+            {
+                withBlock = string.Empty;
             }
 
-            return hasBodyValue;
+            return withBlock;
         }
 
-        private static KeyValuePair<string, AsyncApiJsonSchema> GetBodyEntry(AsyncApiMessage messageReference)
+        private static string GetParseMethod(SchemaType? type, string queryParameterKey)
+        {
+            switch (type)
+            {
+                case SchemaType.Integer:
+                    return $@"int.Parse({queryParameterKey})";
+                case SchemaType.String:
+                    return queryParameterKey;
+                default:
+                    throw new ArgumentException($"SchemaType '{type}' not supported.");
+            }
+        }
+
+        private static string GetSelectParseMethod(SchemaType? type)
+        {
+            switch (type)
+            {
+                case SchemaType.Integer:
+                    return $@".Select(int.Parse)";
+                default:
+                    return string.Empty;
+            }
+        }
+
+        private static bool IsPayloadPropertyExists(AsyncApiMessage messageReference, string propertyName)
+        {
+            var entry = GetPayloadSchemaEntry(messageReference, propertyName);
+
+            return !entry.Equals(default(KeyValuePair<string, AsyncApiJsonSchema>));
+        }
+
+        private static KeyValuePair<string, AsyncApiJsonSchema> GetPayloadSchemaEntry(AsyncApiMessage messageReference, string propertyName)
         {
             return messageReference
                 .Payload.Schema.As<AsyncApiJsonSchema>()
-                .Properties.FirstOrDefault(prop => prop.Key == "body");
+                .Properties.FirstOrDefault(prop => prop.Key == propertyName);
         }
 
         private static string GetRequestType(string restMethod)

@@ -23,14 +23,16 @@ public class RequestDispatcher(IRestHandler restHandler, IGetRatingsHandler getR
         }
     }
 
-    private static TestProject.Application.Queries.GetRatingsQuery mergeGetRatings(TestProject.Application.Queries.GetRatingsQuery original, string[] pathParts)
+    private static TestProject.Application.Queries.GetRatingsQuery mergeGetRatings(TestProject.Application.Queries.GetRatingsQuery original, Dictionary<string, string> queryParameters, string[] pathParts)
     {
         return original with {
-            Ids = 0
+            Ids = queryParameters.TryGetValue("ids", out var ids)
+                ? ids.Split(",").Select(int.Parse)
+                : original.Ids,
         };
     }
 
-    private static TestProject.Application.Commands.PostRatingsCommand mergePostRatings(TestProject.Application.Commands.PostRatingsCommand original, string[] pathParts)
+    private static TestProject.Application.Commands.PostRatingsCommand mergePostRatings(TestProject.Application.Commands.PostRatingsCommand original, Dictionary<string, string> queryParameters, string[] pathParts)
     {
         return original;
     }
