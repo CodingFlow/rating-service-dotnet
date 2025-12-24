@@ -112,6 +112,8 @@ HTTP to NATS Proxy ->> Browser (HTTP Client): HTTP REST response
 - Generally follow the ideas and guidelines for Domain Driven Design from the free book **.NET Microservices: Architecture for Containerized .NET Applications** ([view online](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/))
 - Focus on opinionated shared libraries, code generators, and tools to enable standardization, reduce boilerplate, and ease improvements across all services.
 
+### Service Layers
+
 Services will be composed of the following five layers:
 
 - AppHost
@@ -141,7 +143,7 @@ flowchart TD
 
 Notice that `Domain` depends on no other layer and that `Application` does not directly depend on `Infrastructure`. `Domain` is the final layer and the core of the application. `Application` indirectly receives dependencies from `Infrastructure` through `AppHost` using dependency injection.
 
-### AppHost Layer
+#### AppHost Layer
 
 The application composition root and host for the entire application. Responsible for:
 
@@ -151,7 +153,7 @@ The application composition root and host for the entire application. Responsibl
 
 A common library has been created to set up the preceding items: `Service.AppHost.Common`.
 
-### API Layer
+#### API Layer
 
 The frontend of the service, the API layer contains the technical infrastructure to accept and deserialize requests and serialize responses back to consumers. This includes:
 
@@ -167,7 +169,7 @@ The API layer will follow an API-first approach instead of a code-first approach
 
  Code generation is used to create the needed code from the API specification, [AsyncAPI spec](https://www.asyncapi.com). The common source generator, `AsyncApiBindingsGenerator`, will be used across all services' API layers for this purpose. A useful tool for editing and validating in real time AsyncAPI spec files is [AsyncAPI Studio](https://studio.asyncapi.com/).
 
-### Application Layer
+#### Application Layer
 
 Handles queries and commands from the API layer by orchestrating between the domain and infrastructure layers.
 
@@ -178,17 +180,23 @@ The code generator, `AsyncApiApplicationSupportGenerator`, generates:
 
 The handler interfaces are derived from a generic interface with types specified for the request and response types that must be handled. In practical terms, it gives a convenient way to create the concrete handler class with the right method types by using [Visual Studio's "Implement interface" code generation quick action](https://learn.microsoft.com/en-us/visualstudio/ide/reference/implement-interface?view=visualstudio).
 
-### Infrastructure Layer
+#### Infrastructure Layer
 
 Contains implementations of repositories that implement the interfaces from the domain layer. Repositories provide an abstraction to database-related logic. Repositories use [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/) `DBContext`s to interact with the service's database.
 
-### Domain Layer
+#### Domain Layer
 
-All business/domain logic resides here following DDD best practices. Aggregates, entities, value objects, as well as repository interfaces reside in this layer. Repository implementations are not present so only the abstractions are exposed to the application layer.
+The core of the service. All business/domain logic resides here following DDD best practices. Aggregates, entities, value objects, as well as repository interfaces reside in this layer. Repository implementations are not present so only the abstractions are exposed to the application layer.
 
-### Infrastructure.DesignTime Project
+#### Infrastructure.DesignTime Project
 
 Contains Entity Framework Core design time support code for the `DBContext`s in the infrastructure layer, such as for generating database migration code and performing migrations.
+
+### Validation and Null Handling
+
+Validation, including handling null values, will be handled as early as possible. Null handling will always be handled at the periphery of the service, either throwing an exception or using the [null object pattern](https://en.wikipedia.org/wiki/Null_object_pattern). The reason why nulls are minimized is:
+
+Propagating the use of nullable types in a codebase vastly increases [cyclomatic complexity](https://en.wikipedia.org/wiki/Cyclomatic_complexity) due to the added code branches to handle the case when the type is null. Besides increasing cognitive load and uncertainty, the work required for tests to cover all code paths increases exponentially.
 
 # Usage
 
@@ -245,5 +253,19 @@ deploy-frontend
 port-forward-gateway
 ```
 
-Then send a request to http://localhost:8080/api/ratings to get ratings from the API. Or
+Then populate the database with some data by sending a `POST` request to http://localhost:8080/api/ratings with a body:
+
+```json
+{
+    "items": [
+        {
+            "userId": 3,
+            "serviceId": 50,
+            "score": 2
+        }
+    ]
+}
+```
+
+Lastly, view the data by sending a `GET` request to http://localhost:8080/api/ratings to get ratings from the API. Or
 access http://localhost:8080/ui in the browser.
