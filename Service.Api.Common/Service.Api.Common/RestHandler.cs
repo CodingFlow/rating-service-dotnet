@@ -24,7 +24,7 @@ internal class RestHandler : IRestHandler
         
         await postHandler.Handle(mergedRequest);
 
-        await Publish(client, requestData, string.Empty, 201, cancellationToken);
+        await Publish(client, requestData, new JsonObject(), 201, cancellationToken);
     }
 
     public async Task HandleGet<TRequest, TResponse>(NatsClient client, Request<JsonNode> requestData, string[] pathParts, IGetHandler<TRequest, TResponse> getHandler, Func<TRequest, Dictionary<string, string>, string[], TRequest> requestMerger, CancellationToken cancellationToken)
@@ -51,7 +51,7 @@ internal class RestHandler : IRestHandler
 
         var responseBody = await deleteHandler.Handle(mergedRequest);
 
-        await Publish(client, requestData, responseBody, 204, cancellationToken);
+        await Publish(client, requestData, responseBody, 200, cancellationToken);
     }
 
     public async Task HandleDelete<TRequest>(NatsClient client, Request<JsonNode> requestData, string[] pathParts, IDeleteHandler<TRequest> deleteHandler, Func<TRequest, Dictionary<string, string>, string[], TRequest> requestMerger, CancellationToken cancellationToken)
@@ -61,12 +61,12 @@ internal class RestHandler : IRestHandler
 
         await deleteHandler.Handle(mergedRequest);
 
-        await Publish(client, requestData, string.Empty, 204, cancellationToken);
+        await Publish(client, requestData, new JsonObject(), 204, cancellationToken);
     }
 
     public async Task HandleDelete(NatsClient client, Request<JsonNode> requestData, string[] pathParts, IDeleteHandler deleteHandler, CancellationToken cancellationToken)
     {
-        await Publish(client, requestData, string.Empty, 204, cancellationToken);
+        await Publish(client, requestData, new JsonObject(), 204, cancellationToken);
     }
 
     private static async Task Publish<TResponse>(NatsClient client, Request<JsonNode> requestData, TResponse? responseBody, int statusCode, CancellationToken cancellationToken)
