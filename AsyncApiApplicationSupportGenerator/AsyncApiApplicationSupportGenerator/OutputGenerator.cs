@@ -199,11 +199,13 @@ public readonly struct {info.typeName}()
 
         private static IOperationModelStrategy GetModelStrategy(string restMethod, string pathPart, string assemblyName, OperationType operationType)
         {
-            if (restMethod == "get" && operationType == OperationType.Request)
+            if (restMethod == "get" && operationType == OperationType.Request
+                || restMethod == "delete" && operationType == OperationType.Request)
             {
                 return new QueryOperationModelStrategy(assemblyName, restMethod, pathPart);
             }
-            else if (restMethod == "get" && operationType == OperationType.Response)
+            else if (restMethod == "get" && operationType == OperationType.Response
+                || restMethod == "get" && operationType == OperationType.Response)
             {
                 return new QueryResponseOperationModelStrategy(assemblyName, restMethod, pathPart);
             }
@@ -232,6 +234,8 @@ public readonly struct {info.typeName}()
             switch (restMethod)
             {
                 case "get":
+                    return new QueryOperationInterfaceTypeStrategy(assemblyName, restMethod, pathPart);
+                case "delete":
                     return new QueryOperationInterfaceTypeStrategy(assemblyName, restMethod, pathPart);
                 case "post":
                     return new CommandOperationInterfaceTypeStrategy(assemblyName, restMethod, pathPart);

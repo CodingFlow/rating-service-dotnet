@@ -1,6 +1,6 @@
 ﻿namespace TestProject.Application.Queries;
 
-public readonly struct GetRatingsQuery
+public readonly struct DeleteRatingsQuery
 {
     public IEnumerable<int> Ids { get; init; }
 }

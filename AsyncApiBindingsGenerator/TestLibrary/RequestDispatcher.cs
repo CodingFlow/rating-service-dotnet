@@ -8,7 +8,7 @@ using TestProject.Application.Handlers;
 
 namespace TestProject;
 
-public class RequestDispatcher(IRestHandler restHandler, IGetRatingsHandler getRatingsHandler, IPostRatingsHandler postRatingsHandler) : IRequestDispatcher
+public class RequestDispatcher(IRestHandler restHandler, IGetRatingsHandler getRatingsHandler, IPostRatingsHandler postRatingsHandler, IDeleteRatingsHandler deleteRatingsHandler) : IRequestDispatcher
 {
     public async Task DispatchRequest(NatsClient client, string[] pathParts, Request<JsonNode> requestData, CancellationToken cancellationToken)
     {
@@ -20,12 +20,16 @@ public class RequestDispatcher(IRestHandler restHandler, IGetRatingsHandler getR
             case ["post", "ratings"]:
                 await restHandler.HandlePost(client, requestData, pathParts, postRatingsHandler, mergePostRatings, cancellationToken);
                 break;
+            case ["delete", "ratings"]:
+                await restHandler.HandleDelete(client, requestData, pathParts, deleteRatingsHandler, mergeDeleteRatings, cancellationToken);
+                break;
         }
     }
 
     private static TestProject.Application.Queries.GetRatingsQuery mergeGetRatings(TestProject.Application.Queries.GetRatingsQuery original, Dictionary<string, string> queryParameters, string[] pathParts)
     {
-        return original with {
+        return original with
+        {
             Ids = queryParameters.TryGetValue("ids", out var ids)
                 ? ids.Split(",").Select(int.Parse)
                 : original.Ids,
@@ -35,5 +39,15 @@ public class RequestDispatcher(IRestHandler restHandler, IGetRatingsHandler getR
     private static TestProject.Application.Commands.PostRatingsCommand mergePostRatings(TestProject.Application.Commands.PostRatingsCommand original, Dictionary<string, string> queryParameters, string[] pathParts)
     {
         return original;
+    }
+
+    private static TestProject.Application.Queries.DeleteRatingsQuery mergeDeleteRatings(TestProject.Application.Queries.DeleteRatingsQuery original, Dictionary<string, string> queryParameters, string[] pathParts)
+    {
+        return original with
+        {
+            Ids = queryParameters.TryGetValue("ids", out var ids)
+                ? ids.Split(",").Select(int.Parse)
+                : original.Ids,
+        };
     }
 }

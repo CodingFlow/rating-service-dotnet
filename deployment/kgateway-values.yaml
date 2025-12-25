@@ -3,7 +3,7 @@ discovery:
 gatewayProxies:
   gatewayProxy:
     disabled: true
-gloo:
+kgateway:
   disableLeaderElection: true
 kubeGateway:
   enabled: true

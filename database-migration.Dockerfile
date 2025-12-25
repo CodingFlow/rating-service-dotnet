@@ -21,4 +21,5 @@ COPY RatingService.Infrastructure.DesignTime/. ./RatingService.Infrastructure.De
 
 ENTRYPOINT ["dotnet", "ef", "database", "update", \
     "-p", "./RatingService.Infrastructure/", \
-    "--startup-project", "./RatingService.Infrastructure.DesignTime/"]
+    "--startup-project", "./RatingService.Infrastructure.DesignTime/", \
+    "--context", "RatingContext"]

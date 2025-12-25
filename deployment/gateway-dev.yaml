@@ -2,7 +2,7 @@ apiVersion: gateway.solo.io/v1
 kind: VirtualHostOption
 metadata:
   name: header-manipulation
-  namespace: gloo-system
+  namespace: kgateway-system
 spec:
   options:
     cors:
@@ -16,4 +16,4 @@ spec:
     - group: gateway.networking.k8s.io
       kind: Gateway
       name: http
-      namespace: gloo-system
+      namespace: kgateway-system

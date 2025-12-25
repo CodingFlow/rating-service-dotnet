@@ -1,12 +1,15 @@
 #!/bin/bash
 
 install_deploy_infrastructure() {
-    kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/standard-install.yaml &&
+    kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml &&
     kubectl apply -f https://github.com/nats-io/nack/releases/latest/download/crds.yml &&
-    helm repo add gloo https://storage.googleapis.com/solo-public-helm &&
     helm repo add nats https://nats-io.github.io/k8s/helm/charts/ &&
     helm repo update &&
-    helm install -n gloo-system gloo-gateway gloo/gloo --create-namespace --version 1.18.2 -f ./deployment/gloo-values.yaml &&
+    helm upgrade -i --create-namespace \
+    --namespace kgateway-system \
+    --version v2.1.2 kgateway-crds oci://cr.kgateway.dev/kgateway-dev/charts/kgateway-crds &&
+    helm upgrade -i -n kgateway-system kgateway oci://cr.kgateway.dev/kgateway-dev/charts/kgateway \
+--version v2.1.2 &&
     helm install nats nats/nats -f ./deployment/nats-values.yaml &&
     helm install nack nats/nack -f ./deployment/nack-values.yaml
 }

@@ -144,7 +144,8 @@ public class RequestDispatcher({string.Join(", ", formattedDependencies)}) : IRe
                     }
                 });
 
-                withBlock = $@" with {{
+                withBlock = $@" with
+        {{
             {string.Join(@"
 ", formattedWithAssignments)}
         }}";
@@ -201,6 +202,8 @@ public class RequestDispatcher({string.Join(", ", formattedDependencies)}) : IRe
             {
                 case "get":
                     return "Query";
+                case "delete":
+                    return "Query";
                 case "post":
                     return "Command";
                 default:
@@ -232,6 +235,8 @@ public class RequestDispatcher({string.Join(", ", formattedDependencies)}) : IRe
             switch (restMethod)
             {
                 case "get":
+                    return $"{assemblyName}.Application.Queries";
+                case "delete":
                     return $"{assemblyName}.Application.Queries";
                 case "post":
                     return $"{assemblyName}.Application.Commands";

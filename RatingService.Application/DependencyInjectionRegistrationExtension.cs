@@ -9,6 +9,7 @@ public static class DependencyInjectionRegistrationExtension
     {
         services.AddTransient<IGetRatingsHandler, GetRatingsHandler>();
         services.AddTransient<IPostRatingsHandler, PostRatingsHandler>();
+        services.AddTransient<IDeleteRatingsHandler, DeleteRatingsHandler>();
 
         return services;
     }

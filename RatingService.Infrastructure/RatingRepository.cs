@@ -20,6 +20,16 @@ internal class RatingRepository(RatingContext ratingContext) : IRatingRepository
         await ratingContext.AddRangeAsync(ratings);
     }
 
+    public async Task<int> Delete(IEnumerable<int> ratingIds)
+    {
+        return await ratingContext.Ratings.Where(r => ratingIds.Contains(r.Id)).ExecuteDeleteAsync();
+    }
+
+    public async Task<int> DeleteAll()
+    {
+        return await ratingContext.Ratings.ExecuteDeleteAsync();
+    }
+
     public async Task<int> Save()
     {
         return await ratingContext.SaveChangesAsync();

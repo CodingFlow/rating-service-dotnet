@@ -27,9 +27,15 @@ public class Tests
     {
         var generatedInterfaceGetRatings = await ReadCSharpFile<IGetRatingsHandler>(true);
         var generatedInterfacePostRatings = await ReadCSharpFile<IPostRatingsHandler>(true);
+        var generatedInterfaceDeleteRatings = await ReadCSharpFile<IDeleteRatingsHandler>(true);
+
         var generatedModelGetRatingsQuery = await ReadCSharpFile<GetRatingsQuery>(true);
         var generatedModelGetRatingsQueryResponse = await ReadCSharpFile<GetRatingsQueryResponse>(true);
+        
         var generatedModelPostRatingsCommand = await ReadCSharpFile<PostRatingsCommand>(true);
+        
+        var generatedModelDeleteRatingsQuery = await ReadCSharpFile<DeleteRatingsQuery>(true);
+
         var generatedModelRating = await ReadCSharpFile<Rating>(true);
 
         const string asyncApiFilename = "asyncapi.yaml";
@@ -56,9 +62,15 @@ public class Tests
                 {
                     (typeof(Main), "IGetRatingsHandler.generated.cs", SourceText.From(generatedInterfaceGetRatings, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                     (typeof(Main), "IPostRatingsHandler.generated.cs", SourceText.From(generatedInterfacePostRatings, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "IDeleteRatingsHandler.generated.cs", SourceText.From(generatedInterfaceDeleteRatings, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+
                     (typeof(Main), "GetRatingsQuery.generated.cs", SourceText.From(generatedModelGetRatingsQuery, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                     (typeof(Main), "GetRatingsQueryResponse.generated.cs", SourceText.From(generatedModelGetRatingsQueryResponse, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+
                     (typeof(Main), "PostRatingsCommand.generated.cs", SourceText.From(generatedModelPostRatingsCommand, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+
+                    (typeof(Main), "DeleteRatingsQuery.generated.cs", SourceText.From(generatedModelDeleteRatingsQuery, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+
                     (typeof(Main), "Rating.generated.cs", SourceText.From(generatedModelRating, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                 },
             },

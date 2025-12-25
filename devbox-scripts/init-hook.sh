@@ -20,7 +20,7 @@ alias deploy-database='deploy_database'
 alias deploy-service='deploy_service'
 alias deploy-frontend='deploy_frontend'
 
-alias port-forward-gateway='kubectl port-forward deployment/gloo-proxy-http -n gloo-system 8080:8080'
+alias port-forward-gateway='kubectl port-forward deployment/http -n kgateway-system 8080:8080'
 
 alias create-local-nuget-packages='create_local_nuget_packages'
 
@@ -44,8 +44,8 @@ create_cluster() {
 }
 
 deploy_gateway() {
-    kubectl apply -f ./deployment/gateway.yaml &&
-    kubectl apply -f ./deployment/gateway-dev.yaml
+    kubectl apply -f ./deployment/gateway.yaml # &&
+    # kubectl apply -f ./deployment/gateway-dev.yaml
 }
 
 deploy_nack() {
@@ -71,7 +71,7 @@ create_database_migration() {
 }
 
 update_database() {
-    kubectl wait pod -l app.kubernetes.io/instance=cluster-example --for=condition=Ready --timeout=10s &&
+    kubectl wait pod -l app.kubernetes.io/instance=cluster-example --for=condition=Ready --timeout=20s &&
     build_push_docker_image $docker_registry rating-service-database-migration-job . database-migration.Dockerfile &&
     apply_helm_package rating-service-database-migration-job ./deployment/database-migration ./deployment/database-migration-values.yaml
 }

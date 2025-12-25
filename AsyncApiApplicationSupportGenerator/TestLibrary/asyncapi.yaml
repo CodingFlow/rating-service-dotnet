@@ -16,6 +16,11 @@ channels:
     messages:
       ratings:
         $ref: '#/components/messages/postRatings'
+  deleteRatings:
+    address: 'delete.ratings'
+    messages:
+      ratings:
+        $ref: '#/components/messages/deleteRatings'
 
 operations:
   getRatings:
@@ -40,6 +45,17 @@ operations:
         location: '$message.payload#/originReplyTo'
       messages:
         - $ref: '#/components/messages/postRatingsReply'
+  deleteRatings:
+    action: receive
+    channel:
+      $ref: '#/channels/deleteRatings'
+    messages:
+      - $ref: '#/channels/deleteRatings/messages/ratings'
+    reply:
+      address:
+        location: '$message.payload#/originReplyTo'
+      messages:
+        - $ref: '#/components/messages/deleteRatingsReply'
 
 components:
   messages:
@@ -55,6 +71,12 @@ components:
     postRatingsReply:
       payload:
         $ref: '#/components/schemas/postRatingsReplyPayload'
+    deleteRatings:
+      payload: 
+        $ref: '#/components/schemas/deleteRatingsPayload'
+    deleteRatingsReply:
+      payload:
+        $ref: '#/components/schemas/deleteRatingsReplyPayload'
         
   schemas:
     getRatingsPayload:
@@ -96,6 +118,7 @@ components:
                 $ref: '#/components/schemas/rating'
         statusCode:
           type: integer
+
     postRatingsPayload:
       type: object
       additionalProperties: false
@@ -112,6 +135,7 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/rating'
+
     postRatingsReplyPayload:
       type: object
       additionalProperties: false
@@ -120,6 +144,39 @@ components:
           type: object
         statusCode:
           type: integer
+
+    deleteRatingsPayload:
+      type: object
+      additionalProperties: false
+      properties:
+        originReplyTo:
+          type: string
+        headers:
+          type: object
+        queryParameters:
+          type: object
+          additionalProperties: false
+          properties:
+            ids:
+              type: string
+        body:
+          type: object
+          additionalProperties: false
+          properties:
+            ids:
+              type: array
+              items:
+                type: integer
+        
+    deleteRatingsReplyPayload:
+      type: object
+      additionalProperties: false
+      properties:
+        headers:
+          type: object
+        statusCode:
+          type: integer
+
     rating:
       type: object
       additionalProperties: false
