@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: rating-service
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
