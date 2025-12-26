@@ -89,6 +89,25 @@ public interface {interfaceName} : {parentInterfaceName}
                 var isResponse = info.typeName.Contains("Response");
                 
                 var properties = info.schema.Properties;
+
+                var constructorParameters = string.Join(", ", properties.Select(property =>
+                {
+                    var propertyNamespace = property.Value.Type == SchemaType.Array
+                        ? $"{assemblyName}.Models."
+                        : string.Empty;
+                    var memberType = GetMemberType(property.Value, spec, propertyNamespace);
+                    var wholeType = property.Value.Type == SchemaType.Array
+                        ? $"List<{memberType}>"
+                        : $"{memberType}";
+
+                    return $@"{wholeType} {property.Key}";
+                }));
+
+                var assignCollections = string.Join(@"
+", properties.Select(p => p.Value.Type == SchemaType.Array
+                    ? $"this.{StringUtils.ToPascalCase(p.Key)} = {p.Key} ?? new();"
+                    : string.Empty)
+                    .Where(a => a != string.Empty));
                 
                 var formattedItems = properties.Select(property =>
                 {
@@ -98,17 +117,17 @@ public interface {interfaceName} : {parentInterfaceName}
                         : string.Empty;
                     var memberType = GetMemberType(property.Value, spec, propertyNamespace);
                     var wholeType = property.Value.Type == SchemaType.Array
-                        ? $"IEnumerable<{memberType}>"
+                        ? $"List<{memberType}>"
                         : $"{memberType}";
                     var required = property.Value.Type == SchemaType.Array && isResponse
                         ? " required"
                         : string.Empty;
                     var initializer = property.Value.Type == SchemaType.Array && !isResponse
-                        ? $" = new List<{memberType}>();"
+                        ? $" = new IEnumerable<{memberType}>();"
                         : string.Empty;
 
                     var formattedItem = $@"    [JsonPropertyName(""{propertyName}"")]
-    public{required} {wholeType} {StringUtils.ToPascalCase(property.Key)} {{ get; init; }}{initializer}";
+    public{required} {wholeType} {StringUtils.ToPascalCase(property.Key)} {{ get; init; }}";
 
                     return formattedItem;
                 });
@@ -121,8 +140,14 @@ using System.Text.Json.Serialization;
 
 namespace {info.@namespace};
 
-public readonly struct {info.typeName}()
+public readonly struct {info.typeName}
 {{
+    [JsonConstructor]
+    public {info.typeName}({constructorParameters})
+    {{
+        {assignCollections}
+    }}
+
 {string.Join(@"
 
 ", formattedItems)}

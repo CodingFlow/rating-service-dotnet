@@ -4,6 +4,8 @@
 using System.Text.Json.Nodes;
 using NATS.Net;
 using Service.Api.Common;
+using TestProject.Api.Queries;
+using TestProject.Api.Commands;
 using TestProject.Application.Handlers;
 
 namespace TestProject;
@@ -15,13 +17,13 @@ public class RequestDispatcher(IRestHandler restHandler, IGetRatingsHandler getR
         switch (pathParts)
         {
             case ["get", "ratings"]:
-                await restHandler.HandleGet(client, requestData, pathParts, getRatingsHandler, mergeGetRatings, cancellationToken);
+                await restHandler.HandleGet(client, requestData, pathParts, getRatingsHandler, mergeGetRatings, GetRatingsQueryContext.Default.GetRatingsQuery, cancellationToken);
                 break;
             case ["post", "ratings"]:
-                await restHandler.HandlePost(client, requestData, pathParts, postRatingsHandler, mergePostRatings, cancellationToken);
+                await restHandler.HandlePost(client, requestData, pathParts, postRatingsHandler, mergePostRatings, PostRatingsCommandContext.Default.PostRatingsCommand, cancellationToken);
                 break;
             case ["delete", "ratings"]:
-                await restHandler.HandleDelete(client, requestData, pathParts, deleteRatingsHandler, mergeDeleteRatings, cancellationToken);
+                await restHandler.HandleDelete(client, requestData, pathParts, deleteRatingsHandler, mergeDeleteRatings, DeleteRatingsQueryContext.Default.DeleteRatingsQuery, cancellationToken);
                 break;
         }
     }

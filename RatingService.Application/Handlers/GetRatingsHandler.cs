@@ -22,7 +22,7 @@ internal class GetRatingsHandler(IRatingReadOnlyRepository ratingRepository) : I
 
         return new()
         {
-            Items = responseRatings
+            Items = responseRatings.ToList(),
         };
     }
 }

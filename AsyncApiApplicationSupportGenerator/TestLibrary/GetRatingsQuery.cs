@@ -5,8 +5,14 @@ using System.Text.Json.Serialization;
 
 namespace TestProject.Queries;
 
-public readonly struct GetRatingsQuery()
+public readonly struct GetRatingsQuery
 {
+    public GetRatingsQuery(List<int> ids)
+    {
+        this.Ids = ids ?? new();
+    }
+
+    [JsonObjectCreationHandling(JsonObjectCreationHandling.Populate)]
     [JsonPropertyName("ids")]
-    public IEnumerable<int> Ids { get; init; } = new List<int>();
+    public List<int> Ids { get; init; }
 }
