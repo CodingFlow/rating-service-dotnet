@@ -26,6 +26,7 @@ Tools and frameworks used by backend and infrastructure:
   time.
 - [k3d](https://k3d.io/stable/) - Local Kubernetes toolchain for local
   development.
+- [k9s](https://k9scli.io/) - Terminal based UI to interact with Kubernetes clusters.
 - [k6](https://k6.io/) - Performance testing tool.
 
 # Architectural Design
@@ -192,11 +193,79 @@ The core of the service. All business/domain logic resides here following DDD be
 
 Contains Entity Framework Core design time support code for the `DBContext`s in the infrastructure layer, such as for generating database migration code and performing migrations.
 
+### Shared Service Libraries
+
+#### Common Libraries
+
+Common libraries named `Service.*.Common` are always used across all services. This makes it easy to make improvements and enforce best practices across all services. The `*` is the service layer the library contains common code for and also the layer it must be installed in:
+
+| Library                       | Layer                         |
+| ----------------------------- | ----------------------------- |
+| Service.AppHost.Common        | {Service Name}.AppHost        |
+| Service.Api.Common            | {Service Name}.Api            |
+| Service.Application.Common    | {Service Name}.Application    |
+| Service.Infrastructure.Common | {Service Name}.Infrastructure |
+| Service.Domain.Common         | {Service Name}.Domain         |
+
+For example, for a service called `RatingService`, the common library that must be installed in the API layer, `RatingService.Api`, is `Service.Api.Common`.
+
+#### Feature Libraries
+
+Feature libraries, named `Service.*.Feature.*`, are for reusable functionality that is needed by some, but not all, services. For example, Redis caching. The first `*` is the service layer and the second `*` is the name of the feature:
+
+| Library                                       | Layer                         |
+| --------------------------------------------- | ----------------------------- |
+| Service.AppHost.Feature.{Feature Name}        | {Service Name}.AppHost        |
+| Service.Api.Feature.{Feature Name}            | {Service Name}.Api            |
+| Service.Application.Feature.{Feature Name}    | {Service Name}.Application    |
+| Service.Infrastructure.Feature.{Feature Name} | {Service Name}.Infrastructure |
+| Service.Domain.Feature.{Feature Name}         | {Service Name}.Domain         |
+
+For example, if there is a reusable Redis caching logic, it can be called `Service.Infrastructure.Feature.Redis` and can only be installed in the infrastructure layer. For a service called `RatingService`, it can only be installed in the `RatingService.Infrastructure` layer.
+
 ### Validation and Null Handling
 
 Validation, including handling null values, will be handled as early as possible. Null handling will always be handled at the periphery of the service, either throwing an exception or using the [null object pattern](https://en.wikipedia.org/wiki/Null_object_pattern). The reason why nulls are minimized is:
 
 Propagating the use of nullable types in a codebase vastly increases [cyclomatic complexity](https://en.wikipedia.org/wiki/Cyclomatic_complexity) due to the added code branches to handle the case when the type is null. Besides increasing cognitive load and uncertainty, the work required for tests to cover all code paths increases exponentially.
+
+### Dependency Injection Registrations
+
+Dependency injection registration code will have no logic and focus purely on the sole responsibility of registering dependencies. Any configuration or setup code should be contained in a type that is then registered with the DI container.
+
+#### Examples
+
+Don't Do:
+
+```csharp
+services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+```
+
+Do:
+
+```csharp
+services.AddOptionsBindings(configuration);
+services.AddDBContext<ApplicationDbContext>();
+```
+
+And specify configuration in the options class:
+
+```csharp
+using System.ComponentModel.DataAnnotations;
+using CodingFlow.OptionsBindingsGenerator;
+using Microsoft.Extensions.Configuration;
+
+namespace RatingService.Infrastructure;
+
+[OptionsBindings(true, "ConnectionStrings")]
+internal record ApplicationDbContext
+{
+    [Required]
+    [ConfigurationKeyName("DefaultConnection")]
+    public required string ConnectionString { get; set; }
+}
+```
 
 # Usage
 
