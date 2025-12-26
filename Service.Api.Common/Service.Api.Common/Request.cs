@@ -2,17 +2,17 @@
 
 namespace Service.Api.Common;
 
-public struct Request<T>
+public readonly record struct Request<T>
 {
     [JsonPropertyName("originReplyTo")]
-    public string OriginReplyTo { get; set; }
+    public string OriginReplyTo { get; init; }
 
     [JsonPropertyName("headers")]
-    public Dictionary<string, string> Headers { get; set; }
+    public Dictionary<string, string> Headers { get; init; }
 
     [JsonPropertyName("queryParameters")]
-    public Dictionary<string, string> QueryParameters { get; set; }
+    public Dictionary<string, string> QueryParameters { get; init; }
 
     [JsonPropertyName("body")]
-    public T Body { get; set; }
+    public T Body { get; init; }
 }

@@ -121,7 +121,7 @@ using System.Text.Json.Serialization;
 
 namespace {info.@namespace};
 
-public readonly struct {info.typeName}()
+public readonly record struct {info.typeName}()
 {{
 {string.Join(@"
 

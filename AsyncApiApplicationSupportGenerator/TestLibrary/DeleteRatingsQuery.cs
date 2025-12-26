@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace TestProject.Queries;
 
-public readonly struct DeleteRatingsQuery()
+public readonly record struct DeleteRatingsQuery()
 {
     [JsonPropertyName("ids")]
     public IEnumerable<int> Ids { get; init; } = new List<int>();

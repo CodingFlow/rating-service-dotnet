@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace TestProject.Models;
 
-public readonly struct Rating()
+public readonly record struct Rating()
 {
     [JsonPropertyName("id")]
     public int Id { get; init; }

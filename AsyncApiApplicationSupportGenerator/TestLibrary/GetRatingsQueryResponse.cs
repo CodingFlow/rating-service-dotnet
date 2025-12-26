@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace TestProject.QueryResponses;
 
-public readonly struct GetRatingsQueryResponse()
+public readonly record struct GetRatingsQueryResponse()
 {
     [JsonPropertyName("items")]
     public required IEnumerable<TestProject.Models.Rating> Items { get; init; }

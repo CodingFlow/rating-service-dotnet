@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace TestProject.Commands;
 
-public readonly struct PostRatingsCommand()
+public readonly record struct PostRatingsCommand()
 {
     [JsonPropertyName("items")]
     public IEnumerable<TestProject.Models.Rating> Items { get; init; } = new List<TestProject.Models.Rating>();
