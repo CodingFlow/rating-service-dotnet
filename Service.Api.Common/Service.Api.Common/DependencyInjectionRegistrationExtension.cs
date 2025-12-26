@@ -7,7 +7,7 @@ internal static class DependencyInjectionRegistrationExtension
     public static IServiceCollection AddApiServices(this IServiceCollection services)
     {
         services.AddHostedService<Main>();
-        services.AddTransient<IMainHandler, MainHandler>();
+        services.AddTransient<IMessageHandler, MessageHandler>();
         services.AddTransient<IRestHandler, RestHandler>();
         services.AddMemoryCache();
 

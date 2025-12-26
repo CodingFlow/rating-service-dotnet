@@ -1,10 +1,8 @@
-﻿using System.Text.Json;
-using System.Text.Json.Nodes;
+﻿using System.Text.Json.Nodes;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using NATS.Client.JetStream;
 using NATS.Net;
 
 namespace Service.Api.Common;
@@ -48,8 +46,8 @@ internal class Main(
                 };
                 memoryCache.Set(messageId, true, memoryCacheOptions);
                 await using var scope = serviceScopeFactory.CreateAsyncScope();
-                var mainHandler = scope.ServiceProvider.GetService<IMainHandler>();
-                await HandleMessage(client, message, mainHandler, cancellationToken);
+                var messageHandler = scope.ServiceProvider.GetService<IMessageHandler>();
+                await messageHandler.HandleMessage(client, message, cancellationToken);
             } else
             {
                 Console.WriteLine($"Ignored duplicate message with id {messageId}");
@@ -60,35 +58,5 @@ internal class Main(
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         await client!.DisposeAsync();
-    }
-
-    private async ValueTask HandleMessage(NatsClient client, INatsJSMsg<Request<JsonNode>> message, IMainHandler mainHandler, CancellationToken cancellationToken)
-    {
-        try
-        {
-            Console.WriteLine("processing message");
-            Console.WriteLine($"Headers: {JsonSerializer.Serialize(message.Headers)}");
-            Console.WriteLine($"Data: {JsonSerializer.Serialize(message.Data)}");
-            
-            var pathParts = ExtractPathParts(message);
-
-            await mainHandler.HandleRequest(client, pathParts, message.Data, cancellationToken);
-
-            await message.AckAsync(cancellationToken: cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error processing message: {ex}");
-
-            message.Headers.TryGetValue("Nats-Msg-Id", out var messageId);
-            memoryCache.Remove(messageId);
-
-            await message.NakAsync(cancellationToken: cancellationToken);
-        }
-    }
-
-    private static string[] ExtractPathParts(INatsJSMsg<Request<JsonNode>> message)
-    {
-        return message.Subject.Split('.');
     }
 }
