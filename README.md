@@ -231,7 +231,9 @@ Propagating the use of nullable types in a codebase vastly increases [cyclomatic
 
 ### Dependency Injection Registrations
 
-Dependency injection registration code will have no logic and focus purely on the sole responsibility of registering dependencies. Any configuration or setup code should be contained in a type that is then registered with the DI container.
+Dependency injection registration code will have no logic and focus purely on the sole responsibility of registering dependencies (applying the [single responsiblity principle](https://en.wikipedia.org/wiki/Single-responsibility_principle)). Any configuration or setup code should be contained in a type that is then registered with the DI container.
+
+Following this practice is beneficial since DI registrations do not need traditional unit tests, so it can safely be excluded from code coverage, and can rely instead on validating the dependency graph in a "unit test".
 
 #### Examples
 
