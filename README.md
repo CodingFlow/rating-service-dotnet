@@ -231,7 +231,7 @@ Propagating the use of nullable types in a codebase vastly increases [cyclomatic
 
 ### Dependency Injection Registrations
 
-Dependency injection registration code will have no logic and focus purely on the sole responsibility of registering dependencies (applying the [single responsiblity principle](https://en.wikipedia.org/wiki/Single-responsibility_principle)). Any configuration or setup code should be contained in a type that is then registered with the DI container.
+Dependency injection registration code will have no logic and focus purely on the sole responsibility of registering dependencies (applying the [single responsiblity principle](https://en.wikipedia.org/wiki/Single-responsibility_principle)). Any configuration or setup code should be contained in a type that is then registered with the DI container. If the logic is only a more complex registration, it can be extracted into a common extension method or source generator that can be independently tested.
 
 Following this practice is beneficial since DI registrations do not need traditional unit tests, so it can safely be excluded from code coverage, and can rely instead on validating the dependency graph in a "unit test".
 
@@ -288,23 +288,25 @@ devbox shell
 Scripts for creating a local Kubernetes cluster using k3d and to deploy various
 components to the cluster are available as shell aliases for convenience:
 
-| Command                       | Description                                                                                                                    |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `load_config`                 | Load either `dev` (development) or `prod` (production) environment variables to be used for the other deployment commands.     |
-| `create-cluster`              | Creates local k3d cluster with local docker registry. Installs [k8sGateway](https://k8sgateway.io/), NATS, and NATS JetStream. |
-| `start-cluster`               | Starts k3d cluster if it is stopped.                                                                                           |
-| `stop-cluster`                | Stop k3d cluster.                                                                                                              |
-| `delete-cluster`              | Deletes the k3d cluster.                                                                                                       |
-| `deploy-nack`                 | Apply JetStream kubernetes configuration.                                                                                      |
-| `deploy-gateway`              | Apply k8sGateway kubernetes configurations.                                                                                    |
-| `deploy-http-to-nats-proxy`   | Build and push to docker registry the docker image for http-to-nats-proxy and deploy via kubernetes configuration.             |
-| `deploy_database`             | Installs Cloudnative-pg and apply Postgresql kubernetes configuration                                                          |
-| `deploy-service`              | Build and push to docker registry the docker image for rating-service and deploy via kubernetes configuration.                 |
-| `deploy-frontend`             | Build and push to docker registry the docker image for the frontend and deploy via kubernetes configuration.                   |
-| `port-forward-gateway`        | Port forward the gateway to localhost so the frontend and backend can be accessed for testing.                                 |
-| `create-local-nuget-packages` | Create local nuget packages for local libraries used by the service.                                                           |
-| `create-database-migration`   | Creates database migration files via Entity Framework Core.                                                                    |
-| `update-database` | Executes database migration using database migration files via kubernetes job.                                                             |
+| Command                       | Description                                                                                                                     |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `load_config`                 | Load either `dev` (development) or `prod` (production) environment variables to be used for the other deployment commands.      |
+| `create-cluster`              | Creates local k3d cluster with local docker registry. Installs [k8sGateway](https://k8sgateway.io/), NATS, and NATS JetStream.  |
+| `start-cluster`               | Starts k3d cluster if it is stopped.                                                                                            |
+| `stop-cluster`                | Stop k3d cluster.                                                                                                               |
+| `delete-cluster`              | Deletes the k3d cluster.                                                                                                        |
+| `deploy-nack`                 | Apply JetStream kubernetes configuration.                                                                                       |
+| `deploy-gateway`              | Apply k8sGateway kubernetes configurations.                                                                                     |
+| `deploy-http-to-nats-proxy`   | Build and push to docker registry the docker image for http-to-nats-proxy and deploy via kubernetes configuration.              |
+| `deploy_database`             | Installs Cloudnative-pg and apply Postgresql kubernetes configuration                                                           |
+| `deploy_redis `               | Build and push to docker registry the docker image for rating-service's Redis instance and deploy via kubernetes configuration. |
+| `deploy-service`              | Build and push to docker registry the docker image for rating-service and deploy via kubernetes configuration.                  |
+| `deploy-frontend`             | Build and push to docker registry the docker image for the frontend and deploy via kubernetes configuration.                    |
+| `port-forward-gateway`        | Port forward the gateway to localhost so the frontend and backend can be accessed for testing.                                  |
+| `create-local-nuget-packages` | Create local nuget packages for local libraries used by the service.                                                            |
+| `create-database-migration`   | Creates database migration files via Entity Framework Core.                                                                     |
+| `update-database`             | Executes database migration using database migration files via kubernetes job.                                                  |
+| `update-redis`                | Updates rating-service's Redis instance with schema and indexes via kubernetes job.                                             |
 
 Devbox is set up to run `load_config dev` on starting a devbox environment e.g.
 via `devbox shell`.
@@ -317,6 +319,8 @@ create-cluster
 deploy-nack
 deploy-database
 update-database
+deploy-redis
+update-redis
 deploy-service
 deploy-http-to-nats-proxy
 deploy-gateway
