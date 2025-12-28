@@ -28,7 +28,7 @@ alias create-local-nuget-packages='create_local_nuget_packages'
 alias create-database-migration='create_database_migration'
 alias update-database='update_database'
 
-alias setup-redis="setup_redis"
+alias update-redis="update_redis"
 
 load_config dev
 
@@ -75,8 +75,9 @@ create_database_migration() {
 }
 
 update_database() {
-    kubectl wait pod -l app.kubernetes.io/instance=cluster-example --for=condition=Ready --timeout=20s &&
+    kubectl wait pod -l app.kubernetes.io/instance=cluster-example --for=condition=Ready --timeout=25s &&
     build_push_docker_image $docker_registry rating-service-database-migration-job . database-migration.Dockerfile &&
+    kubectl delete jobs/rating-service-database-migration-job --ignore-not-found &&
     apply_helm_package rating-service-database-migration-job ./deployment/database-migration ./deployment/database-migration-values.yaml
 }
 
@@ -85,9 +86,10 @@ deploy_redis() {
     apply_rollout redis ./deployment/redis ./deployment/redis-values.yaml redis-deployment
 }
 
-setup_redis() {
+update_redis() {
     kubectl wait pod -l app.kubernetes.io/name=redis --for=condition=Ready --timeout=20s &&
     build_push_docker_image $docker_registry rating-service-redis-setup-job . redis.setup.Dockerfile &&
+    kubectl delete jobs/rating-service-redis-setup-job --ignore-not-found &&
     apply_helm_package rating-service-redis-setup-job ./deployment/redis-setup ./deployment/redis-setup-values.yaml
 }
 
