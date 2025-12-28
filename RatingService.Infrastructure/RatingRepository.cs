@@ -5,7 +5,7 @@ namespace RatingService.Infrastructure;
 
 internal class RatingRepository(RatingContext ratingContext) : IRatingRepository
 {
-    public IAsyncEnumerable<Rating> Find(IEnumerable<int> ratingIds)
+    public IAsyncEnumerable<Rating> Find(IEnumerable<Guid> ratingIds)
     {
         return ratingContext.Ratings.Where(r => ratingIds.Contains(r.Id)).AsNoTracking().AsAsyncEnumerable();
     }
@@ -20,7 +20,7 @@ internal class RatingRepository(RatingContext ratingContext) : IRatingRepository
         await ratingContext.AddRangeAsync(ratings);
     }
 
-    public async Task<int> Delete(IEnumerable<int> ratingIds)
+    public async Task<int> Delete(IEnumerable<Guid> ratingIds)
     {
         return await ratingContext.Ratings.Where(r => ratingIds.Contains(r.Id)).ExecuteDeleteAsync();
     }

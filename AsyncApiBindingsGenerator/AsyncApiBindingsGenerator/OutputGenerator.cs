@@ -130,7 +130,7 @@ public class RequestDispatcher({string.Join(", ", formattedDependencies)}) : IRe
 
                     if (matchingBodyProperty.Type == SchemaType.Array)
                     {
-                        var parseMethod = GetSelectParseMethod(matchingBodyProperty.Items.Type);
+                        var parseMethod = GetSelectParseMethod(matchingBodyProperty.Items);
                         return $@"{requestPropertyKey} = queryParameters.TryGetValue(""{queryParameterKey}"", out var {queryParameterKey})
                 ? {queryParameterKey}.Split("",""){parseMethod}
                 : original.{requestPropertyKey},";
@@ -171,12 +171,16 @@ public class RequestDispatcher({string.Join(", ", formattedDependencies)}) : IRe
             }
         }
 
-        private static string GetSelectParseMethod(SchemaType? type)
+        private static string GetSelectParseMethod(AsyncApiJsonSchema schema)
         {
-            switch (type)
+            switch (schema.Type)
             {
                 case SchemaType.Integer:
-                    return $@".Select(int.Parse)";
+                    return ".Select(int.Parse)";
+                case SchemaType.String:
+                    return schema.Format == "uuid"
+                        ? ".Select(Guid.Parse)"
+                        : string.Empty;
                 default:
                     return string.Empty;
             }

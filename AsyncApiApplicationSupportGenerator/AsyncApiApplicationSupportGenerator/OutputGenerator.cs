@@ -191,7 +191,9 @@ public readonly record struct {info.typeName}()
                 case SchemaType.Integer:
                     return "int";
                 case SchemaType.String:
-                    return "string";
+                    return schema.Format == "uuid"
+                        ? "Guid"
+                        : "string";
                 default:
                     throw new InvalidOperationException($"Schema type '{schema.Type}' not supported. ");
             }

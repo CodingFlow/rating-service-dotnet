@@ -5,6 +5,7 @@ WORKDIR /source
 
 # create local nuget packages
 COPY nuget.config ./
+COPY Service.Abstractions/ ./Service.Abstractions/
 COPY Service.AppHost.Common/ ./Service.AppHost.Common/
 COPY Service.Application.Common/. ./Service.Application.Common/
 COPY Service.Api.Common/. ./Service.Api.Common/
@@ -13,6 +14,7 @@ COPY AsyncApiApplicationSupportGenerator/. ./AsyncApiApplicationSupportGenerator
 
 RUN mkdir local-nuget-feed
 
+RUN dotnet pack -c release -o ./local-nuget-feed ./Service.Abstractions/
 RUN dotnet pack -c release -o ./local-nuget-feed ./Service.AppHost.Common/
 RUN dotnet pack -c release -o ./local-nuget-feed ./Service.Application.Common/
 RUN dotnet pack -c release -o ./local-nuget-feed ./Service.Api.Common/

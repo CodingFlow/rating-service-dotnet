@@ -8,7 +8,7 @@ namespace TestProject.Models;
 public readonly record struct Rating()
 {
     [JsonPropertyName("id")]
-    public int Id { get; init; }
+    public Guid Id { get; init; }
 
     [JsonPropertyName("userId")]
     public int UserId { get; init; }

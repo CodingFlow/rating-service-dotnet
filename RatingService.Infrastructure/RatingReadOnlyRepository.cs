@@ -5,7 +5,7 @@ namespace RatingService.Infrastructure;
 
 internal class RatingReadOnlyRepository(RatingReadOnlyContext ratingContext) : IRatingReadOnlyRepository
 {
-    public IAsyncEnumerable<Rating> Find(IEnumerable<int> ratingIds)
+    public IAsyncEnumerable<Rating> Find(IEnumerable<Guid> ratingIds)
     {
         return ratingContext.Ratings.Where(r => ratingIds.Contains(r.Id)).AsNoTracking().AsAsyncEnumerable();
     }

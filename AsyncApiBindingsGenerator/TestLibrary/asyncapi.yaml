@@ -100,7 +100,8 @@ components:
             ids:
               type: array
               items:
-                type: integer
+                type: string
+                format: uuid
         
     getRatingsReplyPayload:
       type: object
@@ -166,7 +167,8 @@ components:
             ids:
               type: array
               items:
-                type: integer
+                type: string
+                format: uuid
         
     deleteRatingsReplyPayload:
       type: object
@@ -182,7 +184,8 @@ components:
       additionalProperties: false
       properties:
         id:
-          type: integer
+          type: string
+          format: uuid
         userId:
           type: integer
         serviceId:

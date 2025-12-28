@@ -10,8 +10,8 @@ install_deploy_infrastructure() {
     --version v2.1.2 kgateway-crds oci://cr.kgateway.dev/kgateway-dev/charts/kgateway-crds &&
     helm upgrade -i -n kgateway-system kgateway oci://cr.kgateway.dev/kgateway-dev/charts/kgateway \
 --version v2.1.2 &&
-    helm install nats nats/nats -f ./deployment/nats-values.yaml &&
-    helm install nack nats/nack -f ./deployment/nack-values.yaml
+    helm upgrade -i nats nats/nats -f ./deployment/nats-values.yaml &&
+    helm upgrade -i nack nats/nack -f ./deployment/nack-values.yaml
 }
 
 build_push_docker_image() {

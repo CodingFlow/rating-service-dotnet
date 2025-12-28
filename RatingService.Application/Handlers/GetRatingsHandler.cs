@@ -12,13 +12,13 @@ internal class GetRatingsHandler(IRatingReadOnlyRepository ratingRepository) : I
             ? ratingRepository.Find(query.Ids)
             : ratingRepository.FindAll();
 
-        var responseRatings = ratings.Select(rating => new Models.Rating
+        var responseRatings = await ratings.Select(rating => new Models.Rating
         {
             Id = rating.Id,
             UserId = rating.UserId,
             ServiceId = rating.ServiceId,
             Score = rating.Score,
-        }).ToBlockingEnumerable();
+        }).ToListAsync();
 
         return new()
         {

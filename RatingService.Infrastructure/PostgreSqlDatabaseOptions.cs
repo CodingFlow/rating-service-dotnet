@@ -9,7 +9,7 @@ internal record PostgreSqlDatabaseOptions
 {
     [Required]
     [ConfigurationKeyName("CLUSTER_EXAMPLE_R_SERVICE_HOST")]
-    public required string HostReadOnly { get; set; }
+    public required string HostAnyRead { get; set; }
 
     [Required]
     [ConfigurationKeyName("CLUSTER_EXAMPLE_RW_SERVICE_HOST")]
@@ -17,7 +17,7 @@ internal record PostgreSqlDatabaseOptions
 
     [Required]
     [ConfigurationKeyName("CLUSTER_EXAMPLE_RO_SERVICE_HOST")]
-    public required string HostAny { get; set; }
+    public required string HostReadOnly { get; set; }
 
     [Required]
     [ConfigurationKeyName("DATABASE_POSTGRESQL_USERNAME")]

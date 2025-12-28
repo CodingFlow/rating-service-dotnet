@@ -12,7 +12,8 @@
     "yq-go@4.44",
     "k6@1.4",
     "dotnet-sdk_10@10.0",
-    "dotnet-ef@10.0"
+    "dotnet-ef@10.0",
+    "redis@8.2.2"
   ],
   "shell": {
     "init_hook": [

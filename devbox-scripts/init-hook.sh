@@ -17,6 +17,7 @@ alias deploy-gateway='deploy_gateway'
 alias deploy-http-to-nats-proxy='deploy_http_to_nats_proxy'
 alias deploy-nack='deploy_nack'
 alias deploy-database='deploy_database'
+alias deploy-redis='deploy_redis'
 alias deploy-service='deploy_service'
 alias deploy-frontend='deploy_frontend'
 
@@ -27,10 +28,13 @@ alias create-local-nuget-packages='create_local_nuget_packages'
 alias create-database-migration='create_database_migration'
 alias update-database='update_database'
 
+alias setup-redis="setup_redis"
+
 load_config dev
 
 create_local_nuget_packages() {
     mkdir local-nuget-feed
+    dotnet pack -c release -o ./local-nuget-feed ./Service.Abstractions/
     dotnet pack -c release -o ./local-nuget-feed ./Service.AppHost.Common/
     dotnet pack -c release -o ./local-nuget-feed ./Service.Application.Common/
     dotnet pack -c release -o ./local-nuget-feed ./Service.Api.Common/
@@ -67,13 +71,24 @@ deploy_database() {
 
 create_database_migration() {
     kubectl wait pod -l app.kubernetes.io/instance=cluster-example --for=condition=Ready --timeout=10s &&
-    dotnet ef migrations add InitialCreate -p ./RatingService.Infrastructure/ --startup-project ./RatingService.Infrastructure.DesignTime/
+    dotnet ef migrations add InitialCreate -p ./RatingService.Infrastructure/ --startup-project ./RatingService.Infrastructure.DesignTime/ --context RatingContext
 }
 
 update_database() {
     kubectl wait pod -l app.kubernetes.io/instance=cluster-example --for=condition=Ready --timeout=20s &&
     build_push_docker_image $docker_registry rating-service-database-migration-job . database-migration.Dockerfile &&
     apply_helm_package rating-service-database-migration-job ./deployment/database-migration ./deployment/database-migration-values.yaml
+}
+
+deploy_redis() {
+    build_push_docker_image $docker_registry redis . redis.Dockerfile &&
+    apply_rollout redis ./deployment/redis ./deployment/redis-values.yaml redis-deployment
+}
+
+setup_redis() {
+    kubectl wait pod -l app.kubernetes.io/name=redis --for=condition=Ready --timeout=20s &&
+    build_push_docker_image $docker_registry rating-service-redis-setup-job . redis.setup.Dockerfile &&
+    apply_helm_package rating-service-redis-setup-job ./deployment/redis-setup ./deployment/redis-setup-values.yaml
 }
 
 deploy_service() {

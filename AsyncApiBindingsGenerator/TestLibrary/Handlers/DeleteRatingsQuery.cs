@@ -2,5 +2,5 @@
 
 public readonly struct DeleteRatingsQuery
 {
-    public IEnumerable<int> Ids { get; init; }
+    public IEnumerable<Guid> Ids { get; init; }
 }

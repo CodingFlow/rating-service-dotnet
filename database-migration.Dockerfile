@@ -3,6 +3,14 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
 WORKDIR /source
 
+# create local nuget packages
+COPY nuget.config ./
+COPY Service.Abstractions/ ./Service.Abstractions/
+
+RUN mkdir local-nuget-feed
+
+RUN dotnet pack -c release -o ./local-nuget-feed ./Service.Abstractions/
+
 RUN dotnet tool install --global dotnet-ef
 ENV PATH="$PATH:/root/.dotnet/tools"
 

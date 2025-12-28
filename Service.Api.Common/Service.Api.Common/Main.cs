@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using NATS.Net;
+using Service.Abstractions;
 
 namespace Service.Api.Common;
 
@@ -11,7 +12,8 @@ internal class Main(
     IOptions<NatsServiceOptions> natsServiceOptions,
     IOptions<ServiceStreamConsumerOptions> serviceStreamConsumerOptions,
     IMemoryCache memoryCache,
-    IServiceScopeFactory serviceScopeFactory) : IHostedService
+    IServiceScopeFactory serviceScopeFactory,
+    IEnumerable<IStartupService> startupServices) : IHostedService
 {
     private readonly NatsServiceOptions natsServiceSettings = natsServiceOptions.Value;
     private readonly ServiceStreamConsumerOptions serviceStreamConsumerSettings = serviceStreamConsumerOptions.Value;
@@ -19,6 +21,8 @@ internal class Main(
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        var startupTasks = startupServices.Select(service => service.Startup());
+
         var host = natsServiceSettings.ServiceHost;
         var port = natsServiceSettings.Port;
 
@@ -30,6 +34,8 @@ internal class Main(
 
         var jetStream = client.CreateJetStreamContext();
         var consumer = await jetStream.GetConsumerAsync(serviceStreamConsumerSettings.StreamName, serviceStreamConsumerSettings.ConsumerName, cancellationToken);
+
+        await Task.WhenAll(startupTasks);
         
         Console.WriteLine("Ready to process messages");
 

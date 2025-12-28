@@ -12,7 +12,7 @@ internal class RatingReadOnlyContext(IOptions<PostgreSqlDatabaseOptions> databas
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var connectionString = $"Host={databaseSettings.HostReadOnly};Username={databaseSettings.Username};Password={databaseSettings.Password};Database={databaseSettings.DatabaseName}";
+        var connectionString = $"Host={databaseSettings.HostAnyRead};Username={databaseSettings.Username};Password={databaseSettings.Password};Database={databaseSettings.DatabaseName}";
         
         Console.WriteLine($"RatingContext - environment variable connection string: {connectionString}");
         

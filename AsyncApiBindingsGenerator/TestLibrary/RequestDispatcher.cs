@@ -31,7 +31,7 @@ public class RequestDispatcher(IRestHandler restHandler, IGetRatingsHandler getR
         return original with
         {
             Ids = queryParameters.TryGetValue("ids", out var ids)
-                ? ids.Split(",").Select(int.Parse)
+                ? ids.Split(",").Select(Guid.Parse)
                 : original.Ids,
         };
     }
@@ -46,7 +46,7 @@ public class RequestDispatcher(IRestHandler restHandler, IGetRatingsHandler getR
         return original with
         {
             Ids = queryParameters.TryGetValue("ids", out var ids)
-                ? ids.Split(",").Select(int.Parse)
+                ? ids.Split(",").Select(Guid.Parse)
                 : original.Ids,
         };
     }

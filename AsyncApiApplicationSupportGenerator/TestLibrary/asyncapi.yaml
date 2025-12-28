@@ -182,7 +182,8 @@ components:
       additionalProperties: false
       properties:
         id:
-          type: integer
+          type: string
+          format: uuid
         userId:
           type: integer
         serviceId:
