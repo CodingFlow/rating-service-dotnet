@@ -12,13 +12,13 @@
       <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.1">
           <PrivateAssets>all</PrivateAssets>
       </PackageReference>
-      <PackageReference Include="NetEscapades.EnumGenerators" Version="1.0.0-beta16" />
       <PackageReference Include="NRedisStack" Version="1.1.1" />
       <PackageReference Include="OptionsBindingsGenerator" Version="0.2.1">
           <PrivateAssets>all</PrivateAssets>
       </PackageReference>
       <PackageReference Include="Scrutor" Version="7.0.0" />
       <PackageReference Include="Service.Abstractions" Version="1.0.0" />
+      <PackageReference Include="Service.Libraries.Redis" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>

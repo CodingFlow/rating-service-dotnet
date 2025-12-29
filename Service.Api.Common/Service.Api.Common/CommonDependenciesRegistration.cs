@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Service.AppHost.Common;
+using Service.Libraries.Redis;
 
 namespace Service.Api.Common;
 
@@ -11,6 +12,7 @@ public class CommonDependenciesRegistration<TRequestDispatcher> : ICommonDepende
     public void RegisterConfiguration(IServiceCollection services, IConfigurationManager configuration)
     {
         services.AddOptionsBindings(configuration);
+        services.AddRedis(configuration);
     }
 
     public void RegisterDependencies(IServiceCollection services)

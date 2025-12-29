@@ -2,7 +2,7 @@
 using CodingFlow.OptionsBindingsGenerator;
 using Microsoft.Extensions.Configuration;
 
-namespace RatingService.Infrastructure.Redis;
+namespace Service.Libraries.Redis;
 
 [OptionsBindings(true)]
 internal record RedisOptions

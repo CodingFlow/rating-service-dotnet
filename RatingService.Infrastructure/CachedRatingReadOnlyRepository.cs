@@ -3,7 +3,7 @@ using RatingService.Infrastructure.Redis;
 
 namespace RatingService.Infrastructure;
 
-internal class CachedRatingReadOnlyRepository(IRatingReadOnlyRepository ratingReadOnlyRepository, IRedisGetConsistent redisGet) : RatingReadOnlyRepositoryDecorator(ratingReadOnlyRepository)
+internal class CachedRatingReadOnlyRepository(IRatingReadOnlyRepository ratingReadOnlyRepository, IRedisReadConsistent redisGet) : RatingReadOnlyRepositoryDecorator(ratingReadOnlyRepository)
 {
     public override IAsyncEnumerable<Rating> Find(IEnumerable<Guid> ratingIds)
     {

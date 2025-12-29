@@ -1,11 +1,12 @@
 ﻿using System.Text.Json;
-using RatingService.Infrastructure.RedisLoadParameters;
-using RatingService.Infrastructure.RedisQueries;
+using Service.Libraries.Redis;
+using Service.Libraries.Redis.RedisLoadParameters;
+using Service.Libraries.Redis.RedisQueries;
 using StackExchange.Redis;
 
 namespace RatingService.Infrastructure.Redis;
 
-internal class RedisGetConsistent(IRedisContext context) : IRedisGetConsistent
+internal class RedisReadConsistent(IRedisContext context) : IRedisReadConsistent
 {
     public IAsyncEnumerable<T> GetCached<T>(Func<IAsyncEnumerable<T>> fallbackSource)
     {

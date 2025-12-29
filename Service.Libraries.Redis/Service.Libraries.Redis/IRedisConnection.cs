@@ -1,8 +1,8 @@
 ﻿using StackExchange.Redis;
 
-namespace RatingService.Infrastructure.Redis;
+namespace Service.Libraries.Redis;
 
-internal interface IRedisConnection
+public interface IRedisConnection
 {
     IDatabase Database { get; }
     IServer Server { get; }

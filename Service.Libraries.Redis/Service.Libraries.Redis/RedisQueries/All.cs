@@ -1,6 +1,6 @@
-﻿namespace RatingService.Infrastructure.RedisQueries;
+﻿namespace Service.Libraries.Redis.RedisQueries;
 
-internal readonly record struct All : IRedisQuery
+public readonly record struct All : IRedisQuery
 {
     private readonly string value = "*";
 

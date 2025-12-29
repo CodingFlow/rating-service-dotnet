@@ -1,10 +1,10 @@
 ﻿using NRedisStack.Search.Aggregation;
-using RatingService.Infrastructure.RedisLoadParameters;
-using RatingService.Infrastructure.RedisQueries;
+using Service.Libraries.Redis.RedisLoadParameters;
+using Service.Libraries.Redis.RedisQueries;
 
-namespace RatingService.Infrastructure.Redis;
+namespace Service.Libraries.Redis;
 
-internal interface IRedisContext
+public interface IRedisContext
 {
     IAsyncEnumerable<Row> Search<T, TLoadParameters>(T query, TLoadParameters loadParameters, string index)
         where T : IRedisQuery

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace RatingService.Infrastructure;
+namespace Service.Libraries.Redis;
 
 internal static class DIUtilities
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 
-namespace RatingService.Infrastructure.Redis;
+namespace Service.Libraries.Redis;
 
 [OptionsValidator]
 internal partial class ValidateRedisOptions : IValidateOptions<RedisOptions>

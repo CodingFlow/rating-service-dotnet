@@ -1,8 +1,8 @@
 ﻿using NRedisStack.Search;
 
-namespace RatingService.Infrastructure.RedisLoadParameters;
+namespace Service.Libraries.Redis.RedisLoadParameters;
 
-internal readonly record struct Json : ILoadParameters
+public readonly record struct Json : ILoadParameters
 {
     private static readonly FieldName[] value = ["$"];
 

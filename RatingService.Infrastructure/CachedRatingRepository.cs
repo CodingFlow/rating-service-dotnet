@@ -3,7 +3,7 @@ using RatingService.Infrastructure.Redis;
 
 namespace RatingService.Infrastructure;
 
-internal class CachedRatingRepository(IRatingRepository ratingRepository, IRedisGetConsistent redisGet, IRedisContext redisContext) : RatingRepositoryDecorator(ratingRepository)
+internal class CachedRatingRepository(IRatingRepository ratingRepository, IRedisReadConsistent redisGet, IRedisWriteThrough redisWriteThrough) : RatingRepositoryDecorator(ratingRepository)
 {
     public override IAsyncEnumerable<Rating> Find(IEnumerable<Guid> ratingIds)
     {
@@ -17,32 +17,25 @@ internal class CachedRatingRepository(IRatingRepository ratingRepository, IRedis
 
     public override async Task Add(IEnumerable<Rating> ratings)
     {
-        var redisTask = redisContext.Set(ratings, (rating) => rating.Id, "rating:");
-
-        var databaseTask = base.Add(ratings);
-
-        await Task.WhenAll(redisTask, databaseTask);
+        await redisWriteThrough.Add(
+            items: ratings,
+            getId: (rating) => rating.Id,
+            prefix: "rating:",
+            databaseGet: base.Add);
     }
 
     public override async Task<int> Delete(IEnumerable<Guid> ratingIds)
     {
-        var redisTask = redisContext.Delete(ratingIds, "idx:ratings");
-
-        var databaseTask = base.Delete(ratingIds);
-
-        await Task.WhenAll(redisTask, databaseTask);
-
-        return await databaseTask;
+        return await redisWriteThrough.Delete(
+            ids: ratingIds,
+            index: "idx:ratings",
+            databaseDelete: base.Delete);
     }
 
     public override async Task<int> DeleteAll()
     {
-        var redisTask = redisContext.DeleteAll("rating:");
-
-        var databaseTask = base.DeleteAll();
-
-        await Task.WhenAll(redisTask, databaseTask);
-
-        return await databaseTask;
+        return await redisWriteThrough.DeleteAll(
+            prefix: "rating:",
+            databaseDeleteAll: base.DeleteAll);
     }
 }

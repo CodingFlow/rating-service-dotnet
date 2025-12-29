@@ -2,11 +2,11 @@
 using NRedisStack.RedisStackCommands;
 using NRedisStack.Search;
 using NRedisStack.Search.Aggregation;
-using RatingService.Infrastructure.RedisLoadParameters;
-using RatingService.Infrastructure.RedisQueries;
+using Service.Libraries.Redis.RedisLoadParameters;
+using Service.Libraries.Redis.RedisQueries;
 using StackExchange.Redis;
 
-namespace RatingService.Infrastructure.Redis;
+namespace Service.Libraries.Redis;
 
 internal class RedisContext(IRedisConnection connection) : IRedisContext
 {

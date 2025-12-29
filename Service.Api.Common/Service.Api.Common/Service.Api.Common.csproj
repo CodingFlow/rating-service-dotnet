@@ -15,6 +15,7 @@
     <PackageReference Include="Service.Abstractions" Version="1.0.0" />
     <PackageReference Include="Service.AppHost.Common" Version="1.0.0" />
     <PackageReference Include="Service.Application.Common" Version="1.0.0" />
+    <PackageReference Include="Service.Libraries.Redis" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
