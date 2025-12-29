@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RatingService.Domain;
+using RatingService.Infrastructure.Redis;
 using Service.Abstractions;
 
 namespace RatingService.Infrastructure;
@@ -21,8 +22,8 @@ public static class DependencyInjectionRegistrationExtension
         services.Decorate<IRatingReadOnlyRepository, CachedRatingReadOnlyRepository>();
 
         services.AddSharedSingleton<IStartupService, IRedisConnection, RedisConnection>();
-
         services.AddSingleton<IRedisGetConsistent, RedisGetConsistent>();
+        services.AddSingleton<IRedisContext, RedisContext>();
 
         return services;
     }

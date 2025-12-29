@@ -2,7 +2,7 @@
 using Service.Abstractions;
 using StackExchange.Redis;
 
-namespace RatingService.Infrastructure;
+namespace RatingService.Infrastructure.Redis;
 
 internal class RedisConnection(IOptions<RedisOptions> redisOptions) : IStartupService, IRedisConnection
 {

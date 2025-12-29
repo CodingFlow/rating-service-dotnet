@@ -1,6 +1,6 @@
 ﻿using StackExchange.Redis;
 
-namespace RatingService.Infrastructure;
+namespace RatingService.Infrastructure.Redis;
 
 internal interface IRedisConnection
 {

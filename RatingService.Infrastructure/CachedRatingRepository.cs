@@ -1,12 +1,14 @@
 ﻿using NRedisStack.Json.DataTypes;
 using NRedisStack.RedisStackCommands;
-using NRedisStack.Search;
 using RatingService.Domain;
+using RatingService.Infrastructure.Redis;
+using RatingService.Infrastructure.RedisLoadParameters;
+using RatingService.Infrastructure.RedisQueries;
 using StackExchange.Redis;
 
 namespace RatingService.Infrastructure;
 
-internal class CachedRatingRepository(IRatingRepository ratingRepository, IRedisGetConsistent redisGet, IRedisConnection redisConnection) : RatingRepositoryDecorator(ratingRepository)
+internal class CachedRatingRepository(IRatingRepository ratingRepository, IRedisGetConsistent redisGet, IRedisConnection redisConnection, IRedisContext ratingRedisContext) : RatingRepositoryDecorator(ratingRepository)
 {
     public override IAsyncEnumerable<Rating> Find(IEnumerable<Guid> ratingIds)
     {
@@ -31,12 +33,7 @@ internal class CachedRatingRepository(IRatingRepository ratingRepository, IRedis
 
     public override async Task<int> Delete(IEnumerable<Guid> ratingIds)
     {
-        var escapedIds = ratingIds.Select(id => id.ToString().Replace("-", @"\-"));
-        var joinedIds = string.Join(" | ", escapedIds);
-        var query = $@"@id:{{{joinedIds}}}";
-
-        var request = new AggregationRequest(query).Load("$", "__key").Dialect(2);
-        var results = redisConnection.Database.FT().AggregateAsyncEnumerable("idx:ratings", request);
+        var results = ratingRedisContext.Search(new ByIds(ratingIds), new JsonSurrogateKey(), "idx:ratings");
         var surrogateKeys = results
             .Select(row => row["__key"])
             .Select(value => new RedisKey(value));

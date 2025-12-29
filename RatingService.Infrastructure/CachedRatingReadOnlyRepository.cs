@@ -1,4 +1,5 @@
 ﻿using RatingService.Domain;
+using RatingService.Infrastructure.Redis;
 
 namespace RatingService.Infrastructure;
 
