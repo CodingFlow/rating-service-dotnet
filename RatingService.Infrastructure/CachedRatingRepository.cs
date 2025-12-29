@@ -1,14 +1,9 @@
-﻿using NRedisStack.Json.DataTypes;
-using NRedisStack.RedisStackCommands;
-using RatingService.Domain;
+﻿using RatingService.Domain;
 using RatingService.Infrastructure.Redis;
-using RatingService.Infrastructure.RedisLoadParameters;
-using RatingService.Infrastructure.RedisQueries;
-using StackExchange.Redis;
 
 namespace RatingService.Infrastructure;
 
-internal class CachedRatingRepository(IRatingRepository ratingRepository, IRedisGetConsistent redisGet, IRedisConnection redisConnection, IRedisContext ratingRedisContext) : RatingRepositoryDecorator(ratingRepository)
+internal class CachedRatingRepository(IRatingRepository ratingRepository, IRedisGetConsistent redisGet, IRedisContext redisContext) : RatingRepositoryDecorator(ratingRepository)
 {
     public override IAsyncEnumerable<Rating> Find(IEnumerable<Guid> ratingIds)
     {
@@ -22,9 +17,7 @@ internal class CachedRatingRepository(IRatingRepository ratingRepository, IRedis
 
     public override async Task Add(IEnumerable<Rating> ratings)
     {
-        var redisInput = ratings.Select((item) => new KeyPathValue($"rating:{item.Id}", "$", item)).ToArray();
-
-        var redisTask = redisConnection.Database.JSON().MSetAsync(redisInput);
+        var redisTask = redisContext.Set(ratings, (rating) => rating.Id, "rating:");
 
         var databaseTask = base.Add(ratings);
 
@@ -33,19 +26,7 @@ internal class CachedRatingRepository(IRatingRepository ratingRepository, IRedis
 
     public override async Task<int> Delete(IEnumerable<Guid> ratingIds)
     {
-        var results = ratingRedisContext.Search(new ByIds(ratingIds), new JsonSurrogateKey(), "idx:ratings");
-        var surrogateKeys = results
-            .Select(row => row["__key"])
-            .Select(value => new RedisKey(value));
-
-        var keysToDelete = new List<RedisKey>();
-
-        await foreach (var surrogateKey in surrogateKeys)
-        {
-            keysToDelete.Add(surrogateKey);
-        }
-
-        var redisTask = redisConnection.Database.KeyDeleteAsync([.. keysToDelete]);
+        var redisTask = redisContext.Delete(ratingIds, "idx:ratings");
 
         var databaseTask = base.Delete(ratingIds);
 
@@ -54,8 +35,14 @@ internal class CachedRatingRepository(IRatingRepository ratingRepository, IRedis
         return await databaseTask;
     }
 
-    public override Task<int> DeleteAll()
+    public override async Task<int> DeleteAll()
     {
-        return base.DeleteAll();
+        var redisTask = redisContext.DeleteAll("rating:");
+
+        var databaseTask = base.DeleteAll();
+
+        await Task.WhenAll(redisTask, databaseTask);
+
+        return await databaseTask;
     }
 }

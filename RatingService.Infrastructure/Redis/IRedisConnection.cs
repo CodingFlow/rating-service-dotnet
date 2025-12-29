@@ -5,4 +5,5 @@ namespace RatingService.Infrastructure.Redis;
 internal interface IRedisConnection
 {
     IDatabase Database { get; }
+    IServer Server { get; }
 }

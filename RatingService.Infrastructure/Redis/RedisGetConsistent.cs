@@ -22,7 +22,6 @@ internal class RedisGetConsistent(IRedisContext context) : IRedisGetConsistent
     {
         try
         {
-            Console.WriteLine($"~ ~ query: {query.Value}");
             var results = context.Search(query, new Json(), "idx:ratings");
 
             var items = results
