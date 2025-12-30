@@ -21,7 +21,7 @@ spec:
               cpu: 300m
               memory: 250Mi
             limits:
-              cpu: 1000m
+              cpu: 1100m
               memory: 400Mi
           env:
             - name: SERVICE_STREAM_NAME
