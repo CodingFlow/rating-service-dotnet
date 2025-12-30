@@ -1,6 +1,6 @@
 ﻿namespace Service.Application.Common.Handlers;
 
-public interface IPostHandler<TRequest>
+public interface IHandler<TRequest>
 {
     Task Handle(TRequest request);
 }

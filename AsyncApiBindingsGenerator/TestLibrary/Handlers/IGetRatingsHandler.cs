@@ -2,6 +2,6 @@
 
 namespace TestProject.Application.Handlers;
 
-public interface IGetRatingsHandler : IGetHandler<Queries.GetRatingsQuery, QueryResponses.GetRatingsQueryResponse>
+public interface IGetRatingsHandler : IHandler<Queries.GetRatingsQuery, QueryResponses.GetRatingsQueryResponse>
 {
 }

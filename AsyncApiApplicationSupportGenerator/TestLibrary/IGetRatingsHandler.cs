@@ -5,6 +5,6 @@ using Service.Application.Common.Handlers;
 
 namespace TestProject.Handlers;
 
-public interface IGetRatingsHandler : IGetHandler<TestProject.Queries.GetRatingsQuery, TestProject.QueryResponses.GetRatingsQueryResponse>
+public interface IGetRatingsHandler : IHandler<TestProject.Queries.GetRatingsQuery, TestProject.QueryResponses.GetRatingsQueryResponse>
 {
 }

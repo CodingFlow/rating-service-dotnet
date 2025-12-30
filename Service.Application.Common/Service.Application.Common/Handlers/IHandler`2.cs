@@ -1,7 +1,6 @@
 ﻿namespace Service.Application.Common.Handlers;
 
-public interface IGetHandler<TRequest, TResponse>
+public interface IHandler<TRequest, TResponse>
 {
     Task<TResponse> Handle(TRequest request);
 }
-

@@ -5,6 +5,6 @@ using Service.Application.Common.Handlers;
 
 namespace TestProject.Handlers;
 
-public interface IPostRatingsHandler : IPostHandler<TestProject.Commands.PostRatingsCommand>
+public interface IPostRatingsHandler : IHandler<TestProject.Commands.PostRatingsCommand>
 {
 }

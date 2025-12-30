@@ -5,6 +5,6 @@ using Service.Application.Common.Handlers;
 
 namespace TestProject.Handlers;
 
-public interface IDeleteRatingsHandler : IDeleteHandler<TestProject.Queries.DeleteRatingsQuery>
+public interface IDeleteRatingsHandler : IHandler<TestProject.Queries.DeleteRatingsQuery>
 {
 }
