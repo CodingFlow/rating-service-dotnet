@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using NATS.Client.JetStream;
 using NATS.Net;
 using Service.Abstractions;
@@ -11,13 +13,14 @@ using StackExchange.Redis;
 
 namespace Service.Api.Common;
 
-internal class Main(
+internal partial class Main(
     IOptions<NatsServiceOptions> natsServiceOptions,
     IOptions<ServiceStreamConsumerOptions> serviceStreamConsumerOptions,
     IMemoryCache memoryCache,
     IServiceScopeFactory serviceScopeFactory,
     IRedisConnection redisConnection,
-    IEnumerable<IStartupService> startupServices) : IHostedService
+    IEnumerable<IStartupService> startupServices,
+    ILogger<Main> logger) : IHostedService
 {
     private readonly NatsServiceOptions natsServiceSettings = natsServiceOptions.Value;
     private readonly ServiceStreamConsumerOptions serviceStreamConsumerSettings = serviceStreamConsumerOptions.Value;
@@ -27,10 +30,41 @@ internal class Main(
     {
         var startupTasks = startupServices.Select(service => service.Startup());
 
+        var consumer = await ConnectToNats(cancellationToken);
+
+        await Task.WhenAll(startupTasks);
+
+        LogReadyMessages();
+
+        var messages = consumer.ConsumeAsync<Request<JsonNode>>(cancellationToken: cancellationToken);
+
+        await Parallel.ForEachAsync(messages, async (message, cancellationToken) =>
+        {
+            message.Headers.TryGetValue("Nats-Msg-Id", out var messageId);
+
+            var state = new Dictionary<string, object>() {
+                { "NatsMsgId", messageId }
+            };
+
+            using (logger.BeginScope(state))
+            {
+                var isInLocalCache = CheckLocalCache(messageId);
+                var isInDistributedCache = await CheckDistributedCache(messageId, isInLocalCache);
+
+                if (!isInLocalCache && !isInDistributedCache)
+                {
+                    await BeginRequestScope(message, cancellationToken);
+                }
+            }
+        });
+    }
+
+    private async Task<INatsJSConsumer> ConnectToNats(CancellationToken cancellationToken)
+    {
         var host = natsServiceSettings.ServiceHost;
         var port = natsServiceSettings.Port;
 
-        Console.WriteLine($"~~ ~~ Connecting to NATS at {host}:{port}");
+        LogConnectedToNats(host, port);
 
         var url = $"nats://{host}:{port}";
 
@@ -38,23 +72,8 @@ internal class Main(
 
         var jetStream = client.CreateJetStreamContext();
         var consumer = await jetStream.GetConsumerAsync(serviceStreamConsumerSettings.StreamName, serviceStreamConsumerSettings.ConsumerName, cancellationToken);
-
-        await Task.WhenAll(startupTasks);
         
-        Console.WriteLine("Ready to process messages");
-
-        var messages = consumer.ConsumeAsync<Request<JsonNode>>(cancellationToken: cancellationToken);
-
-        await Parallel.ForEachAsync(messages, async (message, cancellationToken) =>
-        {
-            var isInLocalCache = CheckLocalCache(message);
-            var isInDistributedCache = await CheckDistributedCache(message, isInLocalCache);
-
-            if (!isInLocalCache && !isInDistributedCache)
-            {
-                await BeginRequestScope(message, cancellationToken);
-            }
-        });
+        return consumer;
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)
@@ -62,10 +81,8 @@ internal class Main(
         await client!.DisposeAsync();
     }
 
-    private bool CheckLocalCache(INatsJSMsg<Request<JsonNode>> message)
+    private bool CheckLocalCache(StringValues messageId)
     {
-        message.Headers.TryGetValue("Nats-Msg-Id", out var messageId);
-
         var messageAlreadyReceived = memoryCache.TryGetValue(messageId, out _);
 
         if (!messageAlreadyReceived)
@@ -79,20 +96,18 @@ internal class Main(
         }
         else
         {
-            Console.WriteLine($"Ignored duplicate message with id {messageId} because it is in local cache.");
+            LogIgnoreDuplicateMessageLocal(messageId);
         }
 
         return messageAlreadyReceived;
     }
 
-    private async Task<bool> CheckDistributedCache(INatsJSMsg<Request<JsonNode>> message, bool isInLocalCache)
+    private async Task<bool> CheckDistributedCache(StringValues messageId, bool isInLocalCache)
     {
         if (isInLocalCache)
         {
             return true;
         }
-
-        message.Headers.TryGetValue("Nats-Msg-Id", out var messageId);
 
         var value = await redisConnection.Database.StringGetAsync(messageId.ToString());
 
@@ -108,7 +123,7 @@ internal class Main(
         }
         else
         {
-            Console.WriteLine($"Ignored duplicate message with id {messageId} because it is in distributed cache.");
+            LogIgnoreDuplicateMessageDistributed(messageId);
         }
 
         return messageAlreadyReceived;
@@ -121,4 +136,16 @@ internal class Main(
 
         await messageHandler.HandleMessage(client, message, cancellationToken);
     }
+
+    [LoggerMessage(LogLevel.Information, Message = "Connecting to NATS at {host}:{port}")]
+    private partial void LogConnectedToNats(string host, string port);
+
+    [LoggerMessage(LogLevel.Information, Message = "Ready to process messages")]
+    private partial void LogReadyMessages();
+
+    [LoggerMessage(LogLevel.Information, Message = "Ignored duplicate message with id {messageId} because it is in local cache.")]
+    private partial void LogIgnoreDuplicateMessageLocal(string messageId);
+
+    [LoggerMessage(LogLevel.Information, Message = "Ignored duplicate message with id {messageId} because it is in distributed cache.")]
+    private partial void LogIgnoreDuplicateMessageDistributed(string messageId);
 }

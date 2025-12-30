@@ -14,8 +14,6 @@ internal class RatingContext(IOptions<PostgreSqlDatabaseOptions> databaseOptions
     {
         var connectionString = $"Host={databaseSettings.HostReadWrite};Username={databaseSettings.Username};Password={databaseSettings.Password};Database={databaseSettings.DatabaseName}";
         
-        Console.WriteLine($"RatingContext - environment variable connection string: {connectionString}");
-        
         optionsBuilder.UseNpgsql(connectionString);
     }
 }

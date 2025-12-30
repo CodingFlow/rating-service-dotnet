@@ -1,20 +1,20 @@
-﻿using System.Text.Json;
-using System.Text.Json.Nodes;
+﻿using System.Text.Json.Nodes;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using NATS.Client.JetStream;
 using NATS.Net;
 
 namespace Service.Api.Common;
 
-internal class MessageHandler(IMemoryCache memoryCache, IRequestDispatcher requestDispatcher) : IMessageHandler
+internal partial class MessageHandler(IMemoryCache memoryCache, IRequestDispatcher requestDispatcher, ILogger<MessageHandler> logger) : IMessageHandler
 {
     public async ValueTask HandleMessage(NatsClient client, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
     {
         try
         {
-            Console.WriteLine("processing message");
-            Console.WriteLine($"Headers: {JsonSerializer.Serialize(message.Headers)}");
-            Console.WriteLine($"Data: {JsonSerializer.Serialize(message.Data)}");
+            LogStartedProcessingMessage();
+            LogMessageHeaders(message.Headers);
+            LogMessageBody(message.Data);
 
             var pathParts = ExtractPathParts(message);
 
@@ -24,7 +24,7 @@ internal class MessageHandler(IMemoryCache memoryCache, IRequestDispatcher reque
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error processing message: {ex}");
+            LogMessageProcessingError(ex);
 
             message.Headers.TryGetValue("Nats-Msg-Id", out var messageId);
             memoryCache.Remove(messageId);
@@ -37,4 +37,16 @@ internal class MessageHandler(IMemoryCache memoryCache, IRequestDispatcher reque
     {
         return message.Subject.Split('.');
     }
+
+    [LoggerMessage(LogLevel.Information, Message = "Processing message")]
+    private partial void LogStartedProcessingMessage();
+
+    [LoggerMessage(LogLevel.Debug, Message = "Request message headers: {headers}")]
+    private partial void LogMessageHeaders(object headers);
+
+    [LoggerMessage(LogLevel.Debug, Message = "Request message body: {body}")]
+    private partial void LogMessageBody(object body);
+
+    [LoggerMessage(LogLevel.Warning, Message = "Error processing message")]
+    private partial void LogMessageProcessingError(Exception ex);
 }
