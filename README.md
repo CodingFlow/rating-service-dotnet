@@ -359,3 +359,6 @@ You can run the performance test script using k6:
 ```bash
 k6 run performance-test.js
 ```
+
+You may want to reduce the tracing sampling rate for the rating-service to reduce the load on your system from aggregating a lot of traces in SigNoz. You can change in the file deployment/app/templates/app.yaml the environment variable `OTEL_TRACES_SAMPLER_ARG` from 1.0 to something like 0.1.
+

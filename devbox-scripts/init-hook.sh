@@ -62,7 +62,7 @@ deploy_nack() {
 
 deploy_signoz() {
     helm repo add signoz https://charts.signoz.io &&
-    helm repo update &&
+    helm repo update signoz &&
     helm upgrade -i signoz signoz/signoz \
     --namespace signoz-system --create-namespace \
     --wait \
