@@ -1,6 +1,8 @@
-﻿using CodingFlow.Generated.OptionsBindingsGenerator.GeneratedService.Libraries.Redis;
+﻿using System.Net.NetworkInformation;
+using CodingFlow.Generated.OptionsBindingsGenerator.GeneratedService.Libraries.Redis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry.Trace;
 using Service.Abstractions;
 
 namespace Service.Libraries.Redis;
@@ -13,6 +15,9 @@ public static class DependencyInjection
 
         services.AddSharedSingleton<IStartupService, IRedisConnection, RedisConnection>();
         services.AddSingleton<IRedisContext, RedisContext>();
+
+        services.AddOpenTelemetry()
+            .WithTracing(tracing => tracing.AddRedisInstrumentation(options => options.SetVerboseDatabaseStatements = true));
 
         return services;
     }

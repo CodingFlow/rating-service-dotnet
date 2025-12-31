@@ -26,7 +26,7 @@ internal partial class Main(
     private readonly NatsServiceOptions natsServiceSettings = natsServiceOptions.Value;
     private readonly ServiceStreamConsumerOptions serviceStreamConsumerSettings = serviceStreamConsumerOptions.Value;
     private NatsClient? client;
-    private static ActivitySource tracer = new ActivitySource(nameof(Main));
+    private static readonly ActivitySource tracer = new ActivitySource(nameof(Main));
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
