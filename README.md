@@ -24,6 +24,8 @@ Tools and frameworks used by backend and infrastructure:
 - [JetStream](https://docs.nats.io/nats-concepts/jetstream) - NATS message
   persistence engine that allows messages to be stored and replayed at a later
   time.
+- [Redis](https://redis.io/) - High performance in-memory distributed cache.
+- [SigNoz](https://signoz.io/) - Observability platform for collecting and viewing logs, traces, and metrics.
 - [k3d](https://k3d.io/stable/) - Local Kubernetes toolchain for local
   development.
 - [k9s](https://k9scli.io/) - Terminal based UI to interact with Kubernetes clusters.
