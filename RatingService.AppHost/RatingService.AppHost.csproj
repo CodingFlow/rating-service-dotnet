@@ -20,6 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Npgsql.OpenTelemetry" Version="10.0.1" />
         <PackageReference Include="Service.AppHost.Common" Version="1.0.0" />
     </ItemGroup>
 

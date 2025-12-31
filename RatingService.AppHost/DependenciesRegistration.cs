@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
+using OpenTelemetry;
 using RatingService.Application;
 using RatingService.Infrastructure;
 
@@ -11,5 +13,10 @@ internal static class DependenciesRegistration
     {
         services.AddInfrastructureServices(configuration);
         services.AddApplicationServices();
+    }
+
+    public static void RegisterTelemetry(IOpenTelemetryBuilder telemetry)
+    {
+        telemetry.WithTracing(tracing => tracing.AddNpgsql());
     }
 }

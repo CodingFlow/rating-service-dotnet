@@ -1,6 +1,7 @@
 ﻿using CodingFlow.Generated.OptionsBindingsGenerator.GeneratedService.Api.Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry;
 using Service.AppHost.Common;
 using Service.Libraries.Redis;
 
@@ -19,5 +20,10 @@ public class CommonDependenciesRegistration<TRequestDispatcher> : ICommonDepende
     {
         services.AddTransient<IRequestDispatcher, TRequestDispatcher>();
         services.AddApiServices();
+    }
+
+    public IOpenTelemetryBuilder RegisterTelemetry(IServiceCollection services)
+    {
+        return services.AddTelemetryServices();
     }
 }

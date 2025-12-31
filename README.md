@@ -297,12 +297,14 @@ components to the cluster are available as shell aliases for convenience:
 | `delete-cluster`              | Deletes the k3d cluster.                                                                                                        |
 | `deploy-nack`                 | Apply JetStream kubernetes configuration.                                                                                       |
 | `deploy-gateway`              | Apply k8sGateway kubernetes configurations.                                                                                     |
+| `deploy-signoz`               | Apply SigNoz kubernetes configurations                                                                                          |
 | `deploy-http-to-nats-proxy`   | Build and push to docker registry the docker image for http-to-nats-proxy and deploy via kubernetes configuration.              |
 | `deploy_database`             | Installs Cloudnative-pg and apply Postgresql kubernetes configuration                                                           |
 | `deploy_redis `               | Build and push to docker registry the docker image for rating-service's Redis instance and deploy via kubernetes configuration. |
 | `deploy-service`              | Build and push to docker registry the docker image for rating-service and deploy via kubernetes configuration.                  |
 | `deploy-frontend`             | Build and push to docker registry the docker image for the frontend and deploy via kubernetes configuration.                    |
 | `port-forward-gateway`        | Port forward the gateway to localhost so the frontend and backend can be accessed for testing.                                  |
+| `port-forward-signoz`         | Port forward the SigNoz UI to localhost so it can be accessed via the browser.                                                  |
 | `create-local-nuget-packages` | Create local nuget packages for local libraries used by the service.                                                            |
 | `create-database-migration`   | Creates database migration files via Entity Framework Core.                                                                     |
 | `update-database`             | Executes database migration using database migration files via kubernetes job.                                                  |
@@ -321,12 +323,15 @@ deploy-database
 update-database
 deploy-redis
 update-redis
+deploy-signoz
 deploy-service
 deploy-http-to-nats-proxy
 deploy-gateway
 deploy-frontend
 port-forward-gateway
 ```
+
+Go to the SigNoz UI at http://localhost:3301 and create an account, otherwise Signoz will be unable to collect any telemetry.
 
 Then populate the database with some data by sending a `POST` request to http://localhost:8080/api/ratings with a body:
 
@@ -342,5 +347,13 @@ Then populate the database with some data by sending a `POST` request to http://
 }
 ```
 
-Lastly, view the data by sending a `GET` request to http://localhost:8080/api/ratings to get ratings from the API. Or
+Finally, view the data by sending a `GET` request to http://localhost:8080/api/ratings to get ratings from the API. Or
 access http://localhost:8080/ui in the browser.
+
+View logs and tracing information in the SigNOz UI via a browser at http://localhost:3301.
+
+You can run the performance test script using k6:
+
+```bash
+k6 run performance-test.js
+```

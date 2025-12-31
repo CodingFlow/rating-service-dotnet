@@ -16,12 +16,14 @@ alias stop-cluster='k3d cluster stop $cluster_name'
 alias deploy-gateway='deploy_gateway'
 alias deploy-http-to-nats-proxy='deploy_http_to_nats_proxy'
 alias deploy-nack='deploy_nack'
+alias deploy-signoz='deploy_signoz'
 alias deploy-database='deploy_database'
 alias deploy-redis='deploy_redis'
 alias deploy-service='deploy_service'
 alias deploy-frontend='deploy_frontend'
 
 alias port-forward-gateway='kubectl port-forward deployment/http -n kgateway-system 8080:8080'
+alias port-forward-signoz='kubectl port-forward -n signoz-system svc/signoz 3301:8080'
 
 alias create-local-nuget-packages='create_local_nuget_packages'
 
@@ -56,6 +58,17 @@ deploy_gateway() {
 deploy_nack() {
     helm upgrade --install rating-service-queue ./deployment/app-queue -f ./deployment/app-queue-values.yaml
     apply_helm_package rating-service-queue ./deployment/app-queue ./deployment/app-queue-values.yaml rating-service-queue
+}
+
+deploy_signoz() {
+    helm repo add signoz https://charts.signoz.io &&
+    helm repo update &&
+    helm upgrade -i signoz signoz/signoz \
+    --namespace signoz-system --create-namespace \
+    --wait \
+    --timeout 1h \
+    -f ./deployment/signoz-values.yaml &&
+    helm upgrade -i signoz-k8s-infra signoz/k8s-infra -f ./deployment/signoz-override-values.yaml
 }
 
 deploy_http_to_nats_proxy() {

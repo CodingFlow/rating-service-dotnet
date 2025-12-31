@@ -1,0 +1,12 @@
+otelCollectorEndpoint: "signoz-otel-collector.signoz-system.svc.cluster.local:4317"
+otelInsecure: true
+
+global:
+  cloud: others
+  clusterName: k3d-localdevcluster
+  deploymentEnvironment: staging
+presets:
+  otlpExporter:
+    enabled: true
+  loggingExporter:
+    enabled: false

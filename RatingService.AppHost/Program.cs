@@ -9,6 +9,10 @@ internal class Program
     {
         Console.WriteLine("Starting Rating Service API...");
 
-        await Starter.Start(args, DependenciesRegistration.RegisterDependencies, new CommonDependenciesRegistration<RequestDispatcher>());
+        await Starter.Start(
+            args,
+            DependenciesRegistration.RegisterDependencies,
+            DependenciesRegistration.RegisterTelemetry,
+            new CommonDependenciesRegistration<RequestDispatcher>());
     }
 }

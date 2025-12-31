@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Diagnostics;
+using System.Text.Json.Nodes;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,6 +26,7 @@ internal partial class Main(
     private readonly NatsServiceOptions natsServiceSettings = natsServiceOptions.Value;
     private readonly ServiceStreamConsumerOptions serviceStreamConsumerSettings = serviceStreamConsumerOptions.Value;
     private NatsClient? client;
+    private static ActivitySource tracer = new ActivitySource(nameof(Main));
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -47,6 +49,7 @@ internal partial class Main(
             };
 
             using (logger.BeginScope(state))
+            using (tracer.StartActivity("Request"))
             {
                 var isInLocalCache = CheckLocalCache(messageId);
                 var isInDistributedCache = await CheckDistributedCache(messageId, isInLocalCache);
