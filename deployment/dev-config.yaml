@@ -1,4 +1,3 @@
 docker_registry: localhost:5000
 docker_registry_name: localdevcluster-registry:5000
 RATING_SERVICE_URL_BASE: http://localhost:8080/api
-http_to_nats_build_directory: /mnt/c/Users/Blue/Documents/coding/http-to-nats-proxy

@@ -6,10 +6,12 @@ WORKDIR /source
 # create local nuget packages
 COPY nuget.config ./
 COPY Service.Abstractions/ ./Service.Abstractions/
+COPY Service.Libraries.Redis/ ./Service.Libraries.Redis/
 
 RUN mkdir local-nuget-feed
 
 RUN dotnet pack -c release -o ./local-nuget-feed ./Service.Abstractions/
+RUN dotnet pack -c release -o ./local-nuget-feed ./Service.Libraries.Redis/
 
 RUN dotnet tool install --global dotnet-ef
 ENV PATH="$PATH:/root/.dotnet/tools"

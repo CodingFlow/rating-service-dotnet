@@ -10,3 +10,7 @@ presets:
     enabled: true
   loggingExporter:
     enabled: false
+  logsCollection:
+    blacklist:
+      namespaces:
+        - "signoz-system"

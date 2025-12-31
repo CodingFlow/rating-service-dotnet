@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Service.Libraries.Redis;
 
 namespace RatingService.Infrastructure.DesignTime;
 
@@ -10,6 +11,7 @@ internal class RatingContextDesignTimeDbContextFactory : IDesignTimeDbContextFac
     {
         var builder = Host.CreateApplicationBuilder(args);
 
+        builder.Services.AddRedis(builder.Configuration);
         builder.Services.AddInfrastructureServices(builder.Configuration);
 
         using var host = builder.Build();
