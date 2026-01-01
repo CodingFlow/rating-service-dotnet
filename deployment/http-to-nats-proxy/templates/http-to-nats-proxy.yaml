@@ -19,7 +19,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: http-to-nats-proxy
-  replicas: 4
+  replicas: 2
   template:
     metadata:
       labels:
