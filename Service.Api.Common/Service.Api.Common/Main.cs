@@ -1,13 +1,17 @@
 ﻿using System.Diagnostics;
+using System.Reflection.PortableExecutable;
 using System.Text.Json.Nodes;
+using System.Xml.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using NATS.Client.Core;
 using NATS.Client.JetStream;
 using NATS.Net;
+using OpenTelemetry.Context.Propagation;
 using Service.Abstractions;
 using Service.Libraries.Redis;
 using StackExchange.Redis;
@@ -26,7 +30,7 @@ internal partial class Main(
     private readonly NatsServiceOptions natsServiceSettings = natsServiceOptions.Value;
     private readonly ServiceStreamConsumerOptions serviceStreamConsumerSettings = serviceStreamConsumerOptions.Value;
     private NatsClient? client;
-    private static readonly ActivitySource tracer = new ActivitySource(nameof(Main));
+    private static readonly ActivitySource tracer = new(nameof(Main));
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -48,8 +52,10 @@ internal partial class Main(
                 { "NatsMsgId", messageId }
             };
 
+            var parentContext = Propagators.DefaultTextMapPropagator.Extract(default, message.Headers, GetCorrelationId).ActivityContext;
+
             using (logger.BeginScope(state))
-            using (tracer.StartActivity("Request"))
+            using (tracer.StartActivity("Request", ActivityKind.Server, parentContext))
             {
                 var isInLocalCache = CheckLocalCache(messageId);
                 var isInDistributedCache = await CheckDistributedCache(messageId, isInLocalCache);
@@ -60,6 +66,11 @@ internal partial class Main(
                 }
             }
         });
+    }
+
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        await client!.DisposeAsync();
     }
 
     private async Task<INatsJSConsumer> ConnectToNats(CancellationToken cancellationToken)
@@ -75,13 +86,14 @@ internal partial class Main(
 
         var jetStream = client.CreateJetStreamContext();
         var consumer = await jetStream.GetConsumerAsync(serviceStreamConsumerSettings.StreamName, serviceStreamConsumerSettings.ConsumerName, cancellationToken);
-        
+
         return consumer;
     }
 
-    public async Task StopAsync(CancellationToken cancellationToken)
+    private static IEnumerable<string> GetCorrelationId(NatsHeaders headers, string name)
     {
-        await client!.DisposeAsync();
+        headers.TryGetValue(name, out var values);
+        return values.Where(value => value != null).ToList()! ?? Enumerable.Empty<string>();
     }
 
     private bool CheckLocalCache(StringValues messageId)
