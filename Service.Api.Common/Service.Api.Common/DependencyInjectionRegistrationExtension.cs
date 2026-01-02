@@ -9,9 +9,15 @@ internal static class DependencyInjectionRegistrationExtension
     public static IServiceCollection AddApiServices(this IServiceCollection services)
     {
         services.AddHostedService<Main>();
+        
+        services.AddSingleton<INatsConnectionService, NatsConnectionService>();
+
+        services.AddMemoryCache();
+        services.AddSingleton<ILocalCacheService, LocalCacheService>();
+        services.AddSingleton<IDistributedCacheService, DistributedCacheService>();
+
         services.AddTransient<IMessageHandler, MessageHandler>();
         services.AddSingleton<IRestHandler, RestHandler>();
-        services.AddMemoryCache();
 
         return services;
     }
