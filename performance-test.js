@@ -3,7 +3,7 @@ import { sleep } from 'k6';
 
 export const options = {
   iterations: 150_000,
-  vus: 1000
+  vus: 800
 };
 
 export default function () {
