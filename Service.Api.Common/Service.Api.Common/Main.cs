@@ -8,7 +8,6 @@ using NATS.Client.Core;
 using NATS.Client.JetStream;
 using OpenTelemetry.Context.Propagation;
 using Service.Abstractions;
-using Service.Libraries.Redis;
 
 namespace Service.Api.Common;
 
@@ -17,7 +16,6 @@ internal partial class Main(
     ILocalCacheService localCacheService,
     IDistributedCacheService distributedCacheService,
     IServiceScopeFactory serviceScopeFactory,
-    IRedisConnection redisConnection,
     IEnumerable<IStartupService> startupServices,
     ILogger<Main> logger) : IHostedService
 {
