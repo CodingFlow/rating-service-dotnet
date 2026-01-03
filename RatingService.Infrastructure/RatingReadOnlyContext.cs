@@ -10,6 +10,15 @@ internal class RatingReadOnlyContext(IOptions<PostgreSqlDatabaseOptions> databas
 
     public DbSet<Rating> Ratings { get; set; }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Rating>(builder =>
+        {
+            builder.HasKey(x => x.Id);
+            builder.Property(name => name.Id).HasVogenConversion();
+        });
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var connectionString = $"Host={databaseSettings.HostAnyRead};Username={databaseSettings.Username};Password={databaseSettings.Password};Database={databaseSettings.DatabaseName}";

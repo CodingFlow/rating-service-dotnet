@@ -14,7 +14,7 @@ internal class GetRatingsHandler(IRatingReadOnlyRepository ratingRepository) : I
 
         var responseRatings = await ratings.Select(rating => new Models.Rating
         {
-            Id = rating.Id,
+            Id = rating.Id.Value,
             UserId = rating.UserId,
             ServiceId = rating.ServiceId,
             Score = rating.Score,

@@ -19,6 +19,7 @@
       <PackageReference Include="Scrutor" Version="7.0.0" />
       <PackageReference Include="Service.Abstractions" Version="1.0.0" />
       <PackageReference Include="Service.Libraries.Redis" Version="1.0.0" />
+      <PackageReference Include="Vogen" Version="8.0.4" />
   </ItemGroup>
 
   <ItemGroup>

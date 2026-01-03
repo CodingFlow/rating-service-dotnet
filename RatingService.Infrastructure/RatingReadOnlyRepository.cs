@@ -7,7 +7,7 @@ internal class RatingReadOnlyRepository(RatingReadOnlyContext ratingContext) : I
 {
     public IAsyncEnumerable<Rating> Find(IEnumerable<Guid> ratingIds)
     {
-        return ratingContext.Ratings.Where(r => ratingIds.Contains(r.Id)).AsNoTracking().AsAsyncEnumerable();
+        return ratingContext.Ratings.Where(r => ratingIds.Contains(r.Id.Value)).AsNoTracking().AsAsyncEnumerable();
     }
 
     public IAsyncEnumerable<Rating> FindAll()

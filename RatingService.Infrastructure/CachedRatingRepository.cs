@@ -19,7 +19,7 @@ internal class CachedRatingRepository(IRatingRepository ratingRepository, IRedis
     {
         await redisWriteThrough.Add(
             items: ratings,
-            getId: (rating) => rating.Id,
+            getId: (rating) => rating.Id.Value,
             prefix: "rating:",
             databaseGet: base.Add);
     }

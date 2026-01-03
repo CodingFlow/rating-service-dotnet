@@ -2,19 +2,11 @@
 
 public partial class Rating : IAggregateRoot
 {
-    public Guid Id { get; set; }
-    
+    public RatingId Id { get; set; } = RatingId.From(Guid.CreateVersion7());
+
     public int UserId { get; set; }
 
     public int ServiceId { get; set; }
 
     public int Score { get; set; }
-
-    public Rating()
-    {
-        if (Id == Guid.Empty)
-        {
-            Id = Guid.CreateVersion7();
-        }
-    }
 }

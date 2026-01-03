@@ -7,7 +7,7 @@ internal class RatingRepository(RatingContext ratingContext) : IRatingRepository
 {
     public IAsyncEnumerable<Rating> Find(IEnumerable<Guid> ratingIds)
     {
-        return ratingContext.Ratings.Where(r => ratingIds.Contains(r.Id)).AsNoTracking().AsAsyncEnumerable();
+        return ratingContext.Ratings.Where(r => ratingIds.Contains(r.Id.Value)).AsNoTracking().AsAsyncEnumerable();
     }
 
     public IAsyncEnumerable<Rating> FindAll()
@@ -22,7 +22,7 @@ internal class RatingRepository(RatingContext ratingContext) : IRatingRepository
 
     public async Task<int> Delete(IEnumerable<Guid> ratingIds)
     {
-        return await ratingContext.Ratings.Where(r => ratingIds.Contains(r.Id)).ExecuteDeleteAsync();
+        return await ratingContext.Ratings.Where(r => ratingIds.Contains(r.Id.Value)).ExecuteDeleteAsync();
     }
 
     public async Task<int> DeleteAll()
