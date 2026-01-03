@@ -20,7 +20,7 @@ namespace AsyncApiBindingsGenerator
                 return (parts.First(), parts.ElementAt(1));
             });
 
-            var firstDependency = new List<string>() { "IRestHandler restHandler" };
+            var firstDependency = new List<string>() { "IRestHandler restHandler", "IQueryParameterParser queryParameterParser" };
             var formattedDependencies = firstDependency.Concat(splitAddresses.Select(((string restMethod, string pathPart) addressInfo) =>
             {
                 var interfaceName = $"I{ToPascalCase(addressInfo.restMethod)}{ToPascalCase(addressInfo.pathPart)}Handler";
@@ -68,11 +68,84 @@ namespace AsyncApiBindingsGenerator
                     var mergeTypeNamespace = GetMergeTypeNamespace(restMethod, serviceNamespacePart);
                     var mergeType = $"{mergeTypeNamespace}.{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}{requestType}";
                     var mergeMethodName = $"merge{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}";
-                    string withBlock = CreateWithBlock(messageReference);
 
-                    result = $@"    private static {mergeType} {mergeMethodName}({mergeType} original, Dictionary<string, string> queryParameters, string[] pathParts)
+                    string formattedParsing;
+
+                    if (IsPayloadPropertyExists(messageReference, "queryParameters"))
+                    {
+                        var parsing = GetPayloadSchemaEntry(messageReference, "queryParameters").Value.Properties.Select(entry =>
+                        {
+                            var requestPropertyKey = ToPascalCase(entry.Key);
+                            var queryParameterKey = entry.Key;
+
+                            var matchingBodyProperty = GetPayloadSchemaEntry(messageReference, "body").Value.Properties[queryParameterKey];
+
+                            var propertyToParse = matchingBodyProperty.Type == SchemaType.Array
+                                ? matchingBodyProperty.Items
+                                : matchingBodyProperty;
+
+                            var parseMethod = GetParseMethod(propertyToParse);
+
+                            return $@"        var ({queryParameterKey}, {queryParameterKey}Errors) = queryParameterParser.{parseMethod}(original.{requestPropertyKey}, queryParameters, ""{queryParameterKey}"");";
+                        });
+
+                        formattedParsing = $@"
+
+{string.Join(@"
+", parsing)}";
+                    } else
+                    {
+                        var parsing = Enumerable.Empty<string>();
+                        formattedParsing = string.Empty;
+                    }
+
+                    string mergeBlock;
+
+                    if (IsPayloadPropertyExists(messageReference, "queryParameters"))
+                    {
+                        var anyErrors = GetPayloadSchemaEntry(messageReference, "queryParameters").Value.Properties.Select(entry =>
+                        {
+                            var requestPropertyKey = ToPascalCase(entry.Key);
+                            var queryParameterKey = entry.Key;
+
+                            return $@"!{queryParameterKey}Errors.Any()";
+                        });
+
+                        var withBlockAssignments = CreateWithBlockAssignments(messageReference);
+                        var errorsConcat = GetPayloadSchemaEntry(messageReference, "queryParameters").Value.Properties.Select(entry =>
+                        {
+                            var queryParameterKey = entry.Key;
+
+                            return $@"                .Concat({queryParameterKey}Errors)";
+                        });
+                        var errorsConcatFormatted = string.Join(@"
+", errorsConcat);
+
+                        mergeBlock = $@"
+
+        if ({string.Join(" && ", anyErrors)})
+        {{
+            merged = original with
+            {{
+{withBlockAssignments}
+            }};
+        }}
+        else
+        {{
+            errors = errors
+{errorsConcatFormatted};
+        }}";
+                    } else
+                    {
+                        mergeBlock = string.Empty;
+                    }
+
+                        result = $@"    private ({mergeType}, IEnumerable<ValidationError>) {mergeMethodName}({mergeType} original, Dictionary<string, string> queryParameters, string[] pathParts)
     {{
-        return original{withBlock};
+        var errors = Enumerable.Empty<ValidationError>();
+        var merged = original;{formattedParsing}{mergeBlock}
+
+        return (merged, errors);
     }}";
                 }
                 else
@@ -115,72 +188,30 @@ public class RequestDispatcher({string.Join(", ", formattedDependencies)}) : IRe
             return (source, "RequestDispatcher");
         }
 
-        private static string CreateWithBlock(AsyncApiMessage messageReference)
+        private static string CreateWithBlockAssignments(AsyncApiMessage messageReference)
         {
-            string withBlock;
-
-            if (IsPayloadPropertyExists(messageReference, "queryParameters"))
+            var formattedWithAssignments = GetPayloadSchemaEntry(messageReference, "queryParameters").Value.Properties.Select(entry =>
             {
-                var formattedWithAssignments = GetPayloadSchemaEntry(messageReference, "queryParameters").Value.Properties.Select(entry =>
-                {
-                    var requestPropertyKey = ToPascalCase(entry.Key);
-                    var queryParameterKey = entry.Key;
+                var requestPropertyKey = ToPascalCase(entry.Key);
+                var queryParameterKey = entry.Key;
 
-                    var matchingBodyProperty = GetPayloadSchemaEntry(messageReference, "body").Value.Properties[queryParameterKey];
+                return $@"                {requestPropertyKey} = {queryParameterKey},";
+            });
 
-                    if (matchingBodyProperty.Type == SchemaType.Array)
-                    {
-                        var parseMethod = GetSelectParseMethod(matchingBodyProperty.Items);
-                        return $@"{requestPropertyKey} = queryParameters.TryGetValue(""{queryParameterKey}"", out var {queryParameterKey})
-                ? {queryParameterKey}.Split("",""){parseMethod}
-                : original.{requestPropertyKey},";
-                    }
-                    else
-                    {
-                        var parseMethod = GetParseMethod(matchingBodyProperty.Type, queryParameterKey);
-                        return $@"{requestPropertyKey} = queryParameters.TryGetValue(""{queryParameterKey}"", out var {queryParameterKey})
-                ? {parseMethod})
-                : original.{queryParameterKey},";
-                    }
-                });
-
-                withBlock = $@" with
-        {{
-            {string.Join(@"
-", formattedWithAssignments)}
-        }}";
-            }
-            else
-            {
-                withBlock = string.Empty;
-            }
-
-            return withBlock;
+            return string.Join(@"
+", formattedWithAssignments);
         }
 
-        private static string GetParseMethod(SchemaType? type, string queryParameterKey)
-        {
-            switch (type)
-            {
-                case SchemaType.Integer:
-                    return $@"int.Parse({queryParameterKey})";
-                case SchemaType.String:
-                    return queryParameterKey;
-                default:
-                    throw new ArgumentException($"SchemaType '{type}' not supported.");
-            }
-        }
-
-        private static string GetSelectParseMethod(AsyncApiJsonSchema schema)
+        private static string GetParseMethod(AsyncApiJsonSchema schema)
         {
             switch (schema.Type)
             {
                 case SchemaType.Integer:
-                    return ".Select(int.Parse)";
+                    return "ParseInt";
                 case SchemaType.String:
                     return schema.Format == "uuid"
-                        ? ".Select(Guid.Parse)"
-                        : string.Empty;
+                        ? "ParseGuid"
+                        : "ParseString";
                 default:
                     return string.Empty;
             }

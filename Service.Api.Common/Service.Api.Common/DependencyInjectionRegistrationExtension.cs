@@ -18,6 +18,7 @@ internal static class DependencyInjectionRegistrationExtension
 
         services.AddTransient<IMessageHandler, MessageHandler>();
         services.AddSingleton<IRestHandler, RestHandler>();
+        services.AddSingleton<IQueryParameterParser, QueryParameterParser>();
 
         return services;
     }

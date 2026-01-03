@@ -8,7 +8,7 @@ using TestProject.Application.Handlers;
 
 namespace TestProject;
 
-public class RequestDispatcher(IRestHandler restHandler, IGetRatingsHandler getRatingsHandler, IPostRatingsHandler postRatingsHandler, IDeleteRatingsHandler deleteRatingsHandler) : IRequestDispatcher
+public class RequestDispatcher(IRestHandler restHandler, IQueryParameterParser queryParameterParser, IGetRatingsHandler getRatingsHandler, IPostRatingsHandler postRatingsHandler, IDeleteRatingsHandler deleteRatingsHandler) : IRequestDispatcher
 {
     public async Task DispatchRequest(NatsClient client, string[] pathParts, Request<JsonNode> requestData, CancellationToken cancellationToken)
     {
@@ -26,28 +26,57 @@ public class RequestDispatcher(IRestHandler restHandler, IGetRatingsHandler getR
         }
     }
 
-    private static TestProject.Application.Queries.GetRatingsQuery mergeGetRatings(TestProject.Application.Queries.GetRatingsQuery original, Dictionary<string, string> queryParameters, string[] pathParts)
+    private (TestProject.Application.Queries.GetRatingsQuery, IEnumerable<ValidationError>) mergeGetRatings(TestProject.Application.Queries.GetRatingsQuery original, Dictionary<string, string> queryParameters, string[] pathParts)
     {
-        return original with
+        var errors = Enumerable.Empty<ValidationError>();
+        var merged = original;
+
+        var (ids, idsErrors) = queryParameterParser.ParseGuid(original.Ids, queryParameters, "ids");
+
+        if (!idsErrors.Any())
         {
-            Ids = queryParameters.TryGetValue("ids", out var ids)
-                ? ids.Split(",").Select(Guid.Parse)
-                : original.Ids,
-        };
+            merged = original with
+            {
+                Ids = ids,
+            };
+        }
+        else
+        {
+            errors = errors
+                .Concat(idsErrors);
+        }
+
+        return (merged, errors);
     }
 
-    private static TestProject.Application.Commands.PostRatingsCommand mergePostRatings(TestProject.Application.Commands.PostRatingsCommand original, Dictionary<string, string> queryParameters, string[] pathParts)
+    private (TestProject.Application.Commands.PostRatingsCommand, IEnumerable<ValidationError>) mergePostRatings(TestProject.Application.Commands.PostRatingsCommand original, Dictionary<string, string> queryParameters, string[] pathParts)
     {
-        return original;
+        var errors = Enumerable.Empty<ValidationError>();
+        var merged = original;
+
+        return (merged, errors);
     }
 
-    private static TestProject.Application.Queries.DeleteRatingsQuery mergeDeleteRatings(TestProject.Application.Queries.DeleteRatingsQuery original, Dictionary<string, string> queryParameters, string[] pathParts)
+    private (TestProject.Application.Queries.DeleteRatingsQuery, IEnumerable<ValidationError>) mergeDeleteRatings(TestProject.Application.Queries.DeleteRatingsQuery original, Dictionary<string, string> queryParameters, string[] pathParts)
     {
-        return original with
+        var errors = Enumerable.Empty<ValidationError>();
+        var merged = original;
+
+        var (ids, idsErrors) = queryParameterParser.ParseGuid(original.Ids, queryParameters, "ids");
+
+        if (!idsErrors.Any())
         {
-            Ids = queryParameters.TryGetValue("ids", out var ids)
-                ? ids.Split(",").Select(Guid.Parse)
-                : original.Ids,
-        };
+            merged = original with
+            {
+                Ids = ids,
+            };
+        }
+        else
+        {
+            errors = errors
+                .Concat(idsErrors);
+        }
+
+        return (merged, errors);
     }
 }
