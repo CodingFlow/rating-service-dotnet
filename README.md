@@ -341,9 +341,9 @@ Then populate the database with some data by sending a `POST` request to http://
 {
     "items": [
         {
-            "userId": 3,
-            "serviceId": 50,
-            "score": 2
+            "userId": "019b82d7-1476-711b-8bf1-0d963f31def4",
+            "serviceId": "019b82d7-1476-711b-8bf1-0d963f31def4",
+            "score": 5
         }
     ]
 }
