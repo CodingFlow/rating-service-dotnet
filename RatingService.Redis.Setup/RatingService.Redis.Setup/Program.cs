@@ -11,8 +11,8 @@ var db = muxer.GetDatabase();
 
 var schema = new Schema()
             .AddTagField(new FieldName("$.Id", "id"), sortable: true)
-            .AddNumericField(new FieldName("$.UserId", "userId"))
-            .AddNumericField(new FieldName("$.ServiceId", "serviceId"))
+            .AddTagField(new FieldName("$.UserId", "userId"))
+            .AddTagField(new FieldName("$.ServiceId", "serviceId"))
             .AddNumericField(new FieldName("$.Score", "score"));
 
 var indexCreated = db.FT().Create(

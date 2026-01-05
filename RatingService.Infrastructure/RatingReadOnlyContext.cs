@@ -15,7 +15,10 @@ internal class RatingReadOnlyContext(IOptions<PostgreSqlDatabaseOptions> databas
         modelBuilder.Entity<Rating>(builder =>
         {
             builder.HasKey(x => x.Id);
-            builder.Property(name => name.Id).HasVogenConversion();
+            builder.Property(rating => rating.Id).HasVogenConversion();
+            builder.Property(rating => rating.UserId).HasVogenConversion();
+            builder.Property(rating => rating.ServiceId).HasVogenConversion();
+            builder.Property(rating => rating.Score).HasVogenConversion();
         });
     }
 

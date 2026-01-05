@@ -3,6 +3,6 @@
 namespace RatingService.Domain;
 
 [ValueObject<Guid>]
-public readonly partial record struct RatingId
+public readonly partial record struct ServiceId
 {
 }

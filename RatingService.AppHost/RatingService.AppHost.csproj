@@ -26,6 +26,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\RatingService.Api\RatingService.Api.csproj" />
+        <ProjectReference Include="..\RatingService.Domain\RatingService.Domain.csproj" />
         <ProjectReference Include="..\RatingService.Infrastructure\RatingService.Infrastructure.csproj" />
     </ItemGroup>
 

@@ -9,9 +9,9 @@ internal class PostRatingsHandler(IRatingRepository ratingRepository) : IPostRat
     {
         var ratings = request.Items.Select(requestRating => new Rating
         {
-            UserId = requestRating.UserId,
-            ServiceId = requestRating.ServiceId,
-            Score = requestRating.Score,
+            UserId = UserId.From(requestRating.UserId),
+            ServiceId = ServiceId.From(requestRating.ServiceId),
+            Score = Score.From(requestRating.Score),
         });
 
         await ratingRepository.Add(ratings);

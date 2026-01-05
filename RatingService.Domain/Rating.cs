@@ -2,11 +2,11 @@
 
 public partial class Rating : IAggregateRoot
 {
-    public RatingId Id { get; set; } = RatingId.From(Guid.CreateVersion7());
+    public RatingId Id { get; init; } = RatingId.From(Guid.CreateVersion7());
 
-    public int UserId { get; set; }
+    public UserId UserId { get; init; }
 
-    public int ServiceId { get; set; }
+    public ServiceId ServiceId { get; init; }
 
-    public int Score { get; set; }
+    public Score Score { get; init; }
 }

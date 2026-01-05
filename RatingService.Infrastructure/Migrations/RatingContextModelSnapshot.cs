@@ -25,17 +25,16 @@ namespace RatingService.Infrastructure.Migrations
             modelBuilder.Entity("RatingService.Domain.Rating", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("Score")
-                        .HasColumnType("integer");
+                    b.Property<float>("Score")
+                        .HasColumnType("real");
 
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("ServiceId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
