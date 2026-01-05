@@ -352,7 +352,11 @@ Then populate the database with some data by sending a `POST` request to http://
 Finally, view the data by sending a `GET` request to http://localhost:8080/api/ratings to get ratings from the API. Or
 access http://localhost:8080/ui in the browser.
 
-View logs and tracing information in the SigNOz UI via a browser at http://localhost:3301.
+View logs and tracing information in the SigNOz UI via a browser at http://localhost:3301 after port-forwarding in a new terminal:
+
+```bash
+port-forward-signoz
+```
 
 You can run the performance test script using k6:
 
