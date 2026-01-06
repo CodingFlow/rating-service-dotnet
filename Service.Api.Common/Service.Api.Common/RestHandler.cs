@@ -11,62 +11,111 @@ internal class RestHandler : IRestHandler
     public async Task HandlePost<TRequest, TResponse>(NatsClient client, Request<JsonNode> requestData, string[] pathParts, IHandler<TRequest, TResponse> postHandler, Func<TRequest, Dictionary<string, string>, string[], (TRequest, IEnumerable<ValidationError>)> requestMerger, CancellationToken cancellationToken)
         where TRequest : new()
     {
-        await HandleRequest(201, client, requestData, pathParts, postHandler, requestMerger, cancellationToken);
+        async Task<Response<TResponse>> createResponse(TRequest request)
+        {
+            var responseBody = await postHandler.Handle(request);
+
+            return new Response<TResponse>
+            {
+                StatusCode = 201,
+                Body = responseBody,
+                Headers = []
+            };
+        }
+
+        await HandleRequest(client, requestData, pathParts, createResponse, requestMerger, cancellationToken);
     }
 
     public async Task HandlePost<TRequest>(NatsClient client, Request<JsonNode> requestData, string[] pathParts, IHandler<TRequest> postHandler, Func<TRequest, Dictionary<string, string>, string[], (TRequest, IEnumerable<ValidationError>)> requestMerger, CancellationToken cancellationToken)
         where TRequest : new()
     {
-        await HandleRequest(201, client, requestData, pathParts, postHandler, requestMerger, cancellationToken);
+        async Task<Response<JsonObject>> createResponse(TRequest request)
+        {
+            await postHandler.Handle(request);
+
+            return new Response<JsonObject>
+            {
+                StatusCode = 201,
+                Body = [],
+                Headers = []
+            };
+        }
+
+        await HandleRequest(client, requestData, pathParts, createResponse, requestMerger, cancellationToken);
     }
 
     public async Task HandleGet<TRequest, TResponse>(NatsClient client, Request<JsonNode> requestData, string[] pathParts, IHandler<TRequest, TResponse> getHandler, Func<TRequest, Dictionary<string, string>, string[], (TRequest, IEnumerable<ValidationError>)> requestMerger, CancellationToken cancellationToken)
         where TRequest : new()
     {
-        await HandleRequest(200, client, requestData, pathParts, getHandler, requestMerger, cancellationToken);
+        async Task<Response<TResponse>> createResponse(TRequest request)
+        {
+            var responseBody = await getHandler.Handle(request);
+
+            return new Response<TResponse>
+            {
+                StatusCode = 200,
+                Body = responseBody,
+                Headers = []
+            };
+        }
+
+        await HandleRequest(client, requestData, pathParts, createResponse, requestMerger, cancellationToken);
     }
 
     public async Task HandleDelete<TRequest, TResponse>(NatsClient client, Request<JsonNode> requestData, string[] pathParts, IHandler<TRequest, TResponse> deleteHandler, Func<TRequest, Dictionary<string, string>, string[], (TRequest, IEnumerable<ValidationError>)> requestMerger, CancellationToken cancellationToken)
         where TRequest : new()
     {
-        await HandleRequest(200, client, requestData, pathParts, deleteHandler, requestMerger, cancellationToken);
+        async Task<Response<TResponse>> createResponse(TRequest request)
+        {
+            var responseBody = await deleteHandler.Handle(request);
+
+            return new Response<TResponse>
+            {
+                StatusCode = 200,
+                Body = responseBody,
+                Headers = []
+            };
+        }
+
+        await HandleRequest(client, requestData, pathParts, createResponse, requestMerger, cancellationToken);
     }
 
     public async Task HandleDelete<TRequest>(NatsClient client, Request<JsonNode> requestData, string[] pathParts, IHandler<TRequest> deleteHandler, Func<TRequest, Dictionary<string, string>, string[], (TRequest, IEnumerable<ValidationError>)> requestMerger, CancellationToken cancellationToken)
         where TRequest : new()
     {
-        await HandleRequest(204, client, requestData, pathParts, deleteHandler, requestMerger, cancellationToken);
-    }
-
-    private static async Task HandleRequest<TRequest>(int statusCode, NatsClient client, Request<JsonNode> requestData, string[] pathParts, IHandler<TRequest> handler, Func<TRequest, Dictionary<string, string>, string[], (TRequest, IEnumerable<ValidationError>)> requestMerger, CancellationToken cancellationToken)
-        where TRequest : new()
-    {
-        var (request, errors) = ProcessRequest(requestData, pathParts, requestMerger);
-
-        if (errors.Any())
+        async Task<Response<JsonObject>> createResponse(TRequest request)
         {
-            await Publish(client, requestData, errors.First(), (int)errors.First().StatusCode, cancellationToken);
-        } else
-        {
-            await handler.Handle(request);
-
-            await Publish(client, requestData, new JsonObject(), statusCode, cancellationToken);
+            await deleteHandler.Handle(request);
+            
+            return new Response<JsonObject>
+            {
+                StatusCode = 204,
+                Body = [],
+                Headers = []
+            };
         }
+
+        await HandleRequest(client, requestData, pathParts, createResponse, requestMerger, cancellationToken);
     }
 
-    private static async Task HandleRequest<TRequest, TResponse>(int statusCode, NatsClient client, Request<JsonNode> requestData, string[] pathParts, IHandler<TRequest, TResponse> handler, Func<TRequest, Dictionary<string, string>, string[], (TRequest, IEnumerable<ValidationError>)> requestMerger, CancellationToken cancellationToken)
+    private static async Task HandleRequest<TRequest, TResponse>(NatsClient client, Request<JsonNode> requestData, string[] pathParts, Func<TRequest, Task<Response<TResponse>>> createResponse, Func<TRequest, Dictionary<string, string>, string[], (TRequest, IEnumerable<ValidationError>)> requestMerger, CancellationToken cancellationToken)
         where TRequest : new()
     {
         var (request, errors) = ProcessRequest(requestData, pathParts, requestMerger);
 
         if (errors.Any())
         {
-            await Publish(client, requestData, errors.First(), (int)errors.First().StatusCode, cancellationToken);
+            var errorResponse = new Response<ValidationError>
+            {
+                StatusCode = (int)errors.First().StatusCode,
+                Body = errors.First(),
+                Headers = []
+            };
+
+            await Publish(client, requestData, errorResponse, cancellationToken);
         } else
         {
-            var responseBody = await handler.Handle(request);
-
-            await Publish(client, requestData, responseBody, statusCode, cancellationToken);
+            await Publish(client, requestData, await createResponse(request), cancellationToken);
         }
     }
 
@@ -99,14 +148,11 @@ internal class RestHandler : IRestHandler
         return (mergedRequest, errors);
     }
 
-    private static async Task Publish<TResponse>(NatsClient client, Request<JsonNode> requestData, TResponse? responseBody, int statusCode, CancellationToken cancellationToken)
+    private static async Task Publish<TResponse>(NatsClient client, Request<JsonNode> requestData, Response<TResponse> response, CancellationToken cancellationToken)
     {
-        await client.PublishAsync(requestData.OriginReplyTo, new Response<TResponse>
-            {
-                StatusCode = statusCode,
-                Body = responseBody,
-                Headers = []
-            },
+        await client.PublishAsync(
+            requestData.OriginReplyTo,
+            response,
             cancellationToken: cancellationToken);
     }
 }
