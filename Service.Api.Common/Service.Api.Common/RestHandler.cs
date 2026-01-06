@@ -96,7 +96,6 @@ internal class RestHandler : IRestHandler
             mergedRequest = new TRequest();
         }
 
-
         return (mergedRequest, errors);
     }
 

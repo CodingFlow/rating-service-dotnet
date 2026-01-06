@@ -4,7 +4,7 @@ using OpenTelemetry;
 
 namespace Service.Api.Common;
 
-internal static class DependencyInjectionRegistrationExtension
+internal static class DependencyInjectionRegistration
 {
     public static IServiceCollection AddApiServices(this IServiceCollection services)
     {
@@ -17,6 +17,8 @@ internal static class DependencyInjectionRegistrationExtension
         services.AddSingleton<IDistributedCacheService, DistributedCacheService>();
 
         services.AddTransient<IMessageHandler, MessageHandler>();
+        services.Decorate<IMessageHandler, MessageHandlerErrorLogging>();
+
         services.AddSingleton<IRestHandler, RestHandler>();
         services.AddSingleton<IQueryParameterParser, QueryParameterParser>();
 
