@@ -2,7 +2,6 @@
 #nullable restore
 
 using System.Text.Json.Nodes;
-using NATS.Net;
 using Service.Api.Common;
 using TestProject.Application.Handlers;
 
@@ -10,18 +9,18 @@ namespace TestProject;
 
 public class RequestDispatcher(IRestHandler restHandler, IQueryParameterParser queryParameterParser, IGetRatingsHandler getRatingsHandler, IPostRatingsHandler postRatingsHandler, IDeleteRatingsHandler deleteRatingsHandler) : IRequestDispatcher
 {
-    public async Task DispatchRequest(NatsClient client, string[] pathParts, Request<JsonNode> requestData, CancellationToken cancellationToken)
+    public async Task DispatchRequest(string[] pathParts, Request<JsonNode> requestData, CancellationToken cancellationToken)
     {
         switch (pathParts)
         {
             case ["get", "ratings"]:
-                await restHandler.HandleGet(client, requestData, pathParts, getRatingsHandler, mergeGetRatings, cancellationToken);
+                await restHandler.HandleGet(requestData, pathParts, getRatingsHandler, mergeGetRatings, cancellationToken);
                 break;
             case ["post", "ratings"]:
-                await restHandler.HandlePost(client, requestData, pathParts, postRatingsHandler, mergePostRatings, cancellationToken);
+                await restHandler.HandlePost(requestData, pathParts, postRatingsHandler, mergePostRatings, cancellationToken);
                 break;
             case ["delete", "ratings"]:
-                await restHandler.HandleDelete(client, requestData, pathParts, deleteRatingsHandler, mergeDeleteRatings, cancellationToken);
+                await restHandler.HandleDelete(requestData, pathParts, deleteRatingsHandler, mergeDeleteRatings, cancellationToken);
                 break;
         }
     }

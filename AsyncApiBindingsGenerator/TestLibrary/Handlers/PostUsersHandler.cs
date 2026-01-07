@@ -4,9 +4,8 @@ namespace TestProject.Application.Handlers;
 
 internal class PostUsersHandler : IPostRatingsHandler
 {
-
-    public async Task<string> Handle(PostRatingsCommand command)
+    public Task Handle(PostRatingsCommand request)
     {
-        return await Task.FromResult(string.Empty);
+        return Task.CompletedTask;
     }
 }

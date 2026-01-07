@@ -85,7 +85,7 @@ internal partial class Main(
         await using var scope = serviceScopeFactory.CreateAsyncScope();
         var messageHandler = scope.ServiceProvider.GetService<IMessageHandler>();
 
-        await messageHandler.HandleMessage(natsConnectionService.Client, message, cancellationToken);
+        await messageHandler.HandleMessage(message, cancellationToken);
     }
 
     [LoggerMessage(LogLevel.Information, Message = "Ready to process messages")]

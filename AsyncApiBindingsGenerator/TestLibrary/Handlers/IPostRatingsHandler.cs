@@ -2,6 +2,6 @@
 
 namespace TestProject.Application.Handlers;
 
-public interface IPostRatingsHandler : IHandler<TestProject.Application.Commands.PostRatingsCommand, string>
+public interface IPostRatingsHandler : IHandler<TestProject.Application.Commands.PostRatingsCommand>
 {
 }

@@ -2,13 +2,12 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using NATS.Client.JetStream;
-using NATS.Net;
 
 namespace Service.Api.Common;
 
 internal partial class MessageHandlerErrorLogging(IMessageHandler messageHandler, IMemoryCache memoryCache, ILogger<MessageHandlerErrorLogging> logger) : MessageHandlerDecorator(messageHandler)
 {
-    public override async ValueTask HandleMessage(NatsClient client, INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
+    public override async ValueTask HandleMessage(INatsJSMsg<Request<JsonNode>> message, CancellationToken cancellationToken)
     {
         try
         {
@@ -16,7 +15,7 @@ internal partial class MessageHandlerErrorLogging(IMessageHandler messageHandler
             LogMessageHeaders(message.Headers);
             LogMessageBody(message.Data);
 
-            await base.HandleMessage(client, message, cancellationToken);
+            await base.HandleMessage(message, cancellationToken);
         }
         catch (Exception ex)
         {
