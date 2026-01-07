@@ -37,7 +37,7 @@ Definitions:
 
 **Conceptual**: High level, not very technical, business domain level.
 
-**Logical**: Technical, agnostic of particular techlibraries and frameworks.
+**Logical**: Technical, agnostic of particular technology libraries and frameworks.
 
 **Physical/Concrete**: More detailed, uses specific technologies.
 
@@ -139,6 +139,7 @@ flowchart TD
   apphost --> api
   apphost --> app
   apphost --> infrastructure
+  apphost --> domain
   api --> app
   app --> domain
   infrastructure --> domain
