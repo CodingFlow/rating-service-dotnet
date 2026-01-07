@@ -3,11 +3,15 @@
 
 using System.Text.Json.Nodes;
 using Service.Api.Common;
+using Service.Application.Common.Handlers;
+using TestProject.Application.Commands;
 using TestProject.Application.Handlers;
+using TestProject.Application.Queries;
+using TestProject.Application.QueryResponses;
 
 namespace TestProject;
 
-public class RequestDispatcher(IRestHandler restHandler, IQueryParameterParser queryParameterParser, IGetRatingsHandler getRatingsHandler, IPostRatingsHandler postRatingsHandler, IDeleteRatingsHandler deleteRatingsHandler) : IRequestDispatcher
+public class RequestDispatcher(IRestHandler restHandler, IQueryParameterParser queryParameterParser, IHandler<GetRatingsQuery, GetRatingsQueryResponse> getRatingsHandler, IHandler<PostRatingsCommand, JsonObject> postRatingsHandler, IHandler<DeleteRatingsQuery, JsonObject> deleteRatingsHandler) : IRequestDispatcher
 {
     public async Task DispatchRequest(string[] pathParts, Request<JsonNode> requestData, CancellationToken cancellationToken)
     {
