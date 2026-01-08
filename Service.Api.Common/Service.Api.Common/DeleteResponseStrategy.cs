@@ -3,7 +3,7 @@ using Service.Application.Common.Handlers;
 
 namespace Service.Api.Common;
 
-internal class DeleteResponseStrategy<TRequest, TResponse> : IResponseStrategy<TRequest, TResponse>
+public class DeleteResponseStrategy<TRequest, TResponse> : IResponseStrategy<TRequest, TResponse>
 {
     public async Task<Response<TResponse>> CreateResponse(TRequest request, IHandler<TRequest, TResponse> handler)
     {

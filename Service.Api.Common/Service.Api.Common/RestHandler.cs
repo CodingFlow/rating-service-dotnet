@@ -7,31 +7,7 @@ namespace Service.Api.Common;
 
 internal class RestHandler(INatsConnectionService natsConnectionService) : IRestHandler
 {
-    public async Task HandlePost<TRequest, TResponse>(Request<JsonNode> requestData, string[] pathParts, IHandler<TRequest, TResponse> handler, Func<TRequest, Dictionary<string, string>, string[], (TRequest, IEnumerable<ValidationError>)> requestMerger, CancellationToken cancellationToken)
-        where TRequest : new()
-    {
-        var responseStrategy = new PostResponseStrategy<TRequest, TResponse>();
-
-        await HandleRequest(requestData, pathParts, responseStrategy, handler, requestMerger, cancellationToken);
-    }
-
-    public async Task HandleGet<TRequest, TResponse>(Request<JsonNode> requestData, string[] pathParts, IHandler<TRequest, TResponse> handler, Func<TRequest, Dictionary<string, string>, string[], (TRequest, IEnumerable<ValidationError>)> requestMerger, CancellationToken cancellationToken)
-        where TRequest : new()
-    {
-        var responseStrategy = new GetResponseStrategy<TRequest, TResponse>();
-
-        await HandleRequest(requestData, pathParts, responseStrategy, handler, requestMerger, cancellationToken);
-    }
-
-    public async Task HandleDelete<TRequest, TResponse>(Request<JsonNode> requestData, string[] pathParts, IHandler<TRequest, TResponse> handler, Func<TRequest, Dictionary<string, string>, string[], (TRequest, IEnumerable<ValidationError>)> requestMerger, CancellationToken cancellationToken)
-        where TRequest : new()
-    {
-        var responseStrategy = new DeleteResponseStrategy<TRequest, TResponse>();
-
-        await HandleRequest(requestData, pathParts, responseStrategy, handler, requestMerger, cancellationToken);
-    }
-
-    private async Task HandleRequest<TRequest, TResponse>(
+    public async Task HandleRequest<TRequest, TResponse>(
         Request<JsonNode> requestData,
         string[] pathParts,
         IResponseStrategy<TRequest, TResponse> responseStrategy,

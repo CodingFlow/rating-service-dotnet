@@ -11,20 +11,28 @@ using TestProject.Application.QueryResponses;
 
 namespace TestProject;
 
-public class RequestDispatcher(IRestHandler restHandler, IQueryParameterParser queryParameterParser, IHandler<GetRatingsQuery, GetRatingsQueryResponse> getRatingsHandler, IHandler<PostRatingsCommand, JsonObject> postRatingsHandler, IHandler<DeleteRatingsQuery, JsonObject> deleteRatingsHandler) : IRequestDispatcher
+public class RequestDispatcher(
+    IRestHandler restHandler,
+    IQueryParameterParser queryParameterParser,
+    IHandler<GetRatingsQuery, GetRatingsQueryResponse> getRatingsHandler,
+    IHandler<PostRatingsCommand, JsonObject> postRatingsHandler,
+    IHandler<DeleteRatingsQuery, JsonObject> deleteRatingsHandler,
+    IResponseStrategy<GetRatingsQuery, GetRatingsQueryResponse> getRatingsResponseStrategy,
+    IResponseStrategy<PostRatingsCommand, JsonObject> postRatingsResponseStrategy,
+    IResponseStrategy<DeleteRatingsQuery, JsonObject> deleteRatingsResponseStrategy) : IRequestDispatcher
 {
     public async Task DispatchRequest(string[] pathParts, Request<JsonNode> requestData, CancellationToken cancellationToken)
     {
         switch (pathParts)
         {
             case ["get", "ratings"]:
-                await restHandler.HandleGet(requestData, pathParts, getRatingsHandler, mergeGetRatings, cancellationToken);
+                await restHandler.HandleRequest(requestData, pathParts, getRatingsResponseStrategy, getRatingsHandler, mergeGetRatings, cancellationToken);
                 break;
             case ["post", "ratings"]:
-                await restHandler.HandlePost(requestData, pathParts, postRatingsHandler, mergePostRatings, cancellationToken);
+                await restHandler.HandleRequest(requestData, pathParts, postRatingsResponseStrategy, postRatingsHandler, mergePostRatings, cancellationToken);
                 break;
             case ["delete", "ratings"]:
-                await restHandler.HandleDelete(requestData, pathParts, deleteRatingsHandler, mergeDeleteRatings, cancellationToken);
+                await restHandler.HandleRequest(requestData, pathParts, deleteRatingsResponseStrategy, deleteRatingsHandler, mergeDeleteRatings, cancellationToken);
                 break;
         }
     }

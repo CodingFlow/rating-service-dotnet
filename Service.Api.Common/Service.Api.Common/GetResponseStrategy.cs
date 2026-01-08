@@ -2,7 +2,7 @@
 
 namespace Service.Api.Common;
 
-internal class GetResponseStrategy<TRequest, TResponse> : IResponseStrategy<TRequest, TResponse>
+public class GetResponseStrategy<TRequest, TResponse> : IResponseStrategy<TRequest, TResponse>
 {
     public async Task<Response<TResponse>> CreateResponse(TRequest request, IHandler<TRequest, TResponse> handler)
     {

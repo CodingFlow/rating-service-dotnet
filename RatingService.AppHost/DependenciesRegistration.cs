@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using OpenTelemetry;
+using RatingService.Api;
 using RatingService.Application;
 using RatingService.Infrastructure;
 
@@ -13,6 +14,7 @@ internal static class DependenciesRegistration
     {
         services.AddInfrastructureServices(configuration);
         services.AddApplicationServices();
+        services.AddApiServices();
     }
 
     public static void RegisterTelemetry(IOpenTelemetryBuilder telemetry)

@@ -8,7 +8,7 @@ using Service.Application.Common.Handlers;
 
 namespace RatingService.Application;
 
-public static class DependencyInjectionRegistrationExtension
+public static class DependenciesRegistration
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {

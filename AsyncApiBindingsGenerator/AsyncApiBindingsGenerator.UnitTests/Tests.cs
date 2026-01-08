@@ -20,7 +20,8 @@ public class Tests
     [Test]
     public async Task SimpleGetPost()
     {
-        var generatedClass = await ReadCSharpFile<RequestDispatcher>(true);
+        var generatedDispatcher = await ReadCSharpFile<RequestDispatcher>(true);
+        var generatedResponseStrategies = await ReadCSharpFileByName(true, "ResponseStrategiesExtensions");
 
         const string asyncApiFilename = "asyncapi.yaml";
         var asyncapiYaml = await ReadFile(true, asyncApiFilename);
@@ -44,7 +45,8 @@ public class Tests
                 Sources = {  },
                 GeneratedSources =
                 {
-                    (typeof(Main), "RequestDispatcher.generated.cs", SourceText.From(generatedClass, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "RequestDispatcher.generated.cs", SourceText.From(generatedDispatcher, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "ResponseStrategiesExtensions.generated.cs", SourceText.From(generatedResponseStrategies, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                 },
             },
         }.RunAsync();

@@ -33,9 +33,11 @@ namespace AsyncApiBindingsGenerator
 
         private static void Execute(SourceProductionContext context, (AsyncApiDocument asyncApiDocument, string assemblyName) info)
         {
-            var (classSource, className) = OutputGenerator.GenerateSpecOutputs(info.asyncApiDocument, info.assemblyName);
+            var (dispatcherSource, dispatcherName) = OutputGenerator.GenerateDispatcher(info.asyncApiDocument, info.assemblyName);
+            var (responseStrategiesSource, responseStrategiesName) = OutputGenerator.GenerateDependencyInjectionRegistrations(info.asyncApiDocument, info.assemblyName);
 
-            context.AddSource($"{className}.generated.cs", SourceText.From(classSource, Encoding.UTF8, SourceHashAlgorithm.Sha256));
+            context.AddSource($"{dispatcherName}.generated.cs", SourceText.From(dispatcherSource, Encoding.UTF8, SourceHashAlgorithm.Sha256));
+            context.AddSource($"{responseStrategiesName}.generated.cs", SourceText.From(responseStrategiesSource, Encoding.UTF8, SourceHashAlgorithm.Sha256));
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using RatingService.Api;
-using RatingService.AppHost;
 using Service.Api.Common;
 using Service.AppHost.Common;
 
@@ -11,8 +10,8 @@ internal class Program
 
         await Starter.Start(
             args,
-            DependenciesRegistration.RegisterDependencies,
-            DependenciesRegistration.RegisterTelemetry,
+            RatingService.AppHost.DependenciesRegistration.RegisterDependencies,
+            RatingService.AppHost.DependenciesRegistration.RegisterTelemetry,
             new CommonDependenciesRegistration<RequestDispatcher>());
     }
 }
