@@ -8,5 +8,5 @@ namespace TestProject.Queries;
 public readonly record struct DeleteRatingsQuery()
 {
     [JsonPropertyName("ids")]
-    public IEnumerable<int> Ids { get; init; } = new List<int>();
+    public IEnumerable<Guid> Ids { get; init; } = new List<Guid>();
 }

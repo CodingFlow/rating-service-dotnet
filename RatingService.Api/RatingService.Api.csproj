@@ -18,6 +18,7 @@
         <PackageReference Include="AsyncApiBindingsGenerator" Version="1.0.0">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="RequestDecoratorGenerator" Version="1.0.0" />
       <PackageReference Include="Service.Api.Common" Version="1.0.0" />
     </ItemGroup>
 

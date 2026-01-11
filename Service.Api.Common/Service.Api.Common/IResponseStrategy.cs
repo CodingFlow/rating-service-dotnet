@@ -4,5 +4,5 @@ namespace Service.Api.Common;
 
 public interface IResponseStrategy<TRequest, TResponse>
 {
-    Task<Response<TResponse>> CreateResponse(TRequest request, IHandler<TRequest, TResponse> handler);
+    Task<Result<Response<TResponse>>> CreateResponse(TRequest request, IHandler<TRequest, TResponse> handler);
 }

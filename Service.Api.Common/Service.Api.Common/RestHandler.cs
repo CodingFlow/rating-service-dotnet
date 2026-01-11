@@ -30,8 +30,17 @@ internal class RestHandler(INatsConnectionService natsConnectionService) : IRest
             await Publish(requestData, errorResponse, cancellationToken);
         } else
         {
-            var response = await responseStrategy.CreateResponse(request, handler);
-            await Publish(requestData, response, cancellationToken);
+            var result = await responseStrategy.CreateResponse(request, handler);
+
+            if (result.IsValid)
+            {
+                var response = result.Value;
+                await Publish(requestData, response, cancellationToken);
+            } else
+            {
+                var response = result.Error;
+                await Publish(requestData, response, cancellationToken);
+            }
         }
     }
 
@@ -64,7 +73,7 @@ internal class RestHandler(INatsConnectionService natsConnectionService) : IRest
         return (mergedRequest, errors);
     }
 
-    private async Task Publish<TResponse>(Request<JsonNode> requestData, Response<TResponse> response, CancellationToken cancellationToken)
+    private async Task Publish<TResponse>(Request<JsonNode> requestData, TResponse response, CancellationToken cancellationToken)
     {
         await natsConnectionService.Client.PublishAsync(
             requestData.OriginReplyTo,

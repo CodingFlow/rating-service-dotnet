@@ -35,9 +35,23 @@ namespace AsyncApiBindingsGenerator
         {
             var (dispatcherSource, dispatcherName) = OutputGenerator.GenerateDispatcher(info.asyncApiDocument, info.assemblyName);
             var (responseStrategiesSource, responseStrategiesName) = OutputGenerator.GenerateDependencyInjectionRegistrations(info.asyncApiDocument, info.assemblyName);
+            var validators = ValidatorsGenerator.GenerateValidators(info.asyncApiDocument, info.assemblyName);
+            var (validationExtensionsSource, validationExtensionsName) = ValidationExtensionsGenerator.Generate(info.asyncApiDocument, info.assemblyName);
 
-            context.AddSource($"{dispatcherName}.generated.cs", SourceText.From(dispatcherSource, Encoding.UTF8, SourceHashAlgorithm.Sha256));
-            context.AddSource($"{responseStrategiesName}.generated.cs", SourceText.From(responseStrategiesSource, Encoding.UTF8, SourceHashAlgorithm.Sha256));
+            AddSource(context, dispatcherSource, dispatcherName);
+            AddSource(context, responseStrategiesSource, responseStrategiesName);
+
+            foreach (var (validatorSource, validatorClassName) in validators)
+            {
+                AddSource(context, validatorSource, validatorClassName);
+            }
+
+            AddSource(context, validationExtensionsSource, validationExtensionsName);
+        }
+
+        private static void AddSource(SourceProductionContext context, string source, string className)
+        {
+            context.AddSource($"{className}.generated.cs", SourceText.From(source, Encoding.UTF8, SourceHashAlgorithm.Sha256));
         }
     }
 }

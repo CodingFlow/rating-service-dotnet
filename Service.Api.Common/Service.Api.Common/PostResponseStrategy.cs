@@ -4,7 +4,7 @@ namespace Service.Api.Common;
 
 public class PostResponseStrategy<TRequest, TResponse> : IResponseStrategy<TRequest, TResponse>
 {
-    public async Task<Response<TResponse>> CreateResponse(TRequest request, IHandler<TRequest, TResponse> handler)
+    public async Task<Result<Response<TResponse>>> CreateResponse(TRequest request, IHandler<TRequest, TResponse> handler)
     {
         var responseBody = await handler.Handle(request);
 

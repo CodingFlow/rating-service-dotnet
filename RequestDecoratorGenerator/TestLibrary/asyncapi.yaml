@@ -1,0 +1,194 @@
+﻿asyncapi: 3.0.0
+info:
+  title: Ratings API
+  version: 1.0.0
+  description: |-
+    The Ratings API provides information on service ratings from users.
+
+channels:
+  getRatings:
+    address: 'get.ratings'
+    messages:
+      ratings:
+        $ref: '#/components/messages/getRatings'
+  postRatings:
+    address: 'post.ratings'
+    messages:
+      ratings:
+        $ref: '#/components/messages/postRatings'
+  deleteRatings:
+    address: 'delete.ratings'
+    messages:
+      ratings:
+        $ref: '#/components/messages/deleteRatings'
+
+operations:
+  getRatings:
+    action: receive
+    channel:
+      $ref: '#/channels/getRatings'
+    messages:
+      - $ref: '#/channels/getRatings/messages/ratings'
+    reply:
+      address:
+        location: '$message.payload#/originReplyTo'
+      messages:
+        - $ref: '#/components/messages/getRatingsReply'
+  postRatings:
+    action: receive
+    channel:
+      $ref: '#/channels/postRatings'
+    messages:
+      - $ref: '#/channels/postRatings/messages/ratings'
+    reply:
+      address:
+        location: '$message.payload#/originReplyTo'
+      messages:
+        - $ref: '#/components/messages/postRatingsReply'
+  deleteRatings:
+    action: receive
+    channel:
+      $ref: '#/channels/deleteRatings'
+    messages:
+      - $ref: '#/channels/deleteRatings/messages/ratings'
+    reply:
+      address:
+        location: '$message.payload#/originReplyTo'
+      messages:
+        - $ref: '#/components/messages/deleteRatingsReply'
+
+components:
+  messages:
+    getRatings:
+      payload: 
+        $ref: '#/components/schemas/getRatingsPayload'
+    getRatingsReply:
+      payload:
+        $ref: '#/components/schemas/getRatingsReplyPayload'
+    postRatings:
+      payload:
+        $ref: '#/components/schemas/postRatingsPayload'
+    postRatingsReply:
+      payload:
+        $ref: '#/components/schemas/postRatingsReplyPayload'
+    deleteRatings:
+      payload: 
+        $ref: '#/components/schemas/deleteRatingsPayload'
+    deleteRatingsReply:
+      payload:
+        $ref: '#/components/schemas/deleteRatingsReplyPayload'
+        
+  schemas:
+    getRatingsPayload:
+      type: object
+      additionalProperties: false
+      properties:
+        originReplyTo:
+          type: string
+        headers:
+          type: object
+        queryParameters:
+          type: object
+          additionalProperties: false
+          properties:
+            ids:
+              type: string
+        body:
+          type: object
+          additionalProperties: false
+          properties:
+            ids:
+              type: array
+              items:
+                type: string
+                format: uuid
+        
+    getRatingsReplyPayload:
+      type: object
+      additionalProperties: false
+      properties:
+        headers:
+          type: object
+        body:
+          type: object
+          additionalProperties: false
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/rating'
+        statusCode:
+          type: integer
+
+    postRatingsPayload:
+      type: object
+      additionalProperties: false
+      properties:
+        originReplyTo:
+          type: string
+        headers:
+          type: object
+        body:
+          type: object
+          additionalProperties: false
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/rating'
+
+    postRatingsReplyPayload:
+      type: object
+      additionalProperties: false
+      properties:
+        headers:
+          type: object
+        statusCode:
+          type: integer
+
+    deleteRatingsPayload:
+      type: object
+      additionalProperties: false
+      properties:
+        originReplyTo:
+          type: string
+        headers:
+          type: object
+        queryParameters:
+          type: object
+          additionalProperties: false
+          properties:
+            ids:
+              type: string
+        body:
+          type: object
+          additionalProperties: false
+          properties:
+            ids:
+              type: array
+              items:
+                type: string
+                format: uuid
+        
+    deleteRatingsReplyPayload:
+      type: object
+      additionalProperties: false
+      properties:
+        headers:
+          type: object
+        statusCode:
+          type: integer
+
+    rating:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: integer
+        serviceId:
+          type: integer
+        score:
+          type: integer

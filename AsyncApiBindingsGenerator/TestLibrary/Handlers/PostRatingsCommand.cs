@@ -1,6 +1,10 @@
-﻿namespace TestProject.Application.Commands;
+﻿using System.Text.Json.Serialization;
+using TestProject.Application.Models;
 
-public readonly struct PostRatingsCommand
+namespace TestProject.Application.Commands;
+
+public readonly record struct PostRatingsCommand()
 {
-    public int Id { get; init; }
+    [JsonPropertyName("items")]
+    public IEnumerable<Rating> Items { get; init; } = new List<Rating>();
 }

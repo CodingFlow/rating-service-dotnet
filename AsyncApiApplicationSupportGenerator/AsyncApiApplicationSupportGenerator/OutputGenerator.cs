@@ -51,69 +51,78 @@ public interface {interfaceName} : {parentInterfaceName}
         {
             var topLevelSchemaInfos = spec.Operations.Values.SelectMany(operation =>
             {
-                var typeSchemasToProcess = new List<(string, string, AsyncApiJsonSchema)>();
-
                 var (restMethod, pathPart) = GetAddressParts(operation);
 
                 var messageReference = operation.Messages.First();
-
-                AddToSchemasToProcess(assemblyName, typeSchemasToProcess, restMethod, pathPart, messageReference, OperationType.Request);
+                var requestSchemaInfos = AddToSchemasToProcess(assemblyName, restMethod, pathPart, messageReference, OperationType.Request, spec);
 
                 var replyMessageReference = operation.Reply.Messages.First();
-                AddToSchemasToProcess(assemblyName, typeSchemasToProcess, restMethod, pathPart, replyMessageReference, OperationType.Response);
+                var responseSchemaInfos = AddToSchemasToProcess(assemblyName, restMethod, pathPart, replyMessageReference, OperationType.Response, spec);
+
+                var typeSchemasToProcess = requestSchemaInfos.Concat(responseSchemaInfos);
 
                 return typeSchemasToProcess;
             });
 
-            var outputs = ProcessSchemaInfo(topLevelSchemaInfos, new HashSet<AsyncApiJsonSchema>(), assemblyName, spec).Distinct();
+            var outputs = ProcessSchemaInfo(topLevelSchemaInfos, assemblyName, spec).Distinct();
 
             return outputs;
         }
 
-        private static void AddToSchemasToProcess(string assemblyName, List<(string, string, AsyncApiJsonSchema)> typeSchemasToProcess, string restMethod, string pathPart, AsyncApiMessageReference messageReference, OperationType operationType)
+        private static IEnumerable<(string, string, AsyncApiJsonSchema)> AddToSchemasToProcess(string assemblyName, string restMethod, string pathPart, AsyncApiMessageReference messageReference, OperationType operationType, AsyncApiDocument spec)
         {
-            var bodyEntry = GetBodyEntry(messageReference);
-
-            if (!bodyEntry.Equals(default(KeyValuePair<string, AsyncApiJsonSchema>)))
+            var schemaInfos = Enumerable.Empty<(string, string, AsyncApiJsonSchema)>();
+            
+            if (HasBody(messageReference))
             {
+                var bodyEntry = GetBodyEntry(messageReference);
                 var operationStrategy = GetModelStrategy(restMethod, pathPart, assemblyName, operationType);
-                typeSchemasToProcess.Add((operationStrategy.Namespace(), operationStrategy.TypeName(), bodyEntry.Value));
+                var schemaInfo = (operationStrategy.Namespace(), operationStrategy.TypeName(), bodyEntry.Value);
+                var childSchemaInfos = GetChildSchemaInfos(assemblyName, spec, schemaInfo);
+
+                schemaInfos = new List<(string, string, AsyncApiJsonSchema)>() { schemaInfo };
+                schemaInfos = schemaInfos.Concat(childSchemaInfos);
             }
+
+            return schemaInfos;
         }
 
-        private static IEnumerable<(string source, string className)> ProcessSchemaInfo(IEnumerable<(string, string, AsyncApiJsonSchema)> schemaInfos, HashSet<AsyncApiJsonSchema> processedSchemas, string assemblyName, AsyncApiDocument spec)
+        private static IEnumerable<(string source, string className)> ProcessSchemaInfo(IEnumerable<(string, string, AsyncApiJsonSchema)> schemaInfos, string assemblyName, AsyncApiDocument spec)
         {
-            var outputs = schemaInfos.Select(((string @namespace, string typeName, AsyncApiJsonSchema schema) info) =>
-            {
-                // TODO: Refactor to specify when type is response and pass it in instead of relying on naming convention.
-                var isResponse = info.typeName.Contains("Response");
-                
-                var properties = info.schema.Properties;
-                
-                var formattedItems = properties.Select(property =>
-                {
-                    var propertyName = property.Key;
-                    var propertyNamespace = property.Value.Type == SchemaType.Array
-                        ? $"{assemblyName}.Models."
-                        : string.Empty;
-                    var memberType = GetMemberType(property.Value, spec, propertyNamespace);
-                    var wholeType = property.Value.Type == SchemaType.Array
-                        ? $"IEnumerable<{memberType}>"
-                        : $"{memberType}";
-                    var required = property.Value.Type == SchemaType.Array && isResponse
-                        ? " required"
-                        : string.Empty;
-                    var initializer = property.Value.Type == SchemaType.Array && !isResponse
-                        ? $" = new List<{memberType}>();"
-                        : string.Empty;
+            return schemaInfos.Select(info => CreateModelSource(info, assemblyName, spec));
+        }
 
-                    var formattedItem = $@"    [JsonPropertyName(""{propertyName}"")]
+        private static (string source, string typeName) CreateModelSource((string @namespace, string typeName, AsyncApiJsonSchema schema) info, string assemblyName, AsyncApiDocument spec)
+        {
+            // TODO: Refactor to specify when type is response and pass it in instead of relying on naming convention.
+            var isResponse = info.typeName.Contains("Response");
+
+            var properties = info.schema.Properties;
+
+            var formattedItems = properties.Select(property =>
+            {
+                var propertyName = property.Key;
+                var propertyNamespace = property.Value.Type == SchemaType.Array
+                    ? $"{assemblyName}.Models."
+                    : string.Empty;
+                var memberType = GetMemberType(property.Value, spec, propertyNamespace);
+                var wholeType = property.Value.Type == SchemaType.Array
+                    ? $"IEnumerable<{memberType}>"
+                    : $"{memberType}";
+                var required = property.Value.Type == SchemaType.Array && isResponse
+                    ? " required"
+                    : string.Empty;
+                var initializer = property.Value.Type == SchemaType.Array && !isResponse
+                    ? $" = new List<{memberType}>();"
+                    : string.Empty;
+
+                var formattedItem = $@"    [JsonPropertyName(""{propertyName}"")]
     public{required} {wholeType} {StringUtils.ToPascalCase(property.Key)} {{ get; init; }}{initializer}";
 
-                    return formattedItem;
-                });
+                return formattedItem;
+            });
 
-                var source =
+            var source =
 $@"// <auto-generated/>
 #nullable restore
 
@@ -129,21 +138,7 @@ public readonly record struct {info.typeName}()
 }}
 ";
 
-                return (source, info.typeName);
-            });
-
-            foreach (var (@namespace, typeName, schema) in schemaInfos)
-            {
-                processedSchemas.Add(schema);
-            }
-
-            var schemaInfosToProcess = schemaInfos.SelectMany(info => GetChildSchemaInfos(assemblyName, spec, info));
-
-            var childOutputs = schemaInfosToProcess.Any()
-                ? ProcessSchemaInfo(schemaInfosToProcess, processedSchemas, assemblyName, spec)
-                : new List<(string, string)>();
-
-            return outputs.Concat(childOutputs);
+            return (source, info.typeName);
         }
 
         private static IEnumerable<(string @namespace, string typeName, AsyncApiJsonSchema schema)> GetChildSchemaInfos(string assemblyName, AsyncApiDocument spec, (string @namespace, string typeName, AsyncApiJsonSchema schema) info)
@@ -256,6 +251,13 @@ public readonly record struct {info.typeName}()
             }
 
             return hasBodyValue;
+        }
+
+        private static bool HasBody(AsyncApiMessageReference messageReference)
+        {
+            var bodyEntry = GetBodyEntry(messageReference);
+
+            return !bodyEntry.Equals(default(KeyValuePair<string, AsyncApiJsonSchema>));
         }
 
         private static KeyValuePair<string, AsyncApiJsonSchema> GetBodyEntry(AsyncApiMessageReference messageReference)

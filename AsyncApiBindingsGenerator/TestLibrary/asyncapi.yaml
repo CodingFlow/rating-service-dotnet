@@ -187,8 +187,12 @@ components:
           type: string
           format: uuid
         userId:
-          type: integer
+          type: string
+          format: uuid
         serviceId:
-          type: integer
+          type: string
+          format: uuid
         score:
           type: integer
+          minimum: 0
+          maximum: 5

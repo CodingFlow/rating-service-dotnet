@@ -194,3 +194,5 @@ components:
           format: uuid
         score:
           type: integer
+          minimum: 0
+          maximum: 5

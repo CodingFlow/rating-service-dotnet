@@ -11,10 +11,10 @@ public readonly record struct Rating()
     public Guid Id { get; init; }
 
     [JsonPropertyName("userId")]
-    public int UserId { get; init; }
+    public Guid UserId { get; init; }
 
     [JsonPropertyName("serviceId")]
-    public int ServiceId { get; init; }
+    public Guid ServiceId { get; init; }
 
     [JsonPropertyName("score")]
     public int Score { get; init; }

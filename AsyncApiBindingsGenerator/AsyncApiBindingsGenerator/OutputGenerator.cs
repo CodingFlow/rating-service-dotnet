@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AsyncApiBindingsGenerator.Utils;
 using ByteBard.AsyncAPI.Models;
 using Microsoft.CodeAnalysis;
+using static AsyncApiBindingsGenerator.Utils.StringUtils;
 
 namespace AsyncApiBindingsGenerator
 {
@@ -16,12 +18,12 @@ namespace AsyncApiBindingsGenerator
             var serviceRegistrations = spec.Operations.Values.Select(operation =>
             {
                 var messageReference = operation.Reply.Messages.First();
-                var hasResponseBody = IsPayloadPropertyExists(messageReference, "body");
+                var hasResponseBody = ProcessingUtils.IsPayloadPropertyExists(messageReference, "body");
                 
                 var parts = operation.Channel.Address.Split('.');
                 var (restMethod, pathPart) = (parts.First(), parts.ElementAt(1));
 
-                var requestType = $"{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}{GetRequestType(restMethod)}";
+                var requestType = $"{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}{StringUtils.GetRequestType(restMethod)}";
                 var typeName = $"{ToPascalCase(restMethod)}ResponseStrategy";
 
                 var responseType = hasResponseBody
@@ -68,7 +70,7 @@ internal static class ResponseStrategiesExtensions
             {
                 var messageReference = operation.Value.Reply.Messages.First();
 
-                var hasResponseBody = IsPayloadPropertyExists(messageReference, "body");
+                var hasResponseBody = ProcessingUtils.IsPayloadPropertyExists(messageReference, "body");
 
                 return (operation.Value.Channel.Address, hasResponseBody);
             });
@@ -84,7 +86,7 @@ internal static class ResponseStrategiesExtensions
 
                 var interfaceName = $"I{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}Handler";
                 var variableName = $"{restMethod}{ToPascalCase(pathPart)}Handler";
-                var requestType = $"{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}{GetRequestType(restMethod)}";
+                var requestType = $"{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}{StringUtils.GetRequestType(restMethod)}";
 
                 if (addressInfo.hasResponseBody)
                 {
@@ -107,7 +109,7 @@ internal static class ResponseStrategiesExtensions
 
                     var interfaceName = $"I{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}Handler";
                     var variableName = $"{restMethod}{ToPascalCase(pathPart)}ResponseStrategy";
-                    var requestType = $"{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}{GetRequestType(restMethod)}";
+                    var requestType = $"{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}{StringUtils.GetRequestType(restMethod)}";
 
                     if (addressInfo.hasResponseBody)
                     {
@@ -135,7 +137,7 @@ internal static class ResponseStrategiesExtensions
                 var variableName = $"{restMethod}{ToPascalCase(pathPart)}Handler";
                 var mergeMethodName = $"merge{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}";
                 var messageReference = channel.Value.Messages.First().Value;
-                var mergeMethodNameWithComma = IsPayloadPropertyExists(messageReference, "body")
+                var mergeMethodNameWithComma = ProcessingUtils.IsPayloadPropertyExists(messageReference, "body")
                     ? $"{mergeMethodName}, "
                     : string.Empty;
 
@@ -150,28 +152,28 @@ internal static class ResponseStrategiesExtensions
 
                 string result;
 
-                if (IsPayloadPropertyExists(messageReference, "body"))
+                if (ProcessingUtils.IsPayloadPropertyExists(messageReference, "body"))
                 {
                     var address = channel.Value.Address;
                     var parts = address.Split('.');
                     var restMethod = parts.First();
                     var pathPart = parts.ElementAt(1);
 
-                    var requestType = GetRequestType(restMethod);
+                    var requestType = StringUtils.GetRequestType(restMethod);
                     var mergeTypeNamespace = GetMergeTypeNamespace(restMethod, serviceNamespacePart);
                     var mergeType = $"{mergeTypeNamespace}.{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}{requestType}";
                     var mergeMethodName = $"merge{ToPascalCase(restMethod)}{ToPascalCase(pathPart)}";
 
                     string formattedParsing;
 
-                    if (IsPayloadPropertyExists(messageReference, "queryParameters"))
+                    if (ProcessingUtils.IsPayloadPropertyExists(messageReference, "queryParameters"))
                     {
-                        var parsing = GetPayloadSchemaEntry(messageReference, "queryParameters").Value.Properties.Select(entry =>
+                        var parsing = ProcessingUtils.GetPayloadSchemaEntry(messageReference, "queryParameters").Value.Properties.Select(entry =>
                         {
                             var requestPropertyKey = ToPascalCase(entry.Key);
                             var queryParameterKey = entry.Key;
 
-                            var matchingBodyProperty = GetPayloadSchemaEntry(messageReference, "body").Value.Properties[queryParameterKey];
+                            var matchingBodyProperty = ProcessingUtils.GetPayloadSchemaEntry(messageReference, "body").Value.Properties[queryParameterKey];
 
                             var propertyToParse = matchingBodyProperty.Type == SchemaType.Array
                                 ? matchingBodyProperty.Items
@@ -194,9 +196,9 @@ internal static class ResponseStrategiesExtensions
 
                     string mergeBlock;
 
-                    if (IsPayloadPropertyExists(messageReference, "queryParameters"))
+                    if (ProcessingUtils.IsPayloadPropertyExists(messageReference, "queryParameters"))
                     {
-                        var anyErrors = GetPayloadSchemaEntry(messageReference, "queryParameters").Value.Properties.Select(entry =>
+                        var anyErrors = ProcessingUtils.GetPayloadSchemaEntry(messageReference, "queryParameters").Value.Properties.Select(entry =>
                         {
                             var requestPropertyKey = ToPascalCase(entry.Key);
                             var queryParameterKey = entry.Key;
@@ -205,7 +207,7 @@ internal static class ResponseStrategiesExtensions
                         });
 
                         var withBlockAssignments = CreateWithBlockAssignments(messageReference);
-                        var errorsConcat = GetPayloadSchemaEntry(messageReference, "queryParameters").Value.Properties.Select(entry =>
+                        var errorsConcat = ProcessingUtils.GetPayloadSchemaEntry(messageReference, "queryParameters").Value.Properties.Select(entry =>
                         {
                             var queryParameterKey = entry.Key;
 
@@ -288,7 +290,7 @@ public class RequestDispatcher(
 
         private static string CreateWithBlockAssignments(AsyncApiMessage messageReference)
         {
-            var formattedWithAssignments = GetPayloadSchemaEntry(messageReference, "queryParameters").Value.Properties.Select(entry =>
+            var formattedWithAssignments = ProcessingUtils.GetPayloadSchemaEntry(messageReference, "queryParameters").Value.Properties.Select(entry =>
             {
                 var requestPropertyKey = ToPascalCase(entry.Key);
                 var queryParameterKey = entry.Key;
@@ -315,35 +317,6 @@ public class RequestDispatcher(
             }
         }
 
-        private static bool IsPayloadPropertyExists(AsyncApiMessage messageReference, string propertyName)
-        {
-            var entry = GetPayloadSchemaEntry(messageReference, propertyName);
-
-            return !entry.Equals(default(KeyValuePair<string, AsyncApiJsonSchema>));
-        }
-
-        private static KeyValuePair<string, AsyncApiJsonSchema> GetPayloadSchemaEntry(AsyncApiMessage messageReference, string propertyName)
-        {
-            return messageReference
-                .Payload.Schema.As<AsyncApiJsonSchema>()
-                .Properties.FirstOrDefault(prop => prop.Key == propertyName);
-        }
-
-        private static string GetRequestType(string restMethod)
-        {
-            switch (restMethod)
-            {
-                case "get":
-                    return "Query";
-                case "delete":
-                    return "Query";
-                case "post":
-                    return "Command";
-                default:
-                    throw new ArgumentException($"Rest method '{restMethod}' not supported.");
-            }
-        }
-
         private static string GetMergeTypeNamespace(string restMethod, string assemblyName)
         {
             switch (restMethod)
@@ -357,11 +330,6 @@ public class RequestDispatcher(
                 default:
                     throw new ArgumentException($"Rest method '{restMethod}' not supported.");
             }
-        }
-
-        private static string ToPascalCase(string input)
-        {
-            return $"{char.ToUpper(input[0])}{input.Substring(1)}";
         }
     }
 }

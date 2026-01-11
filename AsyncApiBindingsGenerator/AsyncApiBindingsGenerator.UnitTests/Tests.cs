@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Text;
 using TestProject;
+using TestProject.Api.Validators;
 using VerifyCS = AsyncApiBindingsGenerator.UnitTests.CSharpSourceGeneratorVerifier<AsyncApiBindingsGenerator.Main>;
 
 namespace AsyncApiBindingsGenerator.UnitTests;
@@ -21,7 +22,15 @@ public class Tests
     public async Task SimpleGetPost()
     {
         var generatedDispatcher = await ReadCSharpFile<RequestDispatcher>(true);
+        
         var generatedResponseStrategies = await ReadCSharpFileByName(true, "ResponseStrategiesExtensions");
+        
+        var generatedGetRatingsQueryValidator = await ReadCSharpFile<GetRatingsQueryValidator>(true);
+        var generatedPostRatingsCommandValidator = await ReadCSharpFile<PostRatingsCommandValidator>(true);
+        var generatedRatingValidator = await ReadCSharpFile<RatingValidator>(true);
+        var generatedDeleteRatingsQueryValidator = await ReadCSharpFile<DeleteRatingsQueryValidator>(true);
+
+        var generatedValidationExtensions = await ReadCSharpFileByName(true, "ValidationExtensions");
 
         const string asyncApiFilename = "asyncapi.yaml";
         var asyncapiYaml = await ReadFile(true, asyncApiFilename);
@@ -47,6 +56,11 @@ public class Tests
                 {
                     (typeof(Main), "RequestDispatcher.generated.cs", SourceText.From(generatedDispatcher, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                     (typeof(Main), "ResponseStrategiesExtensions.generated.cs", SourceText.From(generatedResponseStrategies, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "GetRatingsQueryValidator.generated.cs", SourceText.From(generatedGetRatingsQueryValidator, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "PostRatingsCommandValidator.generated.cs", SourceText.From(generatedPostRatingsCommandValidator, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "RatingValidator.generated.cs", SourceText.From(generatedRatingValidator, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "DeleteRatingsQueryValidator.generated.cs", SourceText.From(generatedDeleteRatingsQueryValidator, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "ValidationExtensions.generated.cs", SourceText.From(generatedValidationExtensions, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                 },
             },
         }.RunAsync();

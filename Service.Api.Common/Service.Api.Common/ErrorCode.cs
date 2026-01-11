@@ -4,4 +4,5 @@ public enum ErrorCode
 {
     None = 0,
     Format = 1,
+    InvalidInput = 2,
 }

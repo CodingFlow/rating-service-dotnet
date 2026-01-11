@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="RequestDecoratorGenerator.UnitTests/RequestDecoratorGenerator.UnitTests.csproj" />
+  <Project Path="RequestDecoratorGenerator/RequestDecoratorGenerator.csproj" />
+  <Project Path="TestLibrary/TestLibrary.csproj" />
+</Solution>
