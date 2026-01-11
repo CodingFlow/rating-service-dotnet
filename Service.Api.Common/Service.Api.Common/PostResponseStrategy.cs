@@ -1,4 +1,5 @@
-﻿using Service.Application.Common.Handlers;
+﻿using System.Net;
+using Service.Application.Common.Handlers;
 
 namespace Service.Api.Common;
 
@@ -10,7 +11,7 @@ public class PostResponseStrategy<TRequest, TResponse> : IResponseStrategy<TRequ
 
         return new Response<TResponse>
         {
-            StatusCode = 201,
+            StatusCode = HttpStatusCode.Created,
             Body = responseBody,
             Headers = []
         };

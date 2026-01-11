@@ -1,4 +1,5 @@
-﻿using Service.Application.Common.Handlers;
+﻿using System.Net;
+using Service.Application.Common.Handlers;
 
 namespace Service.Api.Common;
 
@@ -10,7 +11,7 @@ public class GetResponseStrategy<TRequest, TResponse> : IResponseStrategy<TReque
 
         return new Response<TResponse>
         {
-            StatusCode = 200,
+            StatusCode = HttpStatusCode.OK,
             Body = responseBody,
             Headers = []
         };

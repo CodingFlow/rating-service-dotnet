@@ -22,7 +22,7 @@ internal class RestHandler(INatsConnectionService natsConnectionService) : IRest
         {
             var errorResponse = new Response<ValidationError>
             {
-                StatusCode = (int)errors.First().StatusCode,
+                StatusCode = errors.First().StatusCode,
                 Body = errors.First(),
                 Headers = []
             };

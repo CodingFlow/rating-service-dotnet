@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Net;
+using System.Text.Json.Serialization;
 
 namespace Service.Api.Common;
 
@@ -11,6 +12,6 @@ public readonly record struct Response<T>
     public T Body { get; init; }
 
     [JsonPropertyName("statusCode")]
-    public int StatusCode { get; init; }
+    public HttpStatusCode StatusCode { get; init; }
 
 }

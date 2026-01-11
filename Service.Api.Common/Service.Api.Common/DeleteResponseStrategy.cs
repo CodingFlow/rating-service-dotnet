@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Net;
+using System.Text.Json.Nodes;
 using Service.Application.Common.Handlers;
 
 namespace Service.Api.Common;
@@ -10,8 +11,8 @@ public class DeleteResponseStrategy<TRequest, TResponse> : IResponseStrategy<TRe
         var responseBody = await handler.Handle(request);
 
         var statusCode = responseBody is JsonObject
-            ? 204
-            : 200;
+            ? HttpStatusCode.NoContent
+            : HttpStatusCode.OK;
 
         return new Response<TResponse>
         {

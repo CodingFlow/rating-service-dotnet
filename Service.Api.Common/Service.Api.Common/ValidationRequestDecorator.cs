@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Net;
+using FluentValidation;
 using Service.Application.Common.Handlers;
 
 namespace Service.Api.Common;
@@ -21,7 +22,7 @@ public class ValidationRequestDecorator<TRequest, TResponse>(IResponseStrategy<T
             {
                 Error = new Response<ValidationError>
                 {
-                    StatusCode = 422,
+                    StatusCode = HttpStatusCode.UnprocessableContent,
                     Headers = [],
                     Body = new ValidationError()
                     {
