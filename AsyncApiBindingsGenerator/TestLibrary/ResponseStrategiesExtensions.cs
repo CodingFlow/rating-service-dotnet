@@ -3,7 +3,7 @@
 
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.DependencyInjection;
-using Service.Api.Common;
+using Service.Api.Common.ResponseStrategies;
 using TestProject.Application.Commands;
 using TestProject.Application.Queries;
 using TestProject.Application.QueryResponses;

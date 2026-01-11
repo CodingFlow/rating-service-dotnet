@@ -2,7 +2,7 @@
 using DecoratorGenerator;
 using NATS.Client.JetStream;
 
-namespace Service.Api.Common;
+namespace Service.Api.Common.MessageHandlers;
 
 [Decorate]
 internal interface IMessageHandler

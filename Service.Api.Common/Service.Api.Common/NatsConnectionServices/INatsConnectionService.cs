@@ -1,7 +1,7 @@
 ﻿using NATS.Client.JetStream;
 using NATS.Net;
 
-namespace Service.Api.Common;
+namespace Service.Api.Common.NatsConnectionServices;
 
 internal interface INatsConnectionService
 {

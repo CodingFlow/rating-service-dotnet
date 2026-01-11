@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Primitives;
 
-namespace Service.Api.Common;
+namespace Service.Api.Common.DistributedCacheServices;
 
 internal interface IDistributedCacheService
 {

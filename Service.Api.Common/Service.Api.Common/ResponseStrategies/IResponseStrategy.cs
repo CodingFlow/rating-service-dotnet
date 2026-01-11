@@ -1,6 +1,6 @@
 ﻿using Service.Application.Common.Handlers;
 
-namespace Service.Api.Common;
+namespace Service.Api.Common.ResponseStrategies;
 
 public interface IResponseStrategy<TRequest, TResponse>
 {

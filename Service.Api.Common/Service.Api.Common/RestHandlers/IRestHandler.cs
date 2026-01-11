@@ -1,7 +1,8 @@
 ﻿using System.Text.Json.Nodes;
+using Service.Api.Common.ResponseStrategies;
 using Service.Application.Common.Handlers;
 
-namespace Service.Api.Common;
+namespace Service.Api.Common.RestHandlers;
 
 public interface IRestHandler
 {

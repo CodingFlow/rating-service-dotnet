@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using Service.Api.Common.LocalCacheServices;
 
 namespace Service.Api.Common;
 

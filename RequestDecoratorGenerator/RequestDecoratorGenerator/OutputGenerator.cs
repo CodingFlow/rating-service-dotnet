@@ -24,7 +24,7 @@ namespace RequestDecoratorGenerator
 
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.DependencyInjection;
-using Service.Api.Common;
+using Service.Api.Common.ResponseStrategies;
 using {serviceNamespacePart}.Application.Commands;
 using {serviceNamespacePart}.Application.Queries;
 using {serviceNamespacePart}.Application.QueryResponses;

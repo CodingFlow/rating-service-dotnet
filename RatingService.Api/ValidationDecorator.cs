@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using RequestDecoratorGenerator;
 using Service.Api.Common;
+using Service.Api.Common.ResponseStrategies;
 
 namespace RatingService.Api;
 

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using NATS.Client.JetStream;
 
-namespace Service.Api.Common;
+namespace Service.Api.Common.MessageHandlers;
 
 internal partial class MessageHandlerErrorLogging(IMessageHandler messageHandler, IMemoryCache memoryCache, ILogger<MessageHandlerErrorLogging> logger) : MessageHandlerDecorator(messageHandler)
 {

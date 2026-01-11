@@ -1,9 +1,11 @@
 ﻿using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Service.Api.Common.NatsConnectionServices;
+using Service.Api.Common.ResponseStrategies;
 using Service.Application.Common.Handlers;
 
-namespace Service.Api.Common;
+namespace Service.Api.Common.RestHandlers;
 
 internal class RestHandler(INatsConnectionService natsConnectionService) : IRestHandler
 {

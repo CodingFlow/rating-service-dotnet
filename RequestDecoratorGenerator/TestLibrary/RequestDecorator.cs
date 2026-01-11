@@ -1,5 +1,6 @@
 ﻿using RequestDecoratorGenerator;
 using Service.Api.Common;
+using Service.Api.Common.ResponseStrategies;
 using Service.Application.Common.Handlers;
 
 namespace TestProject;

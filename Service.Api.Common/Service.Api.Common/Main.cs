@@ -8,6 +8,10 @@ using NATS.Client.Core;
 using NATS.Client.JetStream;
 using OpenTelemetry.Context.Propagation;
 using Service.Abstractions;
+using Service.Api.Common.DistributedCacheServices;
+using Service.Api.Common.LocalCacheServices;
+using Service.Api.Common.MessageHandlers;
+using Service.Api.Common.NatsConnectionServices;
 
 namespace Service.Api.Common;
 

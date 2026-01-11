@@ -2,7 +2,7 @@
 using CodingFlow.OptionsBindingsGenerator;
 using Microsoft.Extensions.Configuration;
 
-namespace Service.Api.Common;
+namespace Service.Api.Common.NatsConnectionServices;
 
 [OptionsBindings(true)]
 internal record ServiceStreamConsumerOptions

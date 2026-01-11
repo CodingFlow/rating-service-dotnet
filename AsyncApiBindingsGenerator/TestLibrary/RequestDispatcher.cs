@@ -3,9 +3,10 @@
 
 using System.Text.Json.Nodes;
 using Service.Api.Common;
+using Service.Api.Common.ResponseStrategies;
+using Service.Api.Common.RestHandlers;
 using Service.Application.Common.Handlers;
 using TestProject.Application.Commands;
-using TestProject.Application.Handlers;
 using TestProject.Application.Queries;
 using TestProject.Application.QueryResponses;
 

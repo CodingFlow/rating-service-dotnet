@@ -1,9 +1,9 @@
 ﻿using System.Net;
 using Service.Application.Common.Handlers;
 
-namespace Service.Api.Common;
+namespace Service.Api.Common.ResponseStrategies;
 
-public class PostResponseStrategy<TRequest, TResponse> : IResponseStrategy<TRequest, TResponse>
+public class GetResponseStrategy<TRequest, TResponse> : IResponseStrategy<TRequest, TResponse>
 {
     public async Task<Result<Response<TResponse>>> CreateResponse(TRequest request, IHandler<TRequest, TResponse> handler)
     {
@@ -11,7 +11,7 @@ public class PostResponseStrategy<TRequest, TResponse> : IResponseStrategy<TRequ
 
         return new Response<TResponse>
         {
-            StatusCode = HttpStatusCode.Created,
+            StatusCode = HttpStatusCode.OK,
             Body = responseBody,
             Headers = []
         };

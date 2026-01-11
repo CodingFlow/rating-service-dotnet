@@ -1,6 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry;
+using Service.Api.Common.DistributedCacheServices;
+using Service.Api.Common.LocalCacheServices;
+using Service.Api.Common.MessageHandlers;
+using Service.Api.Common.NatsConnectionServices;
+using Service.Api.Common.RestHandlers;
 
 namespace Service.Api.Common;
 

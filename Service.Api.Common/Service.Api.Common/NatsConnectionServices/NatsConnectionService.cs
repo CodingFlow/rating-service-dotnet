@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using NATS.Client.JetStream;
 using NATS.Net;
+using Service.Api.Common.NatsConnectionServices;
 
 namespace Service.Api.Common;
 

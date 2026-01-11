@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using NATS.Client.JetStream;
 
-namespace Service.Api.Common;
+namespace Service.Api.Common.MessageHandlers;
 
 internal partial class MessageHandler(IRequestDispatcher requestDispatcher) : IMessageHandler
 {

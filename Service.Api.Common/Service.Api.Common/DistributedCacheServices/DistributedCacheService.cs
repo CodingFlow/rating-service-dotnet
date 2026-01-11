@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
+using Service.Api.Common.DistributedCacheServices;
 using Service.Libraries.Redis;
 using StackExchange.Redis;
 
