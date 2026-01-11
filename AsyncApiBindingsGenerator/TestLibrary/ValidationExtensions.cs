@@ -20,7 +20,7 @@ internal static class ValidationExtensions
         services.AddSingleton<IValidator<GetRatingsQuery>, GetRatingsQueryValidator>();
         services.AddSingleton<IValidator<PostRatingsCommand>, PostRatingsCommandValidator>();
         services.AddSingleton<IValidator<Rating>, RatingValidator>();
-        services.AddSingleton<IValidator<DeleteRatingsQuery>, DeleteRatingsQueryValidator>();
+        services.AddSingleton<IValidator<DeleteRatingsCommand>, DeleteRatingsCommandValidator>();
 
         return services;
     }

@@ -3,9 +3,9 @@
 
 using System.Text.Json.Serialization;
 
-namespace TestProject.Queries;
+namespace TestProject.Commands;
 
-public readonly record struct DeleteRatingsQuery()
+public readonly record struct DeleteRatingsCommand()
 {
     [JsonPropertyName("ids")]
     public IEnumerable<Guid> Ids { get; init; } = new List<Guid>();

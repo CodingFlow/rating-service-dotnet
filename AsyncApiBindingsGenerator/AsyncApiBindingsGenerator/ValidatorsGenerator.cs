@@ -52,7 +52,7 @@ namespace AsyncApiBindingsGenerator
                 case "post":
                     return "Commands";
                 case "delete":
-                    return "Queries";
+                    return "Commands";
                 default:
                     throw new NotSupportedException($"Rest method {restMethod} is not supported.");
             }

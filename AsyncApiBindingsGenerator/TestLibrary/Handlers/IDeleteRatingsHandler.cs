@@ -2,6 +2,6 @@
 
 namespace TestProject.Application.Handlers;
 
-public interface IDeleteRatingsHandler : IHandler<Queries.DeleteRatingsQuery>
+public interface IDeleteRatingsHandler : IHandler<Commands.DeleteRatingsCommand>
 {
 }

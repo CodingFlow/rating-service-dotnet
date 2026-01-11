@@ -16,7 +16,7 @@ internal static class ResponseStrategiesExtensions
     {
         services.AddScoped<IResponseStrategy<GetRatingsQuery, GetRatingsQueryResponse>, GetResponseStrategy<GetRatingsQuery, GetRatingsQueryResponse>>();
         services.AddScoped<IResponseStrategy<PostRatingsCommand, JsonObject>, PostResponseStrategy<PostRatingsCommand, JsonObject>>();
-        services.AddScoped<IResponseStrategy<DeleteRatingsQuery, JsonObject>, DeleteResponseStrategy<DeleteRatingsQuery, JsonObject>>();
+        services.AddScoped<IResponseStrategy<DeleteRatingsCommand, JsonObject>, DeleteResponseStrategy<DeleteRatingsCommand, JsonObject>>();
 
         return services;
     }

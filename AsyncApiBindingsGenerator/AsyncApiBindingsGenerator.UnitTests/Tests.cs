@@ -28,7 +28,7 @@ public class Tests
         var generatedGetRatingsQueryValidator = await ReadCSharpFile<GetRatingsQueryValidator>(true);
         var generatedPostRatingsCommandValidator = await ReadCSharpFile<PostRatingsCommandValidator>(true);
         var generatedRatingValidator = await ReadCSharpFile<RatingValidator>(true);
-        var generatedDeleteRatingsQueryValidator = await ReadCSharpFile<DeleteRatingsQueryValidator>(true);
+        var generatedDeleteRatingsCommandValidator = await ReadCSharpFile<DeleteRatingsCommandValidator>(true);
 
         var generatedValidationExtensions = await ReadCSharpFileByName(true, "ValidationExtensions");
 
@@ -59,7 +59,7 @@ public class Tests
                     (typeof(Main), "GetRatingsQueryValidator.generated.cs", SourceText.From(generatedGetRatingsQueryValidator, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                     (typeof(Main), "PostRatingsCommandValidator.generated.cs", SourceText.From(generatedPostRatingsCommandValidator, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                     (typeof(Main), "RatingValidator.generated.cs", SourceText.From(generatedRatingValidator, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
-                    (typeof(Main), "DeleteRatingsQueryValidator.generated.cs", SourceText.From(generatedDeleteRatingsQueryValidator, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "DeleteRatingsCommandValidator.generated.cs", SourceText.From(generatedDeleteRatingsCommandValidator, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                     (typeof(Main), "ValidationExtensions.generated.cs", SourceText.From(generatedValidationExtensions, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                 },
             },

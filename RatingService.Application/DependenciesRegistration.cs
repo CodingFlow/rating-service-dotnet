@@ -18,7 +18,7 @@ public static class DependenciesRegistration
 
         services.AddScoped<IHandler<GetRatingsQuery, GetRatingsQueryResponse>, GetRatingsHandlerProxy>();
         services.AddScoped<IHandler<PostRatingsCommand, JsonObject>, PostRatingsHandlerProxy>();
-        services.AddScoped<IHandler<DeleteRatingsQuery, JsonObject>, DeleteRatingsHandlerProxy>();
+        services.AddScoped<IHandler<DeleteRatingsCommand, JsonObject>, DeleteRatingsHandlerProxy>();
 
         return services;
     }

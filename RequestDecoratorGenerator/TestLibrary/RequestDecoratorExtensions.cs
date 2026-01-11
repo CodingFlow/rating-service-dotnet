@@ -16,7 +16,7 @@ internal static class RequestDecoratorExtensions
     {
         services.Decorate<IResponseStrategy<GetRatingsQuery, GetRatingsQueryResponse>, TestProject.RequestDecorator<GetRatingsQuery, GetRatingsQueryResponse>>();
         services.Decorate<IResponseStrategy<PostRatingsCommand, JsonObject>, TestProject.RequestDecorator<PostRatingsCommand, JsonObject>>();
-        services.Decorate<IResponseStrategy<DeleteRatingsQuery, JsonObject>, TestProject.RequestDecorator<DeleteRatingsQuery, JsonObject>>();
+        services.Decorate<IResponseStrategy<DeleteRatingsCommand, JsonObject>, TestProject.RequestDecorator<DeleteRatingsCommand, JsonObject>>();
 
         return services;
     }

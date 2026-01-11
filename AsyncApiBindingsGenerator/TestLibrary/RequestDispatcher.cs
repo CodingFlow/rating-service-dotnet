@@ -16,10 +16,10 @@ public class RequestDispatcher(
     IQueryParameterParser queryParameterParser,
     IHandler<GetRatingsQuery, GetRatingsQueryResponse> getRatingsHandler,
     IHandler<PostRatingsCommand, JsonObject> postRatingsHandler,
-    IHandler<DeleteRatingsQuery, JsonObject> deleteRatingsHandler,
+    IHandler<DeleteRatingsCommand, JsonObject> deleteRatingsHandler,
     IResponseStrategy<GetRatingsQuery, GetRatingsQueryResponse> getRatingsResponseStrategy,
     IResponseStrategy<PostRatingsCommand, JsonObject> postRatingsResponseStrategy,
-    IResponseStrategy<DeleteRatingsQuery, JsonObject> deleteRatingsResponseStrategy) : IRequestDispatcher
+    IResponseStrategy<DeleteRatingsCommand, JsonObject> deleteRatingsResponseStrategy) : IRequestDispatcher
 {
     public async Task DispatchRequest(string[] pathParts, Request<JsonNode> requestData, CancellationToken cancellationToken)
     {
@@ -68,7 +68,7 @@ public class RequestDispatcher(
         return (merged, errors);
     }
 
-    private (TestProject.Application.Queries.DeleteRatingsQuery, IEnumerable<ValidationError>) mergeDeleteRatings(TestProject.Application.Queries.DeleteRatingsQuery original, Dictionary<string, string> queryParameters, string[] pathParts)
+    private (TestProject.Application.Commands.DeleteRatingsCommand, IEnumerable<ValidationError>) mergeDeleteRatings(TestProject.Application.Commands.DeleteRatingsCommand original, Dictionary<string, string> queryParameters, string[] pathParts)
     {
         var errors = Enumerable.Empty<ValidationError>();
         var merged = original;

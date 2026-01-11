@@ -34,7 +34,7 @@ public class Tests
         
         var generatedModelPostRatingsCommand = await ReadCSharpFile<PostRatingsCommand>(true);
         
-        var generatedModelDeleteRatingsQuery = await ReadCSharpFile<DeleteRatingsQuery>(true);
+        var generatedModelDeleteRatingsCommand = await ReadCSharpFile<DeleteRatingsCommand>(true);
 
         var generatedModelRating = await ReadCSharpFile<Rating>(true);
 
@@ -71,7 +71,7 @@ public class Tests
 
                     (typeof(Main), "PostRatingsCommand.generated.cs", SourceText.From(generatedModelPostRatingsCommand, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
 
-                    (typeof(Main), "DeleteRatingsQuery.generated.cs", SourceText.From(generatedModelDeleteRatingsQuery, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
+                    (typeof(Main), "DeleteRatingsCommand.generated.cs", SourceText.From(generatedModelDeleteRatingsCommand, Encoding.UTF8, SourceHashAlgorithm.Sha256)),
                 },
             },
         }.RunAsync();

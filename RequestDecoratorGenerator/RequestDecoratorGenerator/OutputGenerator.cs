@@ -86,7 +86,7 @@ internal static class RequestDecoratorExtensions
                 case "get":
                     return "Query";
                 case "delete":
-                    return "Query";
+                    return "Command";
                 case "post":
                     return "Command";
                 default:

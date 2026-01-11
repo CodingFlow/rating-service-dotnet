@@ -1,11 +1,11 @@
-﻿using RatingService.Application.Queries;
+﻿using RatingService.Application.Commands;
 using RatingService.Domain;
 
 namespace RatingService.Application.Handlers;
 
 internal class DeleteRatingsHandler(IRatingRepository ratingRepository) : IDeleteRatingsHandler
 {
-    public async Task Handle(DeleteRatingsQuery query)
+    public async Task Handle(DeleteRatingsCommand query)
     {
         if (query.Ids.Any())
         {

@@ -324,7 +324,7 @@ public class RequestDispatcher(
                 case "get":
                     return $"{assemblyName}.Application.Queries";
                 case "delete":
-                    return $"{assemblyName}.Application.Queries";
+                    return $"{assemblyName}.Application.Commands";
                 case "post":
                     return $"{assemblyName}.Application.Commands";
                 default:

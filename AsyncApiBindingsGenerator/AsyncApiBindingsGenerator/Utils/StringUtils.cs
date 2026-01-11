@@ -16,7 +16,7 @@ namespace AsyncApiBindingsGenerator.Utils
                 case "get":
                     return "Query";
                 case "delete":
-                    return "Query";
+                    return "Command";
                 case "post":
                     return "Command";
                 default:

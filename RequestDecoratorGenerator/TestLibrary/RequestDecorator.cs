@@ -7,7 +7,7 @@ namespace TestProject;
 [RequestDecorator]
 internal class RequestDecorator<TRequest, TResponse>(IResponseStrategy<TRequest, TResponse> responseStrategy) : IResponseStrategy<TRequest, TResponse>
 {
-    public async Task<Response<TResponse>> CreateResponse(TRequest request, IHandler<TRequest, TResponse> handler)
+    public async Task<Result<Response<TResponse>>> CreateResponse(TRequest request, IHandler<TRequest, TResponse> handler)
     {
         return await responseStrategy.CreateResponse(request, handler);
     }

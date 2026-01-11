@@ -196,8 +196,7 @@ public readonly record struct {info.typeName}()
 
         private static IOperationModelStrategy GetModelStrategy(string restMethod, string pathPart, string assemblyName, OperationType operationType)
         {
-            if (restMethod == "get" && operationType == OperationType.Request
-                || restMethod == "delete" && operationType == OperationType.Request)
+            if (restMethod == "get" && operationType == OperationType.Request)
             {
                 return new QueryOperationModelStrategy(assemblyName, restMethod, pathPart);
             }
@@ -206,7 +205,8 @@ public readonly record struct {info.typeName}()
             {
                 return new QueryResponseOperationModelStrategy(assemblyName, restMethod, pathPart);
             }
-            else if (restMethod == "post" && operationType == OperationType.Request)
+            else if (restMethod == "post" && operationType == OperationType.Request
+                || restMethod == "delete" && operationType == OperationType.Request)
             {
                 return new CommandOperationModelStrategy(assemblyName, restMethod, pathPart);
             }
@@ -233,7 +233,7 @@ public readonly record struct {info.typeName}()
                 case "get":
                     return new QueryOperationInterfaceTypeStrategy(assemblyName, restMethod, pathPart);
                 case "delete":
-                    return new QueryOperationInterfaceTypeStrategy(assemblyName, restMethod, pathPart);
+                    return new CommandOperationInterfaceTypeStrategy(assemblyName, restMethod, pathPart);
                 case "post":
                     return new CommandOperationInterfaceTypeStrategy(assemblyName, restMethod, pathPart);
                 default:
