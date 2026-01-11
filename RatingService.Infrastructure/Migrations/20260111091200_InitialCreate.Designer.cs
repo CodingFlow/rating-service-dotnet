@@ -12,7 +12,7 @@ using RatingService.Infrastructure;
 namespace RatingService.Infrastructure.Migrations
 {
     [DbContext(typeof(RatingContext))]
-    [Migration("20260105084247_InitialCreate")]
+    [Migration("20260111091200_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -27,8 +27,16 @@ namespace RatingService.Infrastructure.Migrations
 
             modelBuilder.Entity("RatingService.Domain.Rating", b =>
                 {
+                    b.Property<int>("InternalId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("Id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("InternalId"));
+
                     b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("RatingId");
 
                     b.Property<float>("Score")
                         .HasColumnType("real");
@@ -39,7 +47,9 @@ namespace RatingService.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
+                    b.HasKey("InternalId");
+
+                    b.HasAlternateKey("Id");
 
                     b.ToTable("Ratings");
                 });
