@@ -34,6 +34,20 @@ spec:
             path:
               type: ReplacePrefixMatch
               replacePrefixMatch: "/"
+        - type: CORS
+          cors:
+            allowCredentials: true
+            allowHeaders:
+              - Origin               
+            allowMethods:
+              - GET
+              - POST
+              - OPTIONS               
+            allowOrigins:
+              - "*"
+            exposeHeaders:
+            - Origin
+            - X-HTTPRoute-Header
       backendRefs:
         - name: http-to-nats-proxy-service
           port: 8080

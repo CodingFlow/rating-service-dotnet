@@ -1,7 +1,7 @@
 #!/bin/bash
 
 install_deploy_infrastructure() {
-    kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml &&
+    kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/experimental-install.yaml &&
     kubectl apply -f https://github.com/nats-io/nack/releases/latest/download/crds.yml &&
     helm repo add nats https://nats-io.github.io/k8s/helm/charts/ &&
     helm repo update &&
