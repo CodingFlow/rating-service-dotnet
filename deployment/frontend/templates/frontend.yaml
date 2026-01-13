@@ -31,10 +31,14 @@ spec:
           imagePullPolicy: Always
           ports:
             - name: service-port
-              containerPort: 3000
+              containerPort: 8000
           env:
             - name: RATING_SERVICE_URL_BASE
-              value: {{ .Values.RATING_SERVICE_URL_BASE }}
+              value: {{ .Values.RATING_SERVICE_URL_BASE }}/ratings
+            - name: RATING_SERVICE_URL_BASE_SERVERSIDE
+              value: "http://$(HTTP_TO_NATS_PROXY_SERVICE_SERVICE_HOST):$(HTTP_TO_NATS_PROXY_SERVICE_SERVICE_PORT)/ratings"
+            - name: APP_URL_BASE_PATH
+              value: "/ui"
           resources:
             requests:
               cpu: 150m
@@ -42,3 +46,4 @@ spec:
             limits:
               cpu: 200m
               memory: 500Mi
+

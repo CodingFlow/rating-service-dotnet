@@ -114,7 +114,7 @@ deploy_service() {
 }
 
 deploy_frontend() {
-    build_push_docker_image $docker_registry frontend https://github.com/CodingFlow/rating-app.git#main &&
+    build_push_docker_image $docker_registry frontend https://github.com/CodingFlow/rating-app.git#main "" APP_BASE_PATH=/ui &&
     apply_rollout frontend ./deployment/frontend ./deployment/frontend-values.yaml frontend-deployment
 }
 
