@@ -29,6 +29,7 @@ Tools and frameworks used by backend and infrastructure:
 - [k3d](https://k3d.io/stable/) - Local Kubernetes toolchain for local
   development.
 - [k9s](https://k9scli.io/) - Terminal based UI to interact with Kubernetes clusters.
+- [Telepresence](https://telepresence.io/) - Very easy-to-use, fast, local development tool for Kubernetes and OpenShift Microservices.
 - [k6](https://k6.io/) - Performance testing tool.
 
 # Architectural Design
@@ -291,27 +292,28 @@ devbox shell
 Scripts for creating a local Kubernetes cluster using k3d and to deploy various
 components to the cluster are available as shell aliases for convenience:
 
-| Command                       | Description                                                                                                                     |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `load_config`                 | Load either `dev` (development) or `prod` (production) environment variables to be used for the other deployment commands.      |
-| `create-cluster`              | Creates local k3d cluster with local docker registry. Installs [k8sGateway](https://k8sgateway.io/), NATS, and NATS JetStream.  |
-| `start-cluster`               | Starts k3d cluster if it is stopped.                                                                                            |
-| `stop-cluster`                | Stop k3d cluster.                                                                                                               |
-| `delete-cluster`              | Deletes the k3d cluster.                                                                                                        |
-| `deploy-nack`                 | Apply JetStream kubernetes configuration.                                                                                       |
-| `deploy-gateway`              | Apply k8sGateway kubernetes configurations.                                                                                     |
-| `deploy-signoz`               | Apply SigNoz kubernetes configurations                                                                                          |
-| `deploy-http-to-nats-proxy`   | Build and push to docker registry the docker image for http-to-nats-proxy and deploy via kubernetes configuration.              |
-| `deploy_database`             | Installs Cloudnative-pg and apply Postgresql kubernetes configuration                                                           |
-| `deploy_redis `               | Build and push to docker registry the docker image for rating-service's Redis instance and deploy via kubernetes configuration. |
-| `deploy-service`              | Build and push to docker registry the docker image for rating-service and deploy via kubernetes configuration.                  |
-| `deploy-frontend`             | Build and push to docker registry the docker image for the frontend and deploy via kubernetes configuration.                    |
-| `port-forward-gateway`        | Port forward the gateway to localhost so the frontend and backend can be accessed for testing.                                  |
-| `port-forward-signoz`         | Port forward the SigNoz UI to localhost so it can be accessed via the browser.                                                  |
-| `create-local-nuget-packages` | Create local nuget packages for local libraries used by the service.                                                            |
-| `create-database-migration`   | Creates database migration files via Entity Framework Core.                                                                     |
-| `update-database`             | Executes database migration using database migration files via kubernetes job.                                                  |
-| `update-redis`                | Updates rating-service's Redis instance with schema and indexes via kubernetes job.                                             |
+| Command                             | Description                                                                                                                     |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `load_config`                       | Load either `dev` (development) or `prod` (production) environment variables to be used for the other deployment commands.      |
+| `create-cluster`                    | Creates local k3d cluster with local docker registry. Installs [k8sGateway](https://k8sgateway.io/), NATS, and NATS JetStream.  |
+| `start-cluster`                     | Starts k3d cluster if it is stopped.                                                                                            |
+| `stop-cluster`                      | Stop k3d cluster.                                                                                                               |
+| `delete-cluster`                    | Deletes the k3d cluster.                                                                                                        |
+| `deploy-nack`                       | Apply JetStream kubernetes configuration.                                                                                       |
+| `deploy-gateway`                    | Apply k8sGateway kubernetes configurations.                                                                                     |
+| `deploy-signoz`                     | Apply SigNoz kubernetes configurations                                                                                          |
+| `deploy-http-to-nats-proxy`         | Build and push to docker registry the docker image for http-to-nats-proxy and deploy via kubernetes configuration.              |
+| `deploy_database`                   | Installs Cloudnative-pg and apply Postgresql kubernetes configuration                                                           |
+| `deploy_redis `                     | Build and push to docker registry the docker image for rating-service's Redis instance and deploy via kubernetes configuration. |
+| `deploy-service`                    | Build and push to docker registry the docker image for rating-service and deploy via kubernetes configuration.                  |
+| `deploy-frontend`                   | Build and push to docker registry the docker image for the frontend and deploy via kubernetes configuration.                    |
+| `port-forward-gateway`              | Port forward the gateway to localhost so the frontend and backend can be accessed for testing.                                  |
+| `port-forward-signoz`               | Port forward the SigNoz UI to localhost so it can be accessed via the browser.                                                  |
+| `create-local-nuget-packages`       | Create local nuget packages for local libraries used by the service.                                                            |
+| `create-database-migration`         | Creates database migration files via Entity Framework Core.                                                                     |
+| `update-database`                   | Executes database migration using database migration files via kubernetes job.                                                  |
+| `update-redis`                      | Updates rating-service's Redis instance with schema and indexes via kubernetes job.                                             |
+| `create-environment-variables-file` | Creates file, `rating-service.env`, containing all environment variables from rating-service deployment's container.            |
 
 Devbox is set up to run `load_config dev` on starting a devbox environment e.g.
 via `devbox shell`.
@@ -367,3 +369,14 @@ k6 run performance-test.js
 
 You may want to reduce the tracing sampling rate for the rating-service to reduce the load on your system from aggregating a lot of traces in SigNoz. You can change in the file deployment/app/templates/app.yaml the environment variable `OTEL_TRACES_SAMPLER_ARG` from 1.0 to something like 0.1.
 
+# Local Development
+
+## Connect to Cluster for Debugging
+
+[Telepresence](https://telepresence.io/) is already included in the devbox dependencies to allow for easily connecting to the kubernetes cluster, intercepting traffic, and export environment variables. A convenience shell alias, `create-environment-variables-file`, to put rating-service's environment variables into a file called `rating-service.env` is available. Step-by-step:
+
+1. In devbox shell, run `telepresence connect`
+2. Run `create-environment-variables-file`
+3. Copy environment variables from the generated environment variables file `rating-service.env` into `appsettings.Development.json`.
+4. In Visual Studio, set `RatingService.AppHost` project as startup project.
+5. Run the application using the `WSL` launch profile.
