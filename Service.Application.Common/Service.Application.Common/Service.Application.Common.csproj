@@ -8,8 +8,4 @@
     <Title>Service Application Common</Title>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="OptionsBindingsGenerator" Version="0.2.1" />
-  </ItemGroup>
-
 </Project>

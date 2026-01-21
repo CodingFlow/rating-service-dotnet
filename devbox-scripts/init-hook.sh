@@ -4,7 +4,9 @@ echo 'Welcome to devbox!' > /dev/null
 
 . ./deployment/prod-deploy.sh
 
-shopt -s expand_aliases
+if [ -n "$BASH_VERSION" ]; then
+    shopt -s expand_aliases
+fi
 
 cluster_name=localdevcluster
 
@@ -31,6 +33,8 @@ alias create-database-migration='create_database_migration'
 alias update-database='update_database'
 
 alias update-redis="update_redis"
+
+alias install-telepresence="install_telepresence"
 
 load_config dev
 
@@ -116,6 +120,10 @@ deploy_service() {
 deploy_frontend() {
     build_push_docker_image $docker_registry frontend https://github.com/CodingFlow/rating-app.git#main "" APP_BASE_PATH=/ui &&
     apply_rollout frontend ./deployment/frontend ./deployment/frontend-values.yaml frontend-deployment
+}
+
+install_telepresence() {
+    telepresence helm install
 }
 
 apply_helm_package() {

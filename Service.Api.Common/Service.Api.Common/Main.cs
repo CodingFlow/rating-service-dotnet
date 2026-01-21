@@ -43,14 +43,14 @@ internal partial class Main(
             {
                 message.Headers.TryGetValue("Nats-Msg-Id", out var messageId);
 
-                using var loggerScope = logger.BeginScope(CreateState(messageId));
-                using var tracerScope = tracer.StartActivity("Request", ActivityKind.Server, GetParentScope(message, messageId));
-
                 var isInLocalCache = localCacheService.CheckLocalCache(messageId);
                 var isInDistributedCache = await distributedCacheService.CheckDistributedCache(messageId, isInLocalCache);
 
                 if (!isInLocalCache && !isInDistributedCache)
                 {
+                    using var loggerScope = logger.BeginScope(CreateState(messageId));
+                    using var tracerScope = tracer.StartActivity("Request", ActivityKind.Server, GetParentScope(message, messageId));
+
                     await BeginRequestScope(message, cancellationToken);
                 }
             }

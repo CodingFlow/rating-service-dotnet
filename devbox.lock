@@ -649,6 +649,54 @@
         }
       }
     },
+    "telepresence2@2.25.2": {
+      "last_modified": "2026-01-09T13:41:53Z",
+      "resolved": "github:NixOS/nixpkgs/5f02c91314c8ba4afe83b256b023756412218535#telepresence2",
+      "source": "devbox-search",
+      "version": "2.25.2",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/16y7d19d7xnha74pdkrrbx1yhl67i5k7-telepresence2-2.25.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/16y7d19d7xnha74pdkrrbx1yhl67i5k7-telepresence2-2.25.2"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/561v06krba641ybm6cny851wiy3hc7f5-telepresence2-2.25.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/561v06krba641ybm6cny851wiy3hc7f5-telepresence2-2.25.2"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/5bg284v1hws9qd6a2974dllhb4j3m4b3-telepresence2-2.25.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/5bg284v1hws9qd6a2974dllhb4j3m4b3-telepresence2-2.25.2"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/jsf5z8s0ppxfzl3yv4l4y93x8qk6ygcs-telepresence2-2.25.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/jsf5z8s0ppxfzl3yv4l4y93x8qk6ygcs-telepresence2-2.25.2"
+        }
+      }
+    },
     "yq-go@4.44": {
       "last_modified": "2024-12-23T21:10:33Z",
       "resolved": "github:NixOS/nixpkgs/de1864217bfa9b5845f465e771e0ecb48b30e02d#yq-go",

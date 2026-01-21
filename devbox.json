@@ -13,11 +13,12 @@
     "k6@1.4",
     "dotnet-sdk_10@10.0",
     "dotnet-ef@10.0",
-    "redis@8.2.2"
+    "redis@8.2.2",
+    "telepresence2@2.25.2"
   ],
   "shell": {
     "init_hook": [
-      "source ./devbox-scripts/init-hook.sh"
+      ". ./devbox-scripts/init-hook.sh"
     ],
     "scripts": {
       "test": [

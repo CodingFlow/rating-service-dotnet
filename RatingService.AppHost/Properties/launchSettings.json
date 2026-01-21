@@ -1,0 +1,16 @@
+{
+    "profiles": {
+        "RatingService.AppHost": {
+            "commandName": "Project"
+        },
+        "WSL": {
+            "commandName": "WSL2",
+            "distributionName": "Ubuntu",
+            "executablePath": "devbox",
+            "commandLineArgs": "run -- bash -c \"cd ./RatingService.AppHost && dotnet run\"",
+            "environmentVariables": {
+                "DOTNET_ENVIRONMENT": "Development"
+            }
+        }
+    }
+}
