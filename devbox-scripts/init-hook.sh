@@ -36,6 +36,8 @@ alias update-redis="update_redis"
 
 alias install-telepresence="install_telepresence"
 
+alias create-environment-variables-file="create_environment_variables_file"
+
 load_config dev
 
 create_local_nuget_packages() {
@@ -124,6 +126,11 @@ deploy_frontend() {
 
 install_telepresence() {
     telepresence helm install
+}
+
+create_environment_variables_file() {
+    telepresence ingest rating-service-deployment --env-file ./rating-service.env --env-syntax=json
+    telepresence leave rating-service-deployment
 }
 
 apply_helm_package() {
